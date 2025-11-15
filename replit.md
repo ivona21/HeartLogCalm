@@ -15,7 +15,11 @@ HeartLog is a beautifully designed emotional wellness tracking application with 
 - ✅ Responsive design for mobile and desktop
 - ✅ Form validation with Zod
 - ✅ Loading and error states
-- ✅ Dashboard placeholder for authenticated users
+- ✅ Dashboard with calming nature GIF welcome screen
+  - Peaceful moonlit ocean with gentle waves animation
+  - Personalized "Welcome, {username}" message overlay
+  - Serene gradient overlay for text readability
+  - Introductory cards about the wellness journey
 
 ### Architecture
 The project follows **Bulletproof React** principles:
