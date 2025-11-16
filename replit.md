@@ -20,8 +20,8 @@ HeartLog is a beautifully designed emotional wellness tracking application with 
   - Personalized "Welcome, {username}" message overlay
   - Serene gradient overlay for text readability
   - Introductory cards about the wellness journey
-- ✅ Frontend-only architecture (client/ directory)
-- ✅ Custom Vite server wrapper for seamless workflow integration
+- ✅ Frontend-only architecture with clean root-level structure
+- ✅ Direct Vite dev server on port 5000
 - ✅ E2E tested authentication flow with Playwright
 
 ### Architecture
@@ -45,20 +45,20 @@ The project follows **Bulletproof React** principles:
 ### Project Structure
 ```
 heartlog/
-├── client/              # Frontend application (required by vite.config.ts)
-│   ├── src/
-│   │   ├── features/   # Feature modules (auth, etc.)
-│   │   ├── components/ # Reusable components
-│   │   ├── pages/      # Page components
-│   │   ├── lib/        # Utilities & API client
-│   │   └── types/      # TypeScript types & schemas
-│   ├── public/         # Static assets
-│   └── index.html      # Entry HTML
-├── server/             # Minimal Vite wrapper for workflow
-│   └── index.ts        # Runs Vite on port 5000
-├── package.json        # Dependencies (contains some legacy backend deps)
-├── vite.config.ts      # Vite configuration (locked)
-└── tailwind.config.ts  # Tailwind CSS config
+├── src/                    # Frontend application source code
+│   ├── features/           # Feature modules (auth, etc.)
+│   ├── components/         # Reusable components
+│   ├── pages/              # Page components
+│   ├── lib/                # Utilities & API client
+│   └── types/              # TypeScript types & schemas
+├── public/                 # Static assets
+├── index.html              # Entry HTML
+├── package.json            # Dependencies
+├── vite.config.ts          # Vite build configuration
+├── tailwind.config.ts      # Tailwind CSS config
+├── tsconfig.json           # TypeScript configuration
+├── postcss.config.js       # PostCSS configuration
+└── components.json         # Shadcn UI config
 ```
 
 ## Design System
@@ -128,24 +128,19 @@ See `BACKEND_INTEGRATION.md` for complete API contract.
 
 ### Form Handling
 - Use React Hook Form with Zod validation
-- Schema validation in `shared/schema.ts`
+- Schema validation in `src/types/schema.ts`
 - Display friendly error messages
 - Loading states during submission
 
 ## Running the Project
 
-The project uses a custom Vite server wrapper that allows the workflow to work seamlessly with the locked configuration files.
+The project runs Vite directly on port 5000:
 
 ```bash
-npm run dev  # Runs tsx server/index.ts → starts Vite on port 5000
+npm run dev  # Runs vite --port 5000 --host
 ```
 
-The frontend runs on port 5000. The server wrapper:
-- Programmatically configures Vite with `allowedHosts: true` for testing
-- Binds to all interfaces for Replit environment compatibility
-- Bypasses the locked vite.config.ts restrictions for server settings only
-
-Make sure your backend API is running and the `VITE_API_URL` is configured correctly if you want full authentication to work.
+The `--host` flag allows external connections in the Replit environment. Make sure your backend API is running and the `VITE_API_URL` is configured correctly if you want full authentication to work.
 
 ## Next Phase Features
 - Emotion logging interface with mood selection
@@ -160,11 +155,10 @@ Make sure your backend API is running and the `VITE_API_URL` is configured corre
 - **External Backend**: User provides their own deployed API
 - **Architecture**: Follow Bulletproof React patterns strictly
 
-## Technical Constraints
-- `vite.config.ts` is locked and cannot be modified
-- `package.json` is locked and cannot be modified
-- `.replit` workflow configuration is locked
-- **Solution**: Custom server wrapper (`server/index.ts`) that:
-  - Uses Vite's Node.js API to programmatically configure the dev server
-  - Overrides `server.allowedHosts` to enable testing
-  - Maintains compatibility with existing workflow configuration
+## Technical Notes
+- Vite configuration uses root-level `src/` directory with `@/` and `@shared/` path aliases
+- Dev server runs on port 5000 with `--host` flag for Replit compatibility
+- Path aliases:
+  - `@/` → `src/`
+  - `@shared/` → `src/types/`
+  - `@assets/` → `attached_assets/`
