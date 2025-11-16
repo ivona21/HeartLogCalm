@@ -1,12 +1,32 @@
 import { createServer } from 'vite';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Create a custom Vite server that bypasses the locked vite.config.ts
-// for the server.allowedHosts setting only
+// Overrides: root directory, resolve aliases, and server settings
 async function startVite() {
   const viteConfig = await import('../vite.config.js');
   
   const server = await createServer({
     ...viteConfig.default,
+    // Override root to current directory instead of "client"
+    root: path.resolve(__dirname, '..'),
+    // Override resolve aliases to point to new locations
+    resolve: {
+      ...viteConfig.default.resolve,
+      alias: {
+        '@': path.resolve(__dirname, '..', 'src'),
+        '@shared': path.resolve(__dirname, '..', 'src', 'types'),
+        '@assets': path.resolve(__dirname, '..', 'attached_assets'),
+      },
+    },
+    // Override build output directory
+    build: {
+      ...viteConfig.default.build,
+      outDir: path.resolve(__dirname, '..', 'dist/public'),
+    },
     server: {
       ...viteConfig.default.server,
       port: 5000,
