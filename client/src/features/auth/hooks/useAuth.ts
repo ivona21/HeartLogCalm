@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { login as loginApi } from "../api/login";
 import { register as registerApi } from "../api/register";
 import { getCurrentUser, logout as logoutApi } from "../api/getCurrentUser";
-import type { LoginInput, RegisterInput } from "@shared/schema";
+import type { LoginInput, RegisterInput } from "@/types/schema";
 import { useLocation } from "wouter";
 
 export function useAuth() {

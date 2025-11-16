@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginInput } from "@shared/schema";
+import { loginSchema, type LoginInput } from "@/types/schema";
 import { Button } from "@/components/ui/button";
 import {
   Form,

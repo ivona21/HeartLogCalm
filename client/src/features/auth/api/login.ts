@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 import type { AuthResponse } from "@/types";
-import type { LoginInput } from "@shared/schema";
+import type { LoginInput } from "@/types/schema";
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
   // Temporarily clear token before login to avoid sending stale auth header
