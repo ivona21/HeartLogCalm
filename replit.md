@@ -4,8 +4,8 @@
 HeartLog is a beautifully designed emotional wellness tracking application with a calm, oasis-inspired aesthetic. The frontend is built with React TypeScript following Bulletproof React architecture principles.
 
 ## Current State
-**Phase:** MVP Authentication (Registration & Login)
-**Last Updated:** November 15, 2025
+**Phase:** MVP Authentication (Registration & Login) - Frontend Only  
+**Last Updated:** November 16, 2025
 
 ### Implemented Features
 - ✅ User registration with email, username, and password
@@ -41,29 +41,21 @@ The project follows **Bulletproof React** principles:
 
 ### Project Structure
 ```
-client/src/
-├── features/              # Feature modules
-│   └── auth/
-│       ├── api/          # Auth API calls
-│       ├── components/   # Auth components (LoginForm, RegisterForm)
-│       ├── hooks/        # useAuth hook
-│       └── index.ts      # Public exports
-├── components/
-│   ├── ui/              # Shadcn components
-│   ├── layout/          # Layout components (AuthLayout)
-│   └── ProtectedRoute.tsx
-├── pages/               # Page components
-│   ├── login.tsx
-│   ├── register.tsx
-│   ├── dashboard.tsx
-│   └── not-found.tsx
-├── lib/                 # Utilities
-│   ├── api-client.ts    # HTTP client
-│   ├── queryClient.ts   # React Query config
-│   └── utils.ts
-├── types/               # Shared TypeScript types
-│   └── index.ts
-└── App.tsx             # Root with routing
+heartlog/
+├── client/              # Frontend application (required by vite.config.ts)
+│   ├── src/
+│   │   ├── features/   # Feature modules (auth, etc.)
+│   │   ├── components/ # Reusable components
+│   │   ├── pages/      # Page components
+│   │   ├── lib/        # Utilities & API client
+│   │   └── types/      # TypeScript types & schemas
+│   ├── public/         # Static assets
+│   └── index.html      # Entry HTML
+├── server/             # Minimal Vite wrapper for workflow
+│   └── index.ts        # Runs Vite on port 5000
+├── package.json        # Dependencies (contains some legacy backend deps)
+├── vite.config.ts      # Vite configuration (locked)
+└── tailwind.config.ts  # Tailwind CSS config
 ```
 
 ## Design System
