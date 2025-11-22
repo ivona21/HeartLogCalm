@@ -97,8 +97,8 @@ VITE_API_URL=https://your-backend-api.com
 See `BACKEND_INTEGRATION.md` for complete API contract.
 
 #### Authentication Endpoints
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
+- `POST /api/Users/register` - User registration
+- `POST /api/Users/login` - User login
 - `GET /api/auth/me` - Get current user
 
 ### Token Management

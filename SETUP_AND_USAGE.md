@@ -127,7 +127,7 @@ Your frontend expects these endpoints from your backend:
 
 ### Required Endpoints
 
-#### POST `/api/auth/register`
+#### POST `/api/Users/register`
 ```json
 Request:
 {
@@ -143,7 +143,7 @@ Response (201):
 }
 ```
 
-#### POST `/api/auth/login`
+#### POST `/api/Users/login`
 ```json
 Request:
 {

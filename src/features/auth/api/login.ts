@@ -9,7 +9,7 @@ export async function login(data: LoginInput): Promise<AuthResponse> {
     localStorage.removeItem("auth_token");
   }
   
-  const response = await apiClient.post<AuthResponse>("/api/auth/login", data);
+  const response = await apiClient.post<AuthResponse>("/api/Users/login", data);
   
   if (response.token) {
     localStorage.setItem("auth_token", response.token);

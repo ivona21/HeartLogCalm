@@ -19,7 +19,7 @@ HeartLog frontend is designed to connect to your external backend API. This docu
 
 ### Authentication
 
-#### POST /api/auth/register
+#### POST /api/Users/register
 Register a new user.
 
 **Request Body:**
@@ -53,7 +53,7 @@ Register a new user.
 }
 ```
 
-#### POST /api/auth/login
+#### POST /api/Users/login
 Authenticate a user.
 
 **Request Body:**

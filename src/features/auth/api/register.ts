@@ -9,7 +9,7 @@ export async function register(data: RegisterInput): Promise<AuthResponse> {
     localStorage.removeItem("auth_token");
   }
   
-  const response = await apiClient.post<AuthResponse>("/api/auth/register", data);
+  const response = await apiClient.post<AuthResponse>("/api/Users/register", data);
   
   if (response.token) {
     localStorage.setItem("auth_token", response.token);
