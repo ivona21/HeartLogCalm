@@ -40,6 +40,8 @@ export default defineConfig({
             strict: true,
             deny: ["**/.*"],
         },
-        allowedHosts: [],
+        allowedHosts: [
+            "71eb8564-b79f-4920-af09-9cd6317e6a88-00-1cgns8l1wsjzo.picard.replit.dev",
+        ],
     },
 });
