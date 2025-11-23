@@ -1,4 +1,5 @@
 import type { ApiError } from "@/types";
+import { useAuthStore } from "@/stores/authStore";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -10,7 +11,7 @@ export class ApiClient {
   }
 
   private getAuthToken(): string | null {
-    return localStorage.getItem("auth_token");
+    return useAuthStore.getState().token;
   }
 
   private async request<T>(

@@ -1,18 +1,13 @@
 import { apiClient } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/authStore";
 import type { AuthResponse } from "@/types";
 import type { LoginInput } from "@/types/schema";
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
-  // Temporarily clear token before login to avoid sending stale auth header
-  const existingToken = localStorage.getItem("auth_token");
-  if (existingToken) {
-    localStorage.removeItem("auth_token");
-  }
-  
   const response = await apiClient.post<AuthResponse>("/api/Users/login", data);
   
-  if (response.token) {
-    localStorage.setItem("auth_token", response.token);
+  if (response.token && response.user) {
+    useAuthStore.getState().setAuth(response.user, response.token);
   }
   
   return response;
