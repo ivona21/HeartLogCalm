@@ -9,7 +9,13 @@ export default defineConfig({
     plugins: [
         react(),
         // Only load Replit runtime overlay if in Replit dev environment
-        ...(process.env.REPL_ID ? [require("@replit/vite-plugin-runtime-error-modal").default()] : []),
+        ...(process.env.REPL_ID
+            ? [
+                  (
+                      await import("@replit/vite-plugin-runtime-error-modal")
+                  ).default(),
+              ]
+            : []),
     ],
 
     resolve: {
