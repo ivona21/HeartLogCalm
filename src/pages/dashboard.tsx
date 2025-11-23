@@ -30,7 +30,7 @@ export default function DashboardPage() {
           <div className="relative overflow-hidden rounded-lg shadow-lg">
             <div className="relative aspect-video md:aspect-[21/9]">
               <img
-                src="https://cdn.pixabay.com/animation/2024/01/11/17/57/17-57-09-141_512.gif"
+                src="public/adam-vradenburg-GA09PKfRIQY-unsplash.jpg"
                 alt="Peaceful moonlit ocean with gentle waves"
                 className="w-full h-full object-cover"
                 data-testid="img-welcome-nature"
