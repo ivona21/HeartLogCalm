@@ -37,9 +37,40 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      const error: ApiError = await response.json().catch(() => ({
-        message: "An unexpected error occurred",
-      }));
+      let errorMessage = "An unexpected error occurred";
+      let errorData: any;
+      
+      try {
+        errorData = await response.json();
+      } catch (parseError) {
+        // If JSON parsing fails, try to get text response
+        const textError = await response.text().catch(() => "");
+        console.error("API Error (non-JSON):", textError);
+        throw { message: textError || errorMessage };
+      }
+      
+      console.error("API Error Response:", errorData);
+      
+      // Try to extract error message from various backend formats
+      if (typeof errorData === 'string') {
+        errorMessage = errorData;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      } else if (errorData.error) {
+        errorMessage = errorData.error;
+      } else if (errorData.title) {
+        errorMessage = errorData.detail || errorData.title;
+      } else if (errorData.Message) {
+        // C# backends often use PascalCase
+        errorMessage = errorData.Message;
+      } else if (errorData.Error) {
+        errorMessage = errorData.Error;
+      }
+      
+      const error: ApiError = {
+        message: errorMessage,
+        errors: errorData.errors || errorData.Errors,
+      };
       throw error;
     }
 
