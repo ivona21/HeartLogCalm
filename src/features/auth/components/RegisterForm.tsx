@@ -46,8 +46,8 @@ export function RegisterForm() {
 
         {registerError && (
           <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
-            <AlertCircle className="h-4 w-4 text-[#E8A59C]" />
-            <AlertDescription className="text-[#E8A59C]">
+            <AlertCircle className="h-4 w-4 text-red-500" />
+            <AlertDescription className="text-red-500">
               {(registerError as ApiError).message || "Registration failed. Please try again."}
             </AlertDescription>
           </Alert>
@@ -71,7 +71,7 @@ export function RegisterForm() {
                   data-testid="input-email"
                 />
               </FormControl>
-              <FormMessage className="text-[#E8A59C] text-sm" />
+              <FormMessage className="text-red-500 text-sm" />
             </FormItem>
           )}
         />
@@ -93,7 +93,7 @@ export function RegisterForm() {
                   data-testid="input-username"
                 />
               </FormControl>
-              <FormMessage className="text-[#E8A59C] text-sm" />
+              <FormMessage className="text-red-500 text-sm" />
             </FormItem>
           )}
         />
@@ -116,7 +116,7 @@ export function RegisterForm() {
                   data-testid="input-password"
                 />
               </FormControl>
-              <FormMessage className="text-[#E8A59C] text-sm" />
+              <FormMessage className="text-red-500 text-sm" />
             </FormItem>
           )}
         />
