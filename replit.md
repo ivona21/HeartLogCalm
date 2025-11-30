@@ -5,7 +5,7 @@ HeartLog is a beautifully designed emotional wellness tracking application with 
 
 ## Current State
 **Phase:** MVP Authentication (Registration & Login) - Frontend Only  
-**Last Updated:** November 16, 2025
+**Last Updated:** November 30, 2025
 
 ### Implemented Features
 - ✅ User registration with email, username, and password
@@ -35,7 +35,7 @@ The project follows **Bulletproof React** principles:
 ### Tech Stack
 - **Frontend Framework**: React 18 with TypeScript
 - **Build Tool**: Vite
-- **Routing**: Wouter (lightweight React router)
+- **Routing**: React Router DOM v6 (createBrowserRouter pattern)
 - **State Management**: TanStack Query (React Query)
 - **Form Handling**: React Hook Form + Zod validation
 - **Styling**: Tailwind CSS
@@ -49,6 +49,7 @@ heartlog/
 │   ├── features/           # Feature modules (auth, etc.)
 │   ├── components/         # Reusable components
 │   ├── pages/              # Page components
+│   ├── routes/             # Centralized route configuration
 │   ├── lib/                # Utilities & API client
 │   └── types/              # TypeScript types & schemas
 ├── public/                 # Static assets

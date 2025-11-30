@@ -1,6 +1,5 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
@@ -9,13 +8,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
-  const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      setLocation("/login");
-    }
-  }, [isLoading, isAuthenticated, setLocation]);
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -26,7 +19,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isAuthenticated) {
-    return null;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
