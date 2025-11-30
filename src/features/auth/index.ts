@@ -1,3 +1,3 @@
 export { useAuth } from "./hooks/useAuth";
-export { LoginForm } from "./components/LoginForm";
-export { RegisterForm } from "./components/RegisterForm";
+export { LoginForm } from "./forms/LoginForm/LoginForm.tsx";
+export { RegisterForm } from "./forms/RegisterForm/RegisterForm.tsx";

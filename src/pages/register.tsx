@@ -1,5 +1,5 @@
 import { AuthLayout } from "@/components/layout/AuthLayout";
-import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { RegisterForm } from "@/features/auth/forms/RegisterForm/RegisterForm.tsx";
 import { Link } from "wouter";
 
 export default function RegisterPage() {

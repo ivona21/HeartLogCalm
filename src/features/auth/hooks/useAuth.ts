@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { login as loginApi } from "../api/login";
 import { register as registerApi } from "../api/register";
 import { useAuthStore } from "@/stores/authStore";
-import type { LoginInput, RegisterInput } from "@/types/schema";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from "wouter";
 
 export function useAuth() {

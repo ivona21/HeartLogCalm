@@ -1,5 +1,5 @@
 import { AuthLayout } from "@/components/layout/AuthLayout";
-import { LoginForm } from "@/features/auth/components/LoginForm";
+import { LoginForm } from "@/features/auth/forms/LoginForm/LoginForm.tsx";
 import { Link } from "wouter";
 
 export default function LoginPage() {

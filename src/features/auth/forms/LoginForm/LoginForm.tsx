@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginInput } from "@/types/schema";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.tsx";
 import {
   Form,
   FormControl,
@@ -9,12 +8,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "../hooks/useAuth";
+} from "@/components/ui/form.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { useAuth } from "../../hooks/useAuth.ts";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
 import type { ApiError } from "@/types";
+import {LoginInput, loginSchema} from "@/features/auth/forms/LoginForm/schema.ts";
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();

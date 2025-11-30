@@ -5,12 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="22c4a6a4-cc33-4384-b4e8-a514ee4752fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.env.local" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/auth/forms/LoginForm/schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/auth/forms/RegisterForm/schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/auth/components/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/components/LoginForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/auth/components/RegisterForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/components/RegisterForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api-client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/components/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/forms/LoginForm/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/components/RegisterForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/forms/RegisterForm/RegisterForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/hooks/useAuth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/hooks/useAuth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/schema.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,9 +68,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/features/auth/forms/RegisterForm" />
+      <recent name="$PROJECT_DIR$/src/features/auth/forms/LoginForm" />
+      <recent name="$PROJECT_DIR$/src/features/auth/forms" />
       <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/client" />
     </key>
   </component>
   <component name="SharedIndexes">
