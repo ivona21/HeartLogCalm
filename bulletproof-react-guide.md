@@ -60,7 +60,7 @@ client/src/
 - Form validation schemas with Zod
 
 ### 5. Routing
-- Use wouter for lightweight routing
+- use react-router-dom
 - Protected routes for authenticated pages
 - Public routes for auth pages
 

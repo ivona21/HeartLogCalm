@@ -123,7 +123,7 @@ VITE_API_URL=https://your-backend-api.com
 
 - **Framework**: React 18 + TypeScript
 - **Build Tool**: Vite 5
-- **Routing**: Wouter
+- **Routing**: React Router Dom
 - **State**: TanStack Query (React Query)
 - **Forms**: React Hook Form + Zod
 - **Styling**: Tailwind CSS
