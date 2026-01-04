@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="22c4a6a4-cc33-4384-b4e8-a514ee4752fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bulletproof-react-guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/bulletproof-react-guide.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/api/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/api/register.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/register.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/hooks/useAuth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/hooks/useAuth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/api-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api-client.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,11 +61,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/features/auth/forms/RegisterForm" />
       <recent name="$PROJECT_DIR$/src/features/auth/forms/LoginForm" />
       <recent name="$PROJECT_DIR$/src/features/auth/forms" />
       <recent name="$PROJECT_DIR$/public" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -86,6 +88,7 @@
       <workItem from="1763486420740" duration="2362000" />
       <workItem from="1763802259544" duration="4402000" />
       <workItem from="1764076941726" duration="3733000" />
+      <workItem from="1767368854387" duration="2112000" />
     </task>
     <servers />
   </component>

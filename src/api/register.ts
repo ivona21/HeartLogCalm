@@ -1,7 +1,7 @@
-import { apiClient } from "@/lib/api-client";
-import { useAuthStore } from "@/stores/authStore";
+import { apiClient } from "@/lib/api-client.ts";
+import { useAuthStore } from "@/stores/authStore.ts";
 import type { AuthResponse, User } from "@/types";
-import type { RegisterInput } from "@/types/schema";
+import {RegisterInput} from "@/features/auth/forms/RegisterForm/schema.ts";
 
 export async function register(data: RegisterInput): Promise<AuthResponse> {
   const response = await apiClient.post<AuthResponse>("/api/Users/register", data);

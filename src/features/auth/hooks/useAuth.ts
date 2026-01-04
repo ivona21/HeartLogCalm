@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { login as loginApi } from "../api/login";
-import { register as registerApi } from "../api/register";
+import { login as loginApi } from "@/api/login";
+import { register as registerApi } from "@/api/register";
 import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +20,9 @@ export function useAuth() {
     onSuccess: () => {
       navigate("/dashboard");
     },
+      onError: (error) => {
+      console.log("error: ", error);
+      }
   });
 
   const logout = () => {

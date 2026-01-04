@@ -1,7 +1,7 @@
-import { apiClient } from "@/lib/api-client";
-import { useAuthStore } from "@/stores/authStore";
+import { apiClient } from "@/lib/api-client.ts";
+import { useAuthStore } from "@/stores/authStore.ts";
 import type { AuthResponse, User } from "@/types";
-import type { LoginInput } from "@/types/schema";
+import {LoginInput} from "@/features/auth/forms/LoginForm/schema.ts";
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
   const response = await apiClient.post<AuthResponse>("/api/Users/login", data);
