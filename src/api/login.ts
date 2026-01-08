@@ -1,17 +1,18 @@
 import { apiClient } from "@/lib/api-client.ts";
 import { useAuthStore } from "@/stores/authStore.ts";
-import type { AuthResponse, User } from "@/types";
+import type { ApiResponse, LoginResponseDto, User } from "@/types";
 import {LoginInput} from "@/features/auth/forms/LoginForm/schema.ts";
 
-export async function login(data: LoginInput): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>("/api/Users/login", data);
+export async function login(data: LoginInput): Promise<ApiResponse<LoginResponseDto>> {
+  const response = await apiClient.post<ApiResponse<LoginResponseDto>>("/api/auth/login", data);
   
-  if (response.token && response.email && response.username) {
+  if (response.success && response.data) {
+    const { email, token, username } = response.data;
     const user: User = {
-      email: response.email,
-      username: response.username,
+      email: email,
+      username: username || email.split('@')[0], // Fallback if username is missing
     };
-    useAuthStore.getState().setAuth(user, response.token);
+    useAuthStore.getState().setAuth(user, token);
   }
   
   return response;

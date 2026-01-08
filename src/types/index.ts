@@ -1,13 +1,19 @@
-export interface User {
-  id?: string;
-  username: string;
-  email: string;
+export interface ApiResponse<T = void> {
+  success: boolean;
+  message: string;
+  data?: T;
 }
 
-export interface AuthResponse {
+export interface LoginResponseDto {
   email: string;
-  username: string;
   token: string;
+  username?: string;
+}
+
+export interface User {
+  id?: string;
+  username?: string;
+  email: string;
 }
 
 export interface ApiError {

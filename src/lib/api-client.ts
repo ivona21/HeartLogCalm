@@ -51,8 +51,8 @@ export class ApiClient {
           }
 
           throw {
-              message: errorBody.message || "Unexpected error",
-              errors: errorBody.errors || null
+              message: errorBody.message || errorBody.Message || "Unexpected error",
+              errors: errorBody.errors || errorBody.Errors || null
           };
       }
 

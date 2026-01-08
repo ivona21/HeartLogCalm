@@ -89,8 +89,8 @@ Built following **Bulletproof React** principles:
 
 This frontend connects to your deployed backend API. Required endpoints:
 
-- `POST /api/Users/register` - User registration
-- `POST /api/Users/login` - User login
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user
 
 See `BACKEND_INTEGRATION.md` for complete API contract.
