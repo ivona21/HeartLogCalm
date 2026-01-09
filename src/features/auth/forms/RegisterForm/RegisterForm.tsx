@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form.tsx";
 import { Input } from "@/components/ui/input.tsx";
+import { PasswordInput } from "@/components/ui/password-input.tsx";
 import { useAuth } from "../../hooks/useAuth.ts";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
@@ -107,9 +108,8 @@ export function RegisterForm() {
                 Password
               </FormLabel>
               <FormControl>
-                <Input
+                <PasswordInput
                   {...field}
-                  type="password"
                   placeholder="Create a secure password"
                   disabled={isRegistering}
                   className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
