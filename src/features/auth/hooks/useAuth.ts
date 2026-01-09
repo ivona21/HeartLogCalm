@@ -17,12 +17,15 @@ export function useAuth() {
 
   const registerMutation = useMutation({
     mutationFn: registerApi,
-    onSuccess: () => {
-      navigate("/dashboard");
+    onSuccess: (_, variables) => {
+      loginMutation.mutate({
+        email: variables.email,
+        password: variables.password,
+      });
     },
-      onError: (error) => {
+    onError: (error) => {
       console.log("error: ", error);
-      }
+    }
   });
 
   const logout = () => {
