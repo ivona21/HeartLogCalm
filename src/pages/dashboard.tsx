@@ -1,9 +1,15 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Heart, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const goToEmotionsWheelPage = () => {
+      navigate("/emotions-wheel");
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5E6D3]/30 via-background to-[#B8D8E8]/20">
@@ -66,15 +72,15 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200">
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200" onClick={goToEmotionsWheelPage}>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
                   <Heart className="w-6 h-6 text-accent" fill="currentColor" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Coming Soon</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Emotion Logger</h3>
                   <p className="text-sm text-muted-foreground">
-                    Emotion tracking, mood calendar, pattern insights, and journaling features are on the way.
+                    Click to start tracking your emotions. Log your feelings, discover patterns, and grow.
                   </p>
                 </div>
               </div>

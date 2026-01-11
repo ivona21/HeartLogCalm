@@ -4,6 +4,7 @@ import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
 import DashboardPage from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
+import EmotionsWheelPage from "@/pages/emotions-wheel.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,14 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+    {
+      path: "/emotions-wheel",
+      element: (
+          <ProtectedRoute>
+              <EmotionsWheelPage />
+          </ProtectedRoute>
+      )
+    },
   {
     path: "*",
     element: <NotFound />,
