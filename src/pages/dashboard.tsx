@@ -7,8 +7,8 @@ export default function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const goToEmotionsWheelPage = () => {
-      navigate("/emotions-wheel");
+  const goToEmotionWheelPage = () => {
+      navigate("/emotion-wheel");
   }
 
   return (
@@ -72,7 +72,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200" onClick={goToEmotionsWheelPage}>
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200" onClick={goToEmotionWheelPage}>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
                   <Heart className="w-6 h-6 text-accent" fill="currentColor" />
