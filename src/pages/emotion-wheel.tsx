@@ -46,6 +46,9 @@ export default function EmotionWheelPage() {
                         key={emotion.id}
                         d={path}
                         fill={emotion.color}
+                        stroke="rgba(0,0,0,0.6)"
+                        strokeWidth={0.6}
+                        vectorEffect="non-scaling-stroke"
                         opacity={isSelected ? 1 : 0.6}
                         onClick={() => toggleEmotion(emotion.id)}
                         style={{

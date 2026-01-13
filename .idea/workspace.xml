@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="22c4a6a4-cc33-4384-b4e8-a514ee4752fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/features/emotion-wheel/constants/core-emotions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/emotion-wheel/types/core-emotion.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/emotions-wheel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/emotion-wheel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/emotion-wheel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/emotion-wheel.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +87,8 @@
       <workItem from="1764076941726" duration="3733000" />
       <workItem from="1767368854387" duration="3999000" />
       <workItem from="1767893877705" duration="3154000" />
-      <workItem from="1767979780446" duration="8940000" />
+      <workItem from="1767979780446" duration="10897000" />
+      <workItem from="1768325548823" duration="1141000" />
     </task>
     <servers />
   </component>
