@@ -1,6 +1,7 @@
 import { arc, Arc } from "d3-shape"
 import {CORE_EMOTIONS} from "@/features/emotion-wheel/constants/core-emotions.ts";
 import {useState} from "react";
+import {SECONDARY_INNER_RADIUS, SECONDARY_OUTER_RADIUS} from "@/features/emotion-wheel/constants/radii.ts";
 
 export default function EmotionWheelPage() {
 
@@ -59,6 +60,40 @@ export default function EmotionWheelPage() {
                         role="button"
                     />
                 )
+            })}
+            {selected.map(coreId => {
+                const emotion = CORE_EMOTIONS.find(e => e.id === coreId)
+
+                if (!emotion || !emotion.secondary) return null
+
+                const sliceAngle =
+                    (emotion.endAngle - emotion.startAngle) / emotion.secondary.length
+
+                return emotion.secondary.map((sec, index) => {
+                        const start = emotion.startAngle + index * sliceAngle
+                        const end = start + sliceAngle
+
+                        const path = arcGen({
+                            innerRadius: SECONDARY_INNER_RADIUS,
+                            outerRadius: SECONDARY_OUTER_RADIUS,
+                            startAngle: toRad(start),
+                            endAngle: toRad(end),
+                        })
+
+                        if (!path) return null
+
+                        return (
+                            <path
+                                key={`${emotion.id}-${sec.id}`}
+                                d={path}
+                                fill={emotion.color}
+                                opacity={0.4}
+                                stroke="rgba(0,0,0,0.4)"
+                                strokeWidth={0.5}
+                                vectorEffect="non-scaling-stroke"
+                            />
+                        )
+                    })
             })}
         </svg>
     )

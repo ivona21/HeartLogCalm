@@ -21,6 +21,22 @@ export const CORE_EMOTIONS: CoreEmotion[] = [
         color: "#6ee7b7",
         startAngle: 90,
         endAngle: 150,
+        secondary: [{
+            id: "stunned",
+            label: "Stunned"
+        }, {
+            id: "confused",
+            label: "Confused"
+        }, {
+            id: "amazed",
+            label: "Amazed"
+        }, {
+            id: "overcome",
+            label: "Overcome"
+        }, {
+            id: "moved",
+            label: "Moved"
+        }]
     },
     {
         id: "joy",
