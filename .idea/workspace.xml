@@ -5,11 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="22c4a6a4-cc33-4384-b4e8-a514ee4752fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/features/emotion-wheel/constants/radii.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/auth/types/login.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/auth/types/user.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/emotion-wheel/helpers/helpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/shared/api/types.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/emotion-wheel/constants/core-emotions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/emotion-wheel/constants/core-emotions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/emotion-wheel/types/core-emotion.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/emotion-wheel/types/core-emotion.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/register.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/register.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/forms/LoginForm/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/forms/LoginForm/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/forms/RegisterForm/RegisterForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/forms/RegisterForm/RegisterForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/emotion-wheel/constants/radii.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/emotion-wheel/constants/radii.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/api-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api-client.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/emotion-wheel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/emotion-wheel.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/index.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +101,9 @@
       <workItem from="1767979780446" duration="10897000" />
       <workItem from="1768325548823" duration="1792000" />
       <workItem from="1768411772778" duration="1687000" />
-      <workItem from="1768495850361" duration="951000" />
+      <workItem from="1768495850361" duration="2375000" />
+      <workItem from="1768597162035" duration="5250000" />
+      <workItem from="1768644275260" duration="34000" />
     </task>
     <servers />
   </component>

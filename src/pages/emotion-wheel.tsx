@@ -1,7 +1,12 @@
 import { arc, Arc } from "d3-shape"
 import {CORE_EMOTIONS} from "@/features/emotion-wheel/constants/core-emotions.ts";
 import {useState} from "react";
-import {SECONDARY_INNER_RADIUS, SECONDARY_OUTER_RADIUS} from "@/features/emotion-wheel/constants/radii.ts";
+import {
+    LABEL_RADIUS,
+    SECONDARY_INNER_RADIUS,
+    SECONDARY_OUTER_RADIUS
+} from "@/features/emotion-wheel/constants/radii.ts";
+import {getMidAngle, getTextRotation} from "@/features/emotion-wheel/helpers/helpers.ts";
 
 export default function EmotionWheelPage() {
 
@@ -59,6 +64,31 @@ export default function EmotionWheelPage() {
                         aria-label={emotion.label}
                         role="button"
                     />
+                )
+            })}
+            {CORE_EMOTIONS.map(emotion => {
+                const midAngle = getMidAngle(
+                    emotion.startAngle,
+                    emotion.endAngle
+                )
+
+                const rotation = getTextRotation(midAngle)
+
+                return (
+                    <text
+                        key={`${emotion.id}-label`}
+                        transform={`
+        rotate(${rotation})
+        translate(${LABEL_RADIUS}, 0)
+      `}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontSize={12}
+                        fill="#111"
+                        pointerEvents="none"
+                    >
+                        {emotion.label}
+                    </text>
                 )
             })}
             {selected.map(coreId => {
