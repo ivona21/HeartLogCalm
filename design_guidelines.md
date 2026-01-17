@@ -28,6 +28,10 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 
 ## Component Library
 
+### Icons
+- **Library**: `lucide-react`
+- **Naming Convention**: Always use the `Icon` suffix when importing and using Lucide icons (e.g., `HeartIcon`, `Loader2Icon`, `AlertCircleIcon`). This ensures clarity and avoids naming collisions with components or other variables.
+
 ### Registration & Login Pages Layout
 - **Full-height centered layout**: min-h-screen with flex centering
 - **Subtle gradient background**: Diagonal soft gradient from warm sand to sky blue (very subtle, 5-10% opacity)

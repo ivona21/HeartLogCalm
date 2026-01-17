@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { HeartIcon } from "lucide-react";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         <div className="bg-[#FDFBF7] rounded-2xl shadow-lg p-8 md:p-10">
           <div className="flex flex-col items-center mb-8">
             <div className="mb-3">
-              <Heart className="w-8 h-8 text-primary" fill="currentColor" />
+              <HeartIcon className="w-8 h-8 text-primary" fill="currentColor" />
             </div>
             <h1 className="text-2xl font-semibold text-primary">HeartLog</h1>
           </div>

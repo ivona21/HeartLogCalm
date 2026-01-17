@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { PasswordInput } from "@/components/ui/password-input.tsx";
 import { useAuth } from "../../hooks/useAuth.ts";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
 import type { ApiError } from "@/shared/api/types.ts";
 import {LoginInput, loginSchema} from "@/features/auth/forms/LoginForm/schema.ts";
@@ -46,7 +46,7 @@ export function LoginForm() {
 
         {loginError && (
           <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
-            <AlertCircle className="h-4 w-4 text-red-500" />
+            <AlertCircleIcon className="h-4 w-4 text-red-500" />
             <AlertDescription className="text-red-500">
               {(loginError as ApiError).message || "Login failed. Please check your credentials."}
             </AlertDescription>
@@ -115,7 +115,7 @@ export function LoginForm() {
         >
           {isLoggingIn ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
               Signing in...
             </>
           ) : (

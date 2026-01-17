@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { Input } from "./input"
 import { Button } from "./button"
 import { cn } from "@/lib/utils"
@@ -28,9 +28,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           disabled={props.disabled}
         >
           {showPassword ? (
-            <EyeOff className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <EyeOffIcon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <Eye className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <EyeIcon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           )}
           <span className="sr-only">
             {showPassword ? "Hide password" : "Show password"}

@@ -1,6 +1,6 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Navigate, useLocation } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5E6D3]/30 via-background to-[#B8D8E8]/20">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        <Loader2Icon className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Heart, LogOut } from "lucide-react";
+import { HeartIcon, LogOutIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {
@@ -16,7 +16,7 @@ export default function DashboardPage() {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Heart className="w-6 h-6 text-primary" fill="currentColor" />
+            <HeartIcon className="w-6 h-6 text-primary" fill="currentColor" />
             <h1 className="text-xl font-semibold text-primary">HeartLog</h1>
           </div>
           <Button
@@ -25,7 +25,7 @@ export default function DashboardPage() {
             className="flex items-center gap-2"
             data-testid="button-logout"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOutIcon className="w-4 h-4" />
             Log out
           </Button>
         </div>
@@ -61,7 +61,7 @@ export default function DashboardPage() {
             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Heart className="w-6 h-6 text-primary" fill="currentColor" />
+                  <HeartIcon className="w-6 h-6 text-primary" fill="currentColor" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Your Journey Begins</h3>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200" onClick={goToEmotionWheelPage}>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <Heart className="w-6 h-6 text-accent" fill="currentColor" />
+                  <HeartIcon className="w-6 h-6 text-accent" fill="currentColor" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Emotion Logger</h3>
