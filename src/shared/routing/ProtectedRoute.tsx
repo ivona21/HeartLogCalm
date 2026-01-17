@@ -1,4 +1,4 @@
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth.ts";
 import { Navigate, useLocation } from "react-router-dom";
 import { Loader2Icon } from "lucide-react";
 

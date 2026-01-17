@@ -1,11 +1,11 @@
 import { apiClient } from "@/lib/api-client.ts";
-import { useAuthStore } from "@/stores/authStore.ts";
+import { useAuthStore } from "@/features/auth/stores/authStore.ts";
 import {LoginInput} from "@/features/auth/forms/LoginForm/schema.ts";
 import {ApiResponse} from "@/shared/api/types.ts";
 import {LoginResponseDto} from "@/features/auth/types/login.dto.ts";
 import {User} from "@/features/auth/types/user.ts";
 
-export async function login(data: LoginInput): Promise<ApiResponse<LoginResponseDto>> {
+export async function loginApi(data: LoginInput): Promise<ApiResponse<LoginResponseDto>> {
   const response = await apiClient.post<ApiResponse<LoginResponseDto>>("/api/auth/login", data);
   
   if (response.success && response.data) {
