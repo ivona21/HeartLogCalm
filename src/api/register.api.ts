@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client.ts";
-import type { ApiResponse } from "@/shared/api/types.ts";
+import type { ApiResponse } from "@/api/types.ts";
 import {RegisterInput} from "@/features/auth/forms/RegisterForm/schema.ts";
 
 export async function registerApi(data: RegisterInput): Promise<ApiResponse> {

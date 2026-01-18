@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/api-client.ts";
 import { useAuthStore } from "@/features/auth/stores/authStore.ts";
 import {LoginInput} from "@/features/auth/forms/LoginForm/schema.ts";
-import {ApiResponse} from "@/shared/api/types.ts";
+import {ApiResponse} from "@/api/types.ts";
 import {LoginResponseDto} from "@/features/auth/types/login.dto.ts";
 import {User} from "@/features/auth/types/user.ts";
 

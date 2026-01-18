@@ -14,7 +14,7 @@ import { PasswordInput } from "@/components/ui/password-input.tsx";
 import { useAuth } from "../../hooks/useAuth.ts";
 import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
-import type { ApiError } from "@/shared/api/types.ts";
+import type { ApiError } from "@/api/types.ts";
 import {LoginInput, loginSchema} from "@/features/auth/forms/LoginForm/schema.ts";
 
 export function LoginForm() {
