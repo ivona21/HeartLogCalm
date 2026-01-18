@@ -1,21 +1,20 @@
-import * as React from "react"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
-import { Input } from "./input"
-import { Button } from "./button"
-import { cn } from "@/shared/utils/cn.ts"
+import * as React from 'react';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { Input } from './input';
+import { Button } from './button';
+import { cn } from '@/shared/utils/cn.ts';
 
-export interface PasswordInputProps
-  extends React.ComponentProps<typeof Input> {}
+export interface PasswordInputProps extends React.ComponentProps<typeof Input> {}
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, ...props }, ref) => {
-    const [showPassword, setShowPassword] = React.useState(false)
+    const [showPassword, setShowPassword] = React.useState(false);
 
     return (
       <div className="relative">
         <Input
-          type={showPassword ? "text" : "password"}
-          className={cn("pr-10", className)}
+          type={showPassword ? 'text' : 'password'}
+          className={cn('pr-10', className)}
           ref={ref}
           {...props}
         />
@@ -32,14 +31,12 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           ) : (
             <EyeIcon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           )}
-          <span className="sr-only">
-            {showPassword ? "Hide password" : "Show password"}
-          </span>
+          <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
         </Button>
       </div>
-    )
-  }
-)
-PasswordInput.displayName = "PasswordInput"
+    );
+  },
+);
+PasswordInput.displayName = 'PasswordInput';
 
-export { PasswordInput }
+export { PasswordInput };

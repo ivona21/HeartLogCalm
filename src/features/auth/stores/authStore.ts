@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {User} from "@/features/auth/types/user.ts";
+import { User } from '@/features/auth/types/user.ts';
 
 interface AuthState {
   user: User | null;
@@ -31,6 +31,6 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         token: state.token,
       }),
-    }
-  )
+    },
+  ),
 );

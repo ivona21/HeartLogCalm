@@ -1,6 +1,6 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button.tsx";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button.tsx';
 import {
   Form,
   FormControl,
@@ -8,14 +8,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { PasswordInput } from "@/components/ui/password-input.tsx";
-import { useAuth } from "../../hooks/useAuth.ts";
-import { AlertCircleIcon, Loader2Icon } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
-import type { ApiError } from "@/api/types.ts";
-import {RegisterInput, registerSchema} from "@/features/auth/forms/RegisterForm/schema.ts";
+} from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { PasswordInput } from '@/components/ui/password-input.tsx';
+import { useAuth } from '../../hooks/useAuth.ts';
+import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
+import type { ApiError } from '@/api/types.ts';
+import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
@@ -23,9 +23,9 @@ export function RegisterForm() {
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: "",
-      username: "",
-      password: "",
+      email: '',
+      username: '',
+      password: '',
     },
   });
 
@@ -37,19 +37,15 @@ export function RegisterForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">
-            Create Your Oasis
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Start your emotional wellness journey
-          </p>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Oasis</h2>
+          <p className="text-sm text-muted-foreground">Start your emotional wellness journey</p>
         </div>
 
         {registerError && (
           <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
             <AlertCircleIcon className="h-4 w-4 text-red-500" />
             <AlertDescription className="text-red-500">
-              {(registerError as ApiError).message || "Registration failed. Please try again."}
+              {(registerError as ApiError).message || 'Registration failed. Please try again.'}
             </AlertDescription>
           </Alert>
         )}
@@ -59,9 +55,7 @@ export function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">
-                Email
-              </FormLabel>
+              <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -82,9 +76,7 @@ export function RegisterForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">
-                Username
-              </FormLabel>
+              <FormLabel className="text-sm font-medium text-foreground">Username</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -104,9 +96,7 @@ export function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">
-                Password
-              </FormLabel>
+              <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}
@@ -133,7 +123,7 @@ export function RegisterForm() {
               Creating your account...
             </>
           ) : (
-            "Sign Up"
+            'Sign Up'
           )}
         </Button>
       </form>

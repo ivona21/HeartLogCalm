@@ -1,10 +1,10 @@
 export interface ApiResponse<T = void> {
-    success: boolean;
-    message: string;
-    data?: T;
+  success: boolean;
+  message: string;
+  data?: T;
 }
 
 export interface ApiError {
-    message: string;
-    errors?: Record<string, string[]>;
+  message: string;
+  errors?: Record<string, string[]>;
 }

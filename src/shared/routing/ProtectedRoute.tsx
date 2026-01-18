@@ -1,6 +1,6 @@
-import { useAuth } from "@/features/auth/hooks/useAuth.ts";
-import { Navigate, useLocation } from "react-router-dom";
-import { Loader2Icon } from "lucide-react";
+import { useAuth } from '@/features/auth/hooks/useAuth.ts';
+import { Navigate, useLocation } from 'react-router-dom';
+import { Loader2Icon } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
-import { useAuthStore } from "@/features/auth/stores/authStore";
+import { useAuthStore } from '@/features/auth/stores/authStore';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export class ApiClient {
   private baseURL: string;
@@ -13,13 +13,10 @@ export class ApiClient {
     return useAuthStore.getState().token;
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const token = this.getAuthToken();
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     if (options.headers) {
@@ -27,7 +24,7 @@ export class ApiClient {
     }
 
     if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -35,49 +32,49 @@ export class ApiClient {
       headers,
     });
 
-      if (!response.ok) {
-          let errorBody: any = null;
+    if (!response.ok) {
+      let errorBody: any = null;
 
-          try {
-              errorBody = await response.json();
-          } catch (_) {
-              // Not JSON (unexpected backend format)
-              const fallbackText = await response.text().catch(() => "");
-              throw {
-                  message: fallbackText || "Unexpected error",
-                  errors: null
-              };
-          }
-
-          throw {
-              message: errorBody.message || errorBody.Message || "Unexpected error",
-              errors: errorBody.errors || errorBody.Errors || null
-          };
+      try {
+        errorBody = await response.json();
+      } catch (_) {
+        // Not JSON (unexpected backend format)
+        const fallbackText = await response.text().catch(() => '');
+        throw {
+          message: fallbackText || 'Unexpected error',
+          errors: null,
+        };
       }
+
+      throw {
+        message: errorBody.message || errorBody.Message || 'Unexpected error',
+        errors: errorBody.errors || errorBody.Errors || null,
+      };
+    }
 
     return response.json();
   }
 
   async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: "GET" });
+    return this.request<T>(endpoint, { method: 'GET' });
   }
 
   async post<T>(endpoint: string, data?: unknown): Promise<T> {
     return this.request<T>(endpoint, {
-      method: "POST",
+      method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
   async put<T>(endpoint: string, data?: unknown): Promise<T> {
     return this.request<T>(endpoint, {
-      method: "PUT",
+      method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
   async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: "DELETE" });
+    return this.request<T>(endpoint, { method: 'DELETE' });
   }
 }
 
