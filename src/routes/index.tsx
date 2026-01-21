@@ -5,6 +5,7 @@ import RegisterPage from '@/pages/register';
 import DashboardPage from '@/pages/dashboard';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
+import AppLayout from '@/components/layout/AppLayout.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +24,9 @@ export const router = createBrowserRouter([
     path: '/dashboard',
     element: (
       <ProtectedRoute>
-        <DashboardPage />
+        <AppLayout>
+          <DashboardPage />
+        </AppLayout>
       </ProtectedRoute>
     ),
   },

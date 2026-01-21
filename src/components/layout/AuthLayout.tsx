@@ -1,4 +1,5 @@
 import { HeartIcon } from 'lucide-react';
+import { Header } from '@/components/layout/Header.tsx';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
