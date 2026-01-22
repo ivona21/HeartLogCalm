@@ -8,6 +8,7 @@ export default function FeatureCards() {
     <div className="grid grid-cols-2 gap-4">
       {DASHBOARD_FEATURES.map(({ title, description, routeName }) => (
         <FeatureCard
+          key={title}
           handleClick={() => navigate(routeName)}
           title={title}
           description={description}

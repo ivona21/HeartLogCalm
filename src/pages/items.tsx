@@ -1,3 +1,5 @@
+import ItemList from '@/features/items/components/ItemList.tsx';
+
 export default function ItemsPage() {
-  return <div>List of example items will be here TBC...</div>;
+  return <ItemList />;
 }
