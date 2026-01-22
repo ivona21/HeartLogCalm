@@ -6,6 +6,8 @@ import DashboardPage from '@/pages/dashboard';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
+import LearningSvgPage from '@/pages/learning-svg.tsx';
+import ItemsPage from '@/pages/items.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +38,26 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <AppLayout>
           <EmotionWheelPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/learning-svg',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <LearningSvgPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/items',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <ItemsPage />
         </AppLayout>
       </ProtectedRoute>
     ),

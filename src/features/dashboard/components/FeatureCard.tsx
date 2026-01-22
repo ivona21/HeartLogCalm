@@ -7,7 +7,7 @@ type FeatureCardProps = {
 };
 export default function FeatureCard({ handleClick, title, description }: FeatureCardProps) {
   return (
-    <div className="mt-8 md:mt-12 grid gap-4 md:grid-cols-2">
+    <div className="mt-8 md:mt-12 w-full cursor-pointer">
       <div
         className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6 hover-elevate transition-all duration-200"
         onClick={handleClick}
