@@ -14,8 +14,8 @@ import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
-import type { ApiError } from '@/api/types.ts';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
+import { ApiError } from '@/shared/types/api-types.ts';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();

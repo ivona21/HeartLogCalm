@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createItem } from '@/api/items.api.ts';
+import { createItem } from '@/features/items/api/items.api.ts';
 
 export function useCreateItem() {
   const queryClient = useQueryClient();

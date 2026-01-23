@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { loginApi as loginApi } from '@/api/login.api.ts';
-import { registerApi as registerApi } from '@/api/register.api.ts';
+import { loginApi as loginApi } from '@/features/auth/api/login.api.ts';
+import { registerApi as registerApi } from '@/features/auth/api/register.api.ts';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useNavigate } from 'react-router-dom';
 
