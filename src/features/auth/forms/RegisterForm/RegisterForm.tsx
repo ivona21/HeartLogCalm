@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button.tsx';
+import { Button } from '@/components/ui/Button.tsx';
 import {
   Form,
   FormControl,
@@ -8,12 +8,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form.tsx';
-import { Input } from '@/components/ui/input.tsx';
-import { PasswordInput } from '@/components/ui/password-input.tsx';
+} from '@/components/ui/Form.tsx';
+import { Input } from '@/components/ui/Input.tsx';
+import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
+import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
 

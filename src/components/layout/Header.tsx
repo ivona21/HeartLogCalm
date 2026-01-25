@@ -1,5 +1,5 @@
 import { HeartIcon, LogOutIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button.tsx';
+import { Button } from '@/components/ui/Button.tsx';
 import { useAuth } from '@/features/auth';
 import { useNavigate } from 'react-router-dom';
 
