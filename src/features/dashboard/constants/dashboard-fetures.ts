@@ -17,4 +17,9 @@ export const DASHBOARD_FEATURES: DashboardFeature[] = [
     description: 'Just for practice page',
     routeName: '/items',
   },
+  {
+    title: 'Form Playground',
+    description: 'My place to learn more about how react-hook-form works',
+    routeName: '/form-playground',
+  },
 ];

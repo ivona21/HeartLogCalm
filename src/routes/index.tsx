@@ -8,6 +8,7 @@ import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 import LearningSvgPage from '@/pages/learning-svg.tsx';
 import ItemsPage from '@/pages/items.tsx';
+import FormPlaygroundPage from '@/pages/form-playground.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,16 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <AppLayout>
           <ItemsPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/form-playground',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <FormPlaygroundPage />
         </AppLayout>
       </ProtectedRoute>
     ),
