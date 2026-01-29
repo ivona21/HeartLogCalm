@@ -23,13 +23,18 @@ export default function ItemForm() {
   return (
     <Form {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <FormField name="name">
-          <FormLabel>Item name</FormLabel>
-          <FormControl>
-            <Input type="text" {...methods.register('name')} placeholder="Item name" />
-          </FormControl>
-          <FormMessage />
-        </FormField>
+        <FormField
+          name="name"
+          render={(field) => (
+            <>
+              <FormLabel>Item name</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Item name" />
+              </FormControl>
+              <FormMessage />
+            </>
+          )}
+        />
         <Button type="submit" disabled={isPending}>
           Save Item
         </Button>

@@ -1,20 +1,36 @@
-import { FormProvider, useFormContext } from 'react-hook-form';
+import {
+  FormProvider,
+  useFormContext,
+  FieldPath,
+  FieldValues,
+  Controller,
+  ControllerRenderProps,
+} from 'react-hook-form';
 import React from 'react';
 import { Label } from '@/components/ui/Label.tsx';
 
-type FormFieldContextValue = {
-  name: string;
+type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues> = {
+  name: FieldPath<TFieldValues>;
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue | null>(null);
 
-type FormFieldProps = {
-  name: string;
-  children: React.ReactNode;
+type FormFieldProps<TFieldValues extends FieldValues> = {
+  name: FieldPath<TFieldValues>;
+  render: (field: ControllerRenderProps<TFieldValues>) => React.ReactNode;
 };
 
-export function FormField({ name, children }: FormFieldProps) {
-  return <FormFieldContext.Provider value={{ name }}>{children}</FormFieldContext.Provider>;
+export function FormField<TFieldValues extends FieldValues>({
+  name,
+  render,
+}: FormFieldProps<TFieldValues> & {
+  render: (field: any) => React.ReactNode;
+}) {
+  return (
+    <FormFieldContext.Provider value={{ name }}>
+      <Controller name={name} render={({ field }) => <>{render(field)}</>} />
+    </FormFieldContext.Provider>
+  );
 }
 
 function useFormField() {
