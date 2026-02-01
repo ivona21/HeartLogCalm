@@ -17,26 +17,26 @@ export default function ProfileForm() {
       email: '',
       age: 0,
     },
+    mode: 'onChange',
   });
+
+  const onSubmit = (values: ProfileFormValues) => {
+    console.log(values);
+  };
 
   return (
     <Form {...formMethods}>
-      <form
-        onSubmit={() => {
-          alert('submitted!');
-        }}
-        className="grid w-1/2 gap-4 mt-4"
-      >
+      <form onSubmit={formMethods.handleSubmit(onSubmit)} className="grid w-1/2 gap-4 mt-4">
         <FormField
           name="name"
           render={(field) => (
-            <div className="mt-1 grid gap-2">
+            <>
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
               <FormMessage />
-            </div>
+            </>
           )}
         />
         <FormField
@@ -75,7 +75,7 @@ export default function ProfileForm() {
             </div>
           )}
         ></FormField>
-        <Button type="submit" className="mt-4">
+        <Button type="submit" className="mt-4" disabled={!formMethods.formState.isValid}>
           Save
         </Button>
       </form>

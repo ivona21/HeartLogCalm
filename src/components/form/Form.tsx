@@ -28,7 +28,10 @@ export function FormField<TFieldValues extends FieldValues>({
 }) {
   return (
     <FormFieldContext.Provider value={{ name }}>
-      <Controller name={name} render={({ field }) => <>{render(field)}</>} />
+      <Controller
+        name={name}
+        render={({ field }) => <div className="mt-1 grid gap-2">{render(field)}</div>}
+      />
     </FormFieldContext.Provider>
   );
 }
@@ -59,7 +62,7 @@ export function FormMessage() {
 
   if (!error) return null;
 
-  return <p style={{ color: 'red' }}>{String(error.message)}</p>;
+  return <p className="text-red-500 font-medium text-xs">{String(error.message)}</p>;
 }
 
 export const Form = FormProvider;
