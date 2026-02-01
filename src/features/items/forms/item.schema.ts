@@ -5,3 +5,7 @@ export const itemSchema = z.object({
 });
 
 export type ItemFormValues = z.infer<typeof itemSchema>;
+
+export const defaultItemValues: ItemFormValues = {
+  name: '',
+};

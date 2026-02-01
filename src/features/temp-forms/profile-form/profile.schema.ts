@@ -8,3 +8,10 @@ export const profileSchema = z.object({
 });
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+
+export const defaultProfileFormValues: ProfileFormValues = {
+  name: '',
+  lastName: '',
+  email: '',
+  age: 0,
+};

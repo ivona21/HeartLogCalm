@@ -1,13 +1,7 @@
-import {
-  FormProvider,
-  useFormContext,
-  FieldPath,
-  FieldValues,
-  Controller,
-  ControllerRenderProps,
-} from 'react-hook-form';
+import { FormProvider, useFormContext, FieldPath, FieldValues, Controller } from 'react-hook-form';
 import React from 'react';
 import { Label } from '@/components/ui/Label.tsx';
+import { Input } from '@/components/ui/Input.tsx';
 
 type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues> = {
   name: FieldPath<TFieldValues>;
@@ -17,20 +11,31 @@ const FormFieldContext = React.createContext<FormFieldContextValue | null>(null)
 
 type FormFieldProps<TFieldValues extends FieldValues> = {
   name: FieldPath<TFieldValues>;
-  render: (field: ControllerRenderProps<TFieldValues>) => React.ReactNode;
+  label: string;
+  type: string;
 };
 
 export function FormField<TFieldValues extends FieldValues>({
   name,
-  render,
-}: FormFieldProps<TFieldValues> & {
-  render: (field: any) => React.ReactNode;
-}) {
+  label,
+  type,
+}: FormFieldProps<TFieldValues>) {
   return (
     <FormFieldContext.Provider value={{ name }}>
       <Controller
         name={name}
-        render={({ field }) => <div className="mt-1 grid gap-2">{render(field)}</div>}
+        render={({ field }) => (
+          <div className="mt-1 grid gap-2">
+            {' '}
+            <div className="mt-1 grid gap-2">
+              <FormLabel>{label}</FormLabel>
+              <FormControl>
+                <Input {...field} type={type} />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </div>
+        )}
       />
     </FormFieldContext.Provider>
   );
