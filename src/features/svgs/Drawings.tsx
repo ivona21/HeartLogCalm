@@ -4,6 +4,7 @@ import Shapes from '@/features/svgs/Shapes.tsx';
 import HamburgerIcon from '@/features/svgs/HamburgerIcon.tsx';
 import HeartIcon from '@/features/svgs/HeartIcon.tsx';
 import SmileyFace from '@/features/svgs/SmileyFace.tsx';
+import DotGrid from '@/features/svgs/DotGrid.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -25,6 +26,7 @@ export default function Drawings() {
       {/*<HamburgerIcon />*/}
       <HeartIcon />
       <SmileyFace />
+      <DotGrid />
     </div>
   );
 }
