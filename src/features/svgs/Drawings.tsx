@@ -1,7 +1,12 @@
-import ChristmasTree from '@/features/svgs/ChristmasTree.tsx';
-import SmallSquare from '@/features/svgs/SmallSquare.tsx';
+import ChristmasOrnament from '@/features/svgs/ChristmasOrnament.tsx';
+import Gingerbread from '@/features/svgs/Gingerbread.tsx';
+import Shapes from '@/features/svgs/Shapes.tsx';
+import HamburgerIcon from '@/features/svgs/HamburgerIcon.tsx';
+import HeartIcon from '@/features/svgs/HeartIcon.tsx';
+import SmileyFace from '@/features/svgs/SmileyFace.tsx';
 
 export default function Drawings() {
+  // todo - make tabs here :)
   return (
     <div>
       {/*<h1>My space for drawings</h1>*/}
@@ -13,7 +18,13 @@ export default function Drawings() {
       {/*  <line x1="0" y1="200" x2="200" y2="0" />*/}
       {/*</svg>*/}
       {/*<ChristmasTree />*/}
-      <SmallSquare />
+      {/*<SmallSquare />*/}
+      {/*<ChristmasOrnament />*/}
+      {/*<Gingerbread />*/}
+      {/*<Shapes />*/}
+      {/*<HamburgerIcon />*/}
+      <HeartIcon />
+      <SmileyFace />
     </div>
   );
 }
