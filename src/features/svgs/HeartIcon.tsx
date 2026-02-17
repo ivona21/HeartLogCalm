@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useColorStore } from '@/features/svgs/stores/useColorStore.ts';
 
 export default function HeartIcon() {
-  const [heartColor, setHeartColor] = useState('red');
+  const heartColor = useColorStore((state) => state.color);
+  const setHeartColor = useColorStore((state) => state.setColor);
 
   const generateRandomHex = () => {
     const hex = Math.floor(Math.random() * 0xffffff).toString(16);
