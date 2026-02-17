@@ -7,30 +7,28 @@ import SmileyFace from '@/features/svgs/SmileyFace.tsx';
 import DotGrid from '@/features/svgs/DotGrid.tsx';
 import ProfileIcon from '@/features/svgs/ProfileIcon.tsx';
 import ConcentricCircles from '@/features/svgs/ConcetricCircles.tsx';
+import ChristmasTree from '@/features/svgs/ChristmasTree.tsx';
+import SmallSquare from '@/features/svgs/SmallSquare.tsx';
+import GolfBall from '@/features/svgs/GolfBall.tsx';
+import Bear from '@/features/svgs/Bear.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
   return (
-    <div>
-      {/*<h1>My space for drawings</h1>*/}
-      {/*<svg width={400} height={400} viewBox="-0 0 100 100">*/}
-      {/*  <circle cx="50" cy="50" r="25" fill="red" />*/}
-      {/*</svg>*/}
-      {/*<svg width={200} height={200} viewBox="0, 0, 200, 200">*/}
-      {/*  <line x1="0" y1="0" x2="200" y2="200" />*/}
-      {/*  <line x1="0" y1="200" x2="200" y2="0" />*/}
-      {/*</svg>*/}
-      {/*<ChristmasTree />*/}
-      {/*<SmallSquare />*/}
-      {/*<ChristmasOrnament />*/}
-      {/*<Gingerbread />*/}
-      {/*<Shapes />*/}
-      {/*<HamburgerIcon />*/}
-      {/*<HeartIcon />*/}
-      {/*<SmileyFace />*/}
-      {/*<DotGrid />*/}
-      {/*<ProfileIcon />*/}
+    <div className="grid grid-cols-5 gap-4">
+      <ChristmasTree />
+      <SmallSquare />
+      <ChristmasOrnament />
+      <Gingerbread />
+      <Shapes />
+      <HamburgerIcon />
+      <HeartIcon />
+      <SmileyFace />
+      <DotGrid />
+      <ProfileIcon />
       <ConcentricCircles />
+      <GolfBall />
+      <Bear />
     </div>
   );
 }
