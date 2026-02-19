@@ -11,6 +11,9 @@ import ChristmasTree from '@/features/svgs/ChristmasTree.tsx';
 import SmallSquare from '@/features/svgs/SmallSquare.tsx';
 import GolfBall from '@/features/svgs/GolfBall.tsx';
 import Bear from '@/features/svgs/Bear.tsx';
+import Arc01 from '@/features/svgs/Arc01.tsx';
+import Moon from '@/features/svgs/Moon.tsx';
+import CandyCane from '@/features/svgs/CandyCane.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -29,6 +32,9 @@ export default function Drawings() {
       <ConcentricCircles />
       <GolfBall />
       <Bear />
+      <Arc01 />
+      <Moon />
+      <CandyCane />
     </div>
   );
 }
