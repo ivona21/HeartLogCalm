@@ -1,8 +1,13 @@
+import VisualGrid from '@/features/svgs/VisualGrid.tsx';
+
 export default function Gingerbread() {
   const gingerbreadColor = '#cd803d';
   const moveTop = 20;
   return (
     <svg height="200" width="200" viewBox="0 0 200 200">
+      <g transform="scale(2)">
+        <VisualGrid />
+      </g>
       <circle cx="100" cy={70 - moveTop} r="30" fill={gingerbreadColor} />
       <line
         stroke={gingerbreadColor}

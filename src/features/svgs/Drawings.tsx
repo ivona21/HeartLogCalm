@@ -7,7 +7,6 @@ import SmileyFace from '@/features/svgs/SmileyFace.tsx';
 import DotGrid from '@/features/svgs/DotGrid.tsx';
 import ProfileIcon from '@/features/svgs/ProfileIcon.tsx';
 import ConcentricCircles from '@/features/svgs/ConcetricCircles.tsx';
-import ChristmasTree from '@/features/svgs/ChristmasTree.tsx';
 import SmallSquare from '@/features/svgs/SmallSquare.tsx';
 import GolfBall from '@/features/svgs/GolfBall.tsx';
 import Bear from '@/features/svgs/Bear.tsx';
@@ -20,7 +19,6 @@ export default function Drawings() {
   // todo - make tabs here :)
   return (
     <div className="grid grid-cols-5 gap-4">
-      <ChristmasTree />
       <SmallSquare />
       <ChristmasOrnament />
       <Gingerbread />
