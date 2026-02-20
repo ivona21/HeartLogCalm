@@ -14,6 +14,7 @@ import Bear from '@/features/svgs/Bear.tsx';
 import Arc01 from '@/features/svgs/Arc01.tsx';
 import Moon from '@/features/svgs/Moon.tsx';
 import CandyCane from '@/features/svgs/CandyCane.tsx';
+import Arc02 from '@/features/svgs/Arc02/Arc02.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -35,6 +36,7 @@ export default function Drawings() {
       <Arc01 />
       <Moon />
       <CandyCane />
+      <Arc02 />
     </div>
   );
 }
