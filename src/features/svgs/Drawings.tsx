@@ -17,6 +17,7 @@ import Arc02 from '@/features/svgs/Arc02/Arc02.tsx';
 import Lightbulb from '@/features/svgs/Lightbulb.tsx';
 import Star from '@/features/svgs/Star.tsx';
 import Sun from '@/features/svgs/Sun.tsx';
+import Snowflake from '@/features/svgs/Snowflake.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -41,6 +42,7 @@ export default function Drawings() {
       <Lightbulb />
       <Star />
       <Sun />
+      <Snowflake />
     </div>
   );
 }
