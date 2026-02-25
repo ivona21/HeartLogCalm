@@ -16,6 +16,7 @@ import CandyCane from '@/features/svgs/CandyCane.tsx';
 import Arc02 from '@/features/svgs/Arc02/Arc02.tsx';
 import Lightbulb from '@/features/svgs/Lightbulb.tsx';
 import Star from '@/features/svgs/Star.tsx';
+import Sun from '@/features/svgs/Sun.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -39,6 +40,7 @@ export default function Drawings() {
       <Arc02 />
       <Lightbulb />
       <Star />
+      <Sun />
     </div>
   );
 }
