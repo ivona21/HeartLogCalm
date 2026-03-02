@@ -18,6 +18,8 @@ import Lightbulb from '@/features/svgs/Lightbulb.tsx';
 import Star from '@/features/svgs/Star.tsx';
 import Sun from '@/features/svgs/Sun.tsx';
 import Snowflake from '@/features/svgs/Snowflake.tsx';
+import PineConesImage from '@/features/svgs/PineConesImage.tsx';
+import { OneDot } from '@/features/svgs/CartesianToPolar.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -43,6 +45,8 @@ export default function Drawings() {
       <Star />
       <Sun />
       <Snowflake />
+      <PineConesImage />
+      <OneDot />
     </div>
   );
 }
