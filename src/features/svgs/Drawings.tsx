@@ -21,6 +21,7 @@ import Snowflake from '@/features/svgs/Snowflake.tsx';
 import PineConesImage from '@/features/svgs/PineConesImage.tsx';
 import { OneDot } from '@/features/svgs/CartesianToPolar.tsx';
 import Lamp from '@/features/svgs/Lamp';
+import ManualWheel from '@/features/svgs/ManualWheel.tsx';
 
 export default function Drawings() {
   // todo - make tabs here :)
@@ -49,6 +50,7 @@ export default function Drawings() {
       <PineConesImage />
       <OneDot />
       <Lamp />
+      <ManualWheel />
     </div>
   );
 }
