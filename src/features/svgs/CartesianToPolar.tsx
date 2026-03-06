@@ -26,16 +26,27 @@ export function OneDot() {
 
   const centerX = 100;
   const centerY = 100;
-  const radius = 60;
+  const radiusSmall = 60;
+  const radiusBig = 80;
   const angleInDegrees0 = 0;
   const angleInDegrees90 = 90;
   const angleInDegrees180 = 180;
   const angleInDegrees270 = 270;
 
-  const { x: x0, y: y0 } = getCartesianFromPolar(centerX, centerY, radius, angleInDegrees0);
-  const { x: x90, y: y90 } = getCartesianFromPolar(centerX, centerY, radius, angleInDegrees90);
-  const { x: x180, y: y180 } = getCartesianFromPolar(centerX, centerY, radius, angleInDegrees180);
-  const { x: x270, y: y270 } = getCartesianFromPolar(centerX, centerY, radius, angleInDegrees270);
+  const { x: x0, y: y0 } = getCartesianFromPolar(centerX, centerY, radiusSmall, angleInDegrees0);
+  const { x: x90, y: y90 } = getCartesianFromPolar(centerX, centerY, radiusSmall, angleInDegrees90);
+  const { x: x180, y: y180 } = getCartesianFromPolar(
+    centerX,
+    centerY,
+    radiusSmall,
+    angleInDegrees180,
+  );
+  const { x: x270, y: y270 } = getCartesianFromPolar(
+    centerX,
+    centerY,
+    radiusSmall,
+    angleInDegrees270,
+  );
 
   return (
     <svg height="200" width="200" viewBox="0 0 200 200" className="bg-amber-50">
@@ -46,10 +57,17 @@ export function OneDot() {
       <circle cx={x90} cy={y90} r="5" fill="black" />
       <circle cx={x180} cy={y180} r="5" fill="black" />
       <circle cx={x270} cy={y270} r="5" fill="black" />
-      <circle cx="100" cy="100" r="60" fill="none" stroke="black" />
+      <circle cx="100" cy="100" r={radiusSmall} fill="none" stroke="black" />
+      <circle cx="100" cy="100" r={radiusBig} fill="none" stroke="black" />
       {Array.from({ length: 360 / 45 }).map((_, i) => {
         const angle = i * 45;
-        const { x, y } = getCartesianFromPolar(centerX, centerY, radius, angle);
+        const { x, y } = getCartesianFromPolar(centerX, centerY, radiusSmall, angle);
+
+        return <DotAndLine key={angle} x={x} y={y} />;
+      })}
+      {Array.from({ length: 360 / 45 }).map((_, i) => {
+        const angle = i * 45;
+        const { x, y } = getCartesianFromPolar(centerX, centerY, radiusBig, angle);
 
         return <DotAndLine key={angle} x={x} y={y} />;
       })}
