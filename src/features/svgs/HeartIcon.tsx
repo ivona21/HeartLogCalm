@@ -1,13 +1,9 @@
 import { useColorStore } from '@/features/svgs/stores/useColorStore.ts';
+import generateRandomHex from '@/features/svgs/helpers/generateRandomHex.ts';
 
 export default function HeartIcon() {
   const heartColor = useColorStore((state) => state.color);
   const setHeartColor = useColorStore((state) => state.setColor);
-
-  const generateRandomHex = () => {
-    const hex = Math.floor(Math.random() * 0xffffff).toString(16);
-    return `#${hex.padStart(6, '0')}`;
-  };
 
   const changeColor = () => {
     let newColor = heartColor;

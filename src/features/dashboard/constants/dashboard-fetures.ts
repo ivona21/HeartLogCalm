@@ -27,4 +27,9 @@ export const DASHBOARD_FEATURES: DashboardFeature[] = [
     description: 'Trying out everything d3 related',
     routeName: '/learning-d3',
   },
+  {
+    title: 'Manual wheel',
+    description: 'Goofing with svg making wheel manually and playing',
+    routeName: '/manual-wheel',
+  },
 ];

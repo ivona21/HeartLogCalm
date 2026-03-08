@@ -10,6 +10,7 @@ import LearningSvgPage from '@/pages/learning-svg.tsx';
 import ItemsPage from '@/pages/items.tsx';
 import FormPlaygroundPage from '@/pages/form-playground.tsx';
 import LearningD3Page from '@/pages/learning-d3.tsx';
+import ManualWheelPage from '@/pages/manual-wheel.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,16 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <AppLayout>
           <LearningD3Page />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/manual-wheel',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <ManualWheelPage />
         </AppLayout>
       </ProtectedRoute>
     ),
