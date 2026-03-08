@@ -9,6 +9,7 @@ import AppLayout from '@/components/layout/AppLayout.tsx';
 import LearningSvgPage from '@/pages/learning-svg.tsx';
 import ItemsPage from '@/pages/items.tsx';
 import FormPlaygroundPage from '@/pages/form-playground.tsx';
+import LearningD3Page from '@/pages/learning-d3.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,16 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <AppLayout>
           <LearningSvgPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/learning-d3',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <LearningD3Page />
         </AppLayout>
       </ProtectedRoute>
     ),
