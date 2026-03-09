@@ -1,15 +1,22 @@
 import VisualGrid from '@/features/svgs/VisualGrid.tsx';
 import cartesianFromPolar from '@/features/svgs/helpers/cartesianFromPolar.ts';
 import generateRandomHex, { lightenHex } from '@/features/svgs/helpers/generateRandomHex.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function ManualWheel() {
+type ManualWheelProps = {
+  angles: number[];
+};
+
+export default function ManualWheel({ angles = [60, 120, 180, 240, 300, 360] }: ManualWheelProps) {
   const center = 100;
   const radius = 60;
-  const angles = [60, 120, 180, 240, 300, 360];
   const [colors, setColors] = useState<string[]>(() =>
-    Array.from({ length: 6 }, generateRandomHex),
+    Array.from({ length: angles.length }, generateRandomHex),
   );
+
+  useEffect(() => {
+    setColors(Array.from({ length: angles.length }, generateRandomHex));
+  }, [angles.length]);
 
   const changeColorToLighter = (color: string) => {
     return lightenHex(color);
