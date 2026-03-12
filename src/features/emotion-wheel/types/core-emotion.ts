@@ -1,13 +1,20 @@
+export type TertiaryEmotion = {
+  key: string;
+};
+
 export type SecondaryEmotion = {
-  id: string;
-  label: string;
+  key: string;
+  tertiary: TertiaryEmotion[];
 };
 
 export type CoreEmotion = {
-  id: string;
-  label: string;
+  key: string;
   color: string;
-  startAngle: number; // degrees
-  endAngle: number; // degrees
-  secondary?: SecondaryEmotion[];
+  startAngle: number;
+  endAngle: number;
+  secondary: SecondaryEmotion[];
 };
+
+export type Locale = string;
+export type TranslationMap = Record<string, string>;
+export type Translations = Record<Locale, TranslationMap>;
