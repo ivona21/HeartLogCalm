@@ -22,4 +22,14 @@ export const DASHBOARD_FEATURES: DashboardFeature[] = [
     description: 'My place to learn more about how react-hook-form works',
     routeName: '/form-playground',
   },
+  {
+    title: 'Learning d3',
+    description: 'Trying out everything d3 related',
+    routeName: '/learning-d3',
+  },
+  {
+    title: 'Manual wheel',
+    description: 'Goofing with svg making wheel manually and playing',
+    routeName: '/manual-wheel',
+  },
 ];
