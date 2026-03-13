@@ -8,3 +8,4 @@ vite.config.ts.*
 .env.local
 .local/
 attached_assets/
+.replit

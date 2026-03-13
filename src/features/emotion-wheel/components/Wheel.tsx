@@ -84,16 +84,6 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         id: `tp-${keyToId(emotion.key)}`,
         d: textArcPath(CORE_TEXT_RADIUS, emotion.startAngle, emotion.endAngle),
       });
-      const secondaryAngleDelta =
-        (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
-      emotion.secondary.forEach((secondaryEmotion, secondaryIndex) => {
-        const segmentStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
-        const segmentEndAngle = segmentStartAngle + secondaryAngleDelta;
-        paths.push({
-          id: `tp-${keyToId(secondaryEmotion.key)}`,
-          d: textArcPath(SECONDARY_TEXT_RADIUS, segmentStartAngle, segmentEndAngle),
-        });
-      });
     });
     return paths;
   }, []);
@@ -166,6 +156,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         return emotion.secondary.map((secondaryEmotion, secondaryIndex) => {
           const segmentStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
           const segmentEndAngle = segmentStartAngle + secondaryAngleDelta;
+          const midpointAngle = getMidAngle(segmentStartAngle, segmentEndAngle);
           const emotionKey = secondaryEmotion.key;
 
           return (
@@ -194,15 +185,12 @@ export const Wheel = ({ onSelect }: WheelProps) => {
                 fontWeight="500"
                 fill="#1a1a1a"
                 pointerEvents="none"
+                transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
+                textAnchor="middle"
+                dominantBaseline="central"
                 style={{ userSelect: 'none' }}
               >
-                <textPath
-                  href={`#tp-${keyToId(emotionKey)}`}
-                  startOffset="50%"
-                  textAnchor="middle"
-                >
-                  {translate(emotionKey)}
-                </textPath>
+                {translate(emotionKey)}
               </text>
             </g>
           );
