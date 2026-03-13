@@ -25,7 +25,7 @@ import {
 } from '@/features/emotion-wheel/helpers/helpers.ts';
 
 interface WheelProps {
-  onSelect?: (emotionKey: string | null) => void;
+  onSelect?: (emotionKeys: string[]) => void;
 }
 
 const arcGen = arc();
@@ -54,25 +54,32 @@ function textArcPath(radius: number, startDeg: number, endDeg: number): string {
 }
 
 export const Wheel = ({ onSelect }: WheelProps) => {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState<string | null>(null);
 
   const { translate } = useTranslation('emotions');
 
   const handleClick = (key: string) => {
-    const next = key === selected ? null : key;
-    setSelected(next);
-    onSelect?.(next);
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else if (next.size < 10) {
+        next.add(key);
+      }
+      onSelect?.(Array.from(next));
+      return next;
+    });
   };
 
   const segmentOpacity = (key: string) => {
-    if (!selected) return 1;
-    if (key === selected) return 1;
+    if (selected.size === 0) return 1;
+    if (selected.has(key)) return 1;
     return 0.55;
   };
 
   const segmentFilter = (key: string) => {
-    if (key === selected) return 'brightness(1.08)';
+    if (selected.has(key)) return 'brightness(1.08)';
     if (key === hovered) return 'brightness(1.06)';
     return 'none';
   };
@@ -171,7 +178,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
             >
               <path
                 d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                fill={emotionKey === selected ? emotion.color : secondaryFillColor}
+                fill={selected.has(emotionKey) ? emotion.color : secondaryFillColor}
                 stroke="white"
                 strokeWidth="1"
                 style={{
@@ -225,7 +232,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
               >
                 <path
                   d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                  fill={emotionKey === selected ? emotion.color : tertiaryFillColor}
+                  fill={selected.has(emotionKey) ? emotion.color : tertiaryFillColor}
                   stroke="white"
                   strokeWidth="0.7"
                   style={{
