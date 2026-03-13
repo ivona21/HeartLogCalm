@@ -7,3 +7,4 @@ vite.config.ts.*
 .idea/
 .env.local
 .local/
+attached_assets/
