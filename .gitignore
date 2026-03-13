@@ -6,4 +6,5 @@ vite.config.ts.*
 *.tar.gz
 .idea/
 .env.local
-.local/*
+.local/
+attached_assets/

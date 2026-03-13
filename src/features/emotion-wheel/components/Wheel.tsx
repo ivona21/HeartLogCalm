@@ -1,122 +1,286 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { arc } from 'd3-shape';
 import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
-import { getMidAngle, getTextRotation } from '@/features/emotion-wheel/helpers/helpers.ts';
+import { useTranslation } from '@/lib/i18n';
 import {
-  LABEL_RADIUS,
-  SECONDARY_INNER_RADIUS,
-  SECONDARY_OUTER_RADIUS,
+  CORE_INNER,
+  CORE_OUTER,
+  CORE_TEXT_RADIUS,
+  SECONDARY_INNER,
+  SECONDARY_OUTER,
+  SECONDARY_TEXT_RADIUS,
+  TERTIARY_INNER,
+  TERTIARY_OUTER,
+  TERTIARY_TEXT_RADIUS,
+  CENTER_RADIUS,
+  VIEWBOX_SIZE,
 } from '@/features/emotion-wheel/constants/radii.ts';
+import {
+  toRad,
+  getMidAngle,
+  buildTextArcPath,
+  tintColor,
+  radialTextTransform,
+  keyToId,
+} from '@/features/emotion-wheel/helpers/helpers.ts';
 
-export const Wheel = () => {
-  const toRad = (deg: number): number => (deg * Math.PI) / 180;
+interface WheelProps {
+  onSelect?: (emotionKey: string | null) => void;
+}
 
-  const [selected, setSelected] = useState<string[]>([]);
+const arcGen = arc();
 
-  const toggleEmotion = (id: string) => {
-    setSelected((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((e) => e !== id);
-      }
+function fillPath(
+  innerRadius: number,
+  outerRadius: number,
+  startDeg: number,
+  endDeg: number,
+): string {
+  return (
+    arcGen({
+      innerRadius: innerRadius,
+      outerRadius: outerRadius,
+      startAngle: toRad(startDeg),
+      endAngle: toRad(endDeg),
+    }) ?? ''
+  );
+}
 
-      if (prev.length >= 3) {
-        return prev;
-      }
+function textArcPath(radius: number, startDeg: number, endDeg: number): string {
+  const midpointAngle = getMidAngle(startDeg, endDeg);
+  const reversed = midpointAngle > 180 && midpointAngle < 360;
+  return buildTextArcPath(startDeg, endDeg, radius, reversed);
+}
 
-      return [...prev, id];
-    });
+export const Wheel = ({ onSelect }: WheelProps) => {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  const { translate } = useTranslation('emotions');
+
+  const handleClick = (key: string) => {
+    const next = key === selected ? null : key;
+    setSelected(next);
+    onSelect?.(next);
   };
 
-  const arcGen = arc().innerRadius(0).outerRadius(120);
-  return (
-    <svg viewBox="-200 -200 400 400" width="400" height="400">
-      {CORE_EMOTIONS.map((emotion) => {
-        const isSelected = selected.includes(emotion.id);
+  const segmentOpacity = (key: string) => {
+    if (!selected) return 1;
+    if (key === selected) return 1;
+    return 0.55;
+  };
 
-        const path = arcGen({
-          innerRadius: 0,
-          outerRadius: 120,
-          startAngle: toRad(emotion.startAngle),
-          endAngle: toRad(emotion.endAngle),
+  const segmentFilter = (key: string) => {
+    if (key === selected) return 'brightness(1.08)';
+    if (key === hovered) return 'brightness(1.06)';
+    return 'none';
+  };
+
+  const allTextPaths = useMemo(() => {
+    const paths: { id: string; d: string }[] = [];
+    CORE_EMOTIONS.forEach((emotion) => {
+      paths.push({
+        id: `tp-${keyToId(emotion.key)}`,
+        d: textArcPath(CORE_TEXT_RADIUS, emotion.startAngle, emotion.endAngle),
+      });
+      const secondaryAngleDelta =
+        (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
+      emotion.secondary.forEach((secondaryEmotion, secondaryIndex) => {
+        const segmentStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
+        const segmentEndAngle = segmentStartAngle + secondaryAngleDelta;
+        paths.push({
+          id: `tp-${keyToId(secondaryEmotion.key)}`,
+          d: textArcPath(SECONDARY_TEXT_RADIUS, segmentStartAngle, segmentEndAngle),
         });
+      });
+    });
+    return paths;
+  }, []);
 
-        // d3 arc() can return null in edge cases → TS safety
-        if (!path) return null;
+  const viewboxSize = VIEWBOX_SIZE;
 
-        return (
-          <path
-            key={emotion.id}
-            d={path}
-            fill={emotion.color}
-            stroke="rgba(0,0,0,0.6)"
-            strokeWidth={0.6}
-            vectorEffect="non-scaling-stroke"
-            opacity={isSelected ? 1 : 0.6}
-            onClick={() => toggleEmotion(emotion.id)}
-            style={{
-              cursor: 'pointer',
-              transition: 'opacity 150ms ease',
-            }}
-            aria-label={emotion.label}
-            role="button"
-          />
-        );
-      })}
+  return (
+    <svg
+      viewBox={`-${viewboxSize} -${viewboxSize} ${viewboxSize * 2} ${viewboxSize * 2}`}
+      width="100%"
+      height="100%"
+      style={{ display: 'block', maxWidth: 820, maxHeight: 820, margin: '0 auto' }}
+      aria-label="Emotion wheel"
+    >
+      <defs>
+        {allTextPaths.map((textPathDef) => (
+          <path key={textPathDef.id} id={textPathDef.id} d={textPathDef.d} fill="none" />
+        ))}
+      </defs>
+
+      {/* ── CORE ring ── */}
       {CORE_EMOTIONS.map((emotion) => {
-        const midAngle = getMidAngle(emotion.startAngle, emotion.endAngle);
-
-        const rotation = getTextRotation(midAngle);
-
+        const emotionKey = emotion.key;
         return (
-          <text
-            key={`${emotion.id}-label`}
-            transform={`
-        rotate(${rotation})
-        translate(${LABEL_RADIUS}, 0)
-      `}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize={12}
-            fill="#111"
-            pointerEvents="none"
+          <g
+            key={emotionKey}
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleClick(emotionKey)}
+            onMouseEnter={() => setHovered(emotionKey)}
+            onMouseLeave={() => setHovered(null)}
+            aria-label={translate(emotionKey)}
+            role="button"
           >
-            {emotion.label}
-          </text>
+            <path
+              d={fillPath(CORE_INNER, CORE_OUTER, emotion.startAngle, emotion.endAngle)}
+              fill={emotion.color}
+              stroke="white"
+              strokeWidth="1.5"
+              style={{
+                opacity: segmentOpacity(emotionKey),
+                filter: segmentFilter(emotionKey),
+                transition: 'opacity 180ms ease, filter 180ms ease',
+              }}
+            />
+            <text
+              fontSize="13"
+              fontWeight="700"
+              fill="#1a1a1a"
+              pointerEvents="none"
+              style={{ userSelect: 'none' }}
+            >
+              <textPath
+                href={`#tp-${keyToId(emotionKey)}`}
+                startOffset="50%"
+                textAnchor="middle"
+              >
+                {translate(emotionKey)}
+              </textPath>
+            </text>
+          </g>
         );
       })}
-      {selected.map((coreId) => {
-        const emotion = CORE_EMOTIONS.find((e) => e.id === coreId);
 
-        if (!emotion || !emotion.secondary) return null;
+      {/* ── SECONDARY ring ── */}
+      {CORE_EMOTIONS.map((emotion) => {
+        const secondaryAngleDelta =
+          (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
+        const secondaryFillColor = tintColor(emotion.color, 0.38);
 
-        const sliceAngle = (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
-
-        return emotion.secondary.map((sec, index) => {
-          const start = emotion.startAngle + index * sliceAngle;
-          const end = start + sliceAngle;
-
-          const path = arcGen({
-            innerRadius: SECONDARY_INNER_RADIUS,
-            outerRadius: SECONDARY_OUTER_RADIUS,
-            startAngle: toRad(start),
-            endAngle: toRad(end),
-          });
-
-          if (!path) return null;
+        return emotion.secondary.map((secondaryEmotion, secondaryIndex) => {
+          const segmentStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
+          const segmentEndAngle = segmentStartAngle + secondaryAngleDelta;
+          const emotionKey = secondaryEmotion.key;
 
           return (
-            <path
-              key={`${emotion.id}-${sec.id}`}
-              d={path}
-              fill={emotion.color}
-              opacity={0.4}
-              stroke="rgba(0,0,0,0.4)"
-              strokeWidth={0.5}
-              vectorEffect="non-scaling-stroke"
-            />
+            <g
+              key={emotionKey}
+              style={{ cursor: 'pointer' }}
+              onClick={() => handleClick(emotionKey)}
+              onMouseEnter={() => setHovered(emotionKey)}
+              onMouseLeave={() => setHovered(null)}
+              aria-label={translate(emotionKey)}
+              role="button"
+            >
+              <path
+                d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, segmentStartAngle, segmentEndAngle)}
+                fill={secondaryFillColor}
+                stroke="white"
+                strokeWidth="1"
+                style={{
+                  opacity: segmentOpacity(emotionKey),
+                  filter: segmentFilter(emotionKey),
+                  transition: 'opacity 180ms ease, filter 180ms ease',
+                }}
+              />
+              <text
+                fontSize="9"
+                fontWeight="500"
+                fill="#1a1a1a"
+                pointerEvents="none"
+                style={{ userSelect: 'none' }}
+              >
+                <textPath
+                  href={`#tp-${keyToId(emotionKey)}`}
+                  startOffset="50%"
+                  textAnchor="middle"
+                >
+                  {translate(emotionKey)}
+                </textPath>
+              </text>
+            </g>
           );
         });
       })}
+
+      {/* ── TERTIARY ring ── */}
+      {CORE_EMOTIONS.map((emotion) => {
+        const secondaryAngleDelta =
+          (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
+        const tertiaryFillColor = tintColor(emotion.color, 0.63);
+
+        return emotion.secondary.map((secondaryEmotion, secondaryIndex) => {
+          const secondaryStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
+          const tertiaryAngleDelta = secondaryAngleDelta / secondaryEmotion.tertiary.length;
+
+          return secondaryEmotion.tertiary.map((tertiaryEmotion, tertiaryIndex) => {
+            const segmentStartAngle = secondaryStartAngle + tertiaryIndex * tertiaryAngleDelta;
+            const segmentEndAngle = segmentStartAngle + tertiaryAngleDelta;
+            const midpointAngle = getMidAngle(segmentStartAngle, segmentEndAngle);
+            const emotionKey = tertiaryEmotion.key;
+
+            return (
+              <g
+                key={emotionKey}
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleClick(emotionKey)}
+                onMouseEnter={() => setHovered(emotionKey)}
+                onMouseLeave={() => setHovered(null)}
+                aria-label={translate(emotionKey)}
+                role="button"
+              >
+                <path
+                  d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, segmentStartAngle, segmentEndAngle)}
+                  fill={tertiaryFillColor}
+                  stroke="white"
+                  strokeWidth="0.7"
+                  style={{
+                    opacity: segmentOpacity(emotionKey),
+                    filter: segmentFilter(emotionKey),
+                    transition: 'opacity 180ms ease, filter 180ms ease',
+                  }}
+                />
+                <text
+                  fontSize="8"
+                  fontWeight="400"
+                  fill="#1a1a1a"
+                  pointerEvents="none"
+                  transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  style={{ userSelect: 'none' }}
+                >
+                  {translate(emotionKey)}
+                </text>
+              </g>
+            );
+          });
+        });
+      })}
+
+      {/* ── Centre ── */}
+      <circle
+        r={CENTER_RADIUS}
+        fill="white"
+        stroke="#e5e7eb"
+        strokeWidth="1.5"
+        style={{ pointerEvents: 'none' }}
+      />
+      <text
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize="11"
+        fontWeight="500"
+        fill="#6b7280"
+        style={{ pointerEvents: 'none', userSelect: 'none' }}
+      >
+        HeartLog
+      </text>
     </svg>
   );
 };
