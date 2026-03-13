@@ -14,7 +14,3 @@ export type CoreEmotion = {
   endAngle: number;
   secondary: SecondaryEmotion[];
 };
-
-export type Locale = string;
-export type TranslationMap = Record<string, string>;
-export type Translations = Record<Locale, TranslationMap>;
