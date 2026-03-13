@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Wheel } from '@/features/emotion-wheel/components/Wheel.tsx';
-import { TRANSLATIONS } from '@/features/emotion-wheel/constants/translations.ts';
+import { useTranslation } from '@/lib/i18n';
 
 export default function EmotionWheelPage() {
   const [selected, setSelected] = useState<string | null>(null);
+  const { translate } = useTranslation('emotions');
 
-  const label = selected ? (TRANSLATIONS['en'][selected] ?? selected) : null;
+  const label = selected ? translate(selected) : null;
 
   return (
     <div className="flex flex-col items-center gap-6">
@@ -22,7 +23,7 @@ export default function EmotionWheelPage() {
         className="min-h-[340px]"
         style={{ width: '100%', maxWidth: 820 }}
       >
-        <Wheel locale="en" onSelect={setSelected} />
+        <Wheel onSelect={setSelected} />
       </div>
 
       <div className="h-10 flex items-center justify-center">

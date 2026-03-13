@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { arc } from 'd3-shape';
 import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
-import { TRANSLATIONS } from '@/features/emotion-wheel/constants/translations.ts';
+import { useTranslation } from '@/lib/i18n';
 import {
   CORE_INNER,
   CORE_OUTER,
@@ -25,7 +25,6 @@ import {
 } from '@/features/emotion-wheel/helpers/helpers.ts';
 
 interface WheelProps {
-  locale?: string;
   onSelect?: (emotionKey: string | null) => void;
 }
 
@@ -53,12 +52,11 @@ function textArcPath(radius: number, startDeg: number, endDeg: number): string {
   return buildTextArcPath(startDeg, endDeg, radius, reversed);
 }
 
-export const Wheel = ({ locale = 'en', onSelect }: WheelProps) => {
+export const Wheel = ({ onSelect }: WheelProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const labels = TRANSLATIONS[locale] ?? TRANSLATIONS['en'];
-  const translate = (key: string) => labels[key] ?? key;
+  const { translate } = useTranslation('emotions');
 
   const handleClick = (key: string) => {
     const next = key === selected ? null : key;
