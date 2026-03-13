@@ -48,7 +48,8 @@ function fillPath(
 
 function textArcPath(radius: number, startDeg: number, endDeg: number): string {
   const midpointAngle = getMidAngle(startDeg, endDeg);
-  const reversed = midpointAngle > 180 && midpointAngle < 360;
+  const norm = ((midpointAngle % 360) + 360) % 360;
+  const reversed = norm >= 90 && norm <= 270;
   return buildTextArcPath(startDeg, endDeg, radius, reversed);
 }
 
