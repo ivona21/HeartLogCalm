@@ -171,7 +171,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
             >
               <path
                 d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                fill={secondaryFillColor}
+                fill={emotionKey === selected ? emotion.color : secondaryFillColor}
                 stroke="white"
                 strokeWidth="1"
                 style={{
@@ -225,7 +225,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
               >
                 <path
                   d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                  fill={tertiaryFillColor}
+                  fill={emotionKey === selected ? emotion.color : tertiaryFillColor}
                   stroke="white"
                   strokeWidth="0.7"
                   style={{
