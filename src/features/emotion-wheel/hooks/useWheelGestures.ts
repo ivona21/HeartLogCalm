@@ -15,6 +15,9 @@ export function useWheelGestures() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
 
+  const zoomRef = useRef(1);
+  const panRef = useRef({ x: 0, y: 0 });
+
   const gestureRef = useRef<{
     type: 'none' | 'pan' | 'pinch';
     lastDistance: number;
@@ -22,6 +25,16 @@ export function useWheelGestures() {
   }>({ type: 'none', lastDistance: 0, lastTouch: { x: 0, y: 0 } });
 
   const lastTapRef = useRef<number>(0);
+
+  const updateZoom = (z: number) => {
+    zoomRef.current = z;
+    setZoom(z);
+  };
+
+  const updatePan = (p: { x: number; y: number }) => {
+    panRef.current = p;
+    setPan(p);
+  };
 
   const viewBox = {
     x: pan.x - S / zoom,
@@ -43,8 +56,8 @@ export function useWheelGestures() {
       const now = Date.now();
       const t = e.touches[0];
       if (now - lastTapRef.current < DOUBLE_TAP_MS) {
-        setZoom(1);
-        setPan({ x: 0, y: 0 });
+        updateZoom(1);
+        updatePan({ x: 0, y: 0 });
         gestureRef.current = { type: 'none', lastDistance: 0, lastTouch: { x: 0, y: 0 } };
         return;
       }
@@ -60,6 +73,12 @@ export function useWheelGestures() {
   const handleTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
     const svg = e.currentTarget;
     const rect = svg.getBoundingClientRect();
+    const currentZoom = zoomRef.current;
+    const currentPan = panRef.current;
+    const currentVbX = currentPan.x - S / currentZoom;
+    const currentVbY = currentPan.y - S / currentZoom;
+    const currentVbW = (2 * S) / currentZoom;
+    const currentVbH = (2 * S) / currentZoom;
 
     if (e.touches.length === 2 && gestureRef.current.type === 'pinch') {
       const t0 = e.touches[0];
@@ -68,35 +87,35 @@ export function useWheelGestures() {
       const dy = t1.clientY - t0.clientY;
       const newDistance = Math.sqrt(dx * dx + dy * dy);
       const ratio = newDistance / gestureRef.current.lastDistance;
-      const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * ratio));
+      const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, currentZoom * ratio));
 
       const centerScreenX = (t0.clientX + t1.clientX) / 2;
       const centerScreenY = (t0.clientY + t1.clientY) / 2;
-      const pivotX = viewBox.x + ((centerScreenX - rect.left) / rect.width) * viewBox.width;
-      const pivotY = viewBox.y + ((centerScreenY - rect.top) / rect.height) * viewBox.height;
+      const pivotX = currentVbX + ((centerScreenX - rect.left) / rect.width) * currentVbW;
+      const pivotY = currentVbY + ((centerScreenY - rect.top) / rect.height) * currentVbH;
 
-      const rawPanX = pivotX + (pan.x - pivotX) * (zoom / newZoom);
-      const rawPanY = pivotY + (pan.y - pivotY) * (zoom / newZoom);
+      const rawPanX = pivotX + (currentPan.x - pivotX) * (currentZoom / newZoom);
+      const rawPanY = pivotY + (currentPan.y - pivotY) * (currentZoom / newZoom);
       const clamped = clampPan(rawPanX, rawPanY, newZoom);
 
-      setZoom(newZoom);
-      setPan(clamped);
+      updateZoom(newZoom);
+      updatePan(clamped);
       gestureRef.current.lastDistance = newDistance;
-    } else if (e.touches.length === 1 && gestureRef.current.type === 'pan' && zoom > 1) {
+    } else if (e.touches.length === 1 && gestureRef.current.type === 'pan' && currentZoom > 1) {
       const t = e.touches[0];
       const dxScreen = t.clientX - gestureRef.current.lastTouch.x;
       const dyScreen = t.clientY - gestureRef.current.lastTouch.y;
-      const svgDx = -(dxScreen / rect.width) * viewBox.width;
-      const svgDy = -(dyScreen / rect.height) * viewBox.height;
-      const clamped = clampPan(pan.x + svgDx, pan.y + svgDy, zoom);
+      const svgDx = -(dxScreen / rect.width) * currentVbW;
+      const svgDy = -(dyScreen / rect.height) * currentVbH;
+      const clamped = clampPan(currentPan.x + svgDx, currentPan.y + svgDy, currentZoom);
 
-      setPan(clamped);
+      updatePan(clamped);
       gestureRef.current.lastTouch = { x: t.clientX, y: t.clientY };
     }
   };
 
   const handleTouchEnd = () => {
-    if (zoom <= 1) setPan({ x: 0, y: 0 });
+    if (zoomRef.current <= 1) updatePan({ x: 0, y: 0 });
     gestureRef.current = { type: 'none', lastDistance: 0, lastTouch: { x: 0, y: 0 } };
   };
 
