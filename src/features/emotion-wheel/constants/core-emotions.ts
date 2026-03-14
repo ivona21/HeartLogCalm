@@ -3,288 +3,258 @@ import type { CoreEmotion } from '@/features/emotion-wheel/types/core-emotion.ts
 export const CORE_EMOTIONS: CoreEmotion[] = [
   {
     key: 'anger',
-    color: '#c084fc',
+    color: '#DC6B82',
     startAngle: -30,
     endAngle: 30,
     secondary: [
       {
         key: 'anger.rage',
         tertiary: [
-          { key: 'anger.rage.livid' },
-          { key: 'anger.rage.furious' },
-          { key: 'anger.rage.enraged' },
+          { key: 'anger.rage.hate' },
+          { key: 'anger.rage.hostile' },
         ],
       },
       {
-        key: 'anger.hostile',
+        key: 'anger.exasperated',
         tertiary: [
-          { key: 'anger.hostile.violent' },
-          { key: 'anger.hostile.hateful' },
-          { key: 'anger.hostile.cruel' },
+          { key: 'anger.exasperated.agitated' },
+          { key: 'anger.exasperated.frustrated' },
         ],
       },
       {
-        key: 'anger.annoyed',
+        key: 'anger.irritable',
         tertiary: [
-          { key: 'anger.annoyed.irritated' },
-          { key: 'anger.annoyed.agitated' },
-          { key: 'anger.annoyed.bothered' },
+          { key: 'anger.irritable.annoyed' },
+          { key: 'anger.irritable.aggravated' },
         ],
       },
       {
-        key: 'anger.jealous',
+        key: 'anger.envy',
         tertiary: [
-          { key: 'anger.jealous.envious' },
-          { key: 'anger.jealous.resentful' },
-          { key: 'anger.jealous.bitter' },
+          { key: 'anger.envy.resentful' },
+          { key: 'anger.envy.jealous' },
         ],
       },
       {
-        key: 'anger.disgusted',
+        key: 'anger.disgust',
         tertiary: [
-          { key: 'anger.disgusted.appalled' },
-          { key: 'anger.disgusted.revolted' },
-          { key: 'anger.disgusted.contemptuous' },
+          { key: 'anger.disgust.contempt' },
+          { key: 'anger.disgust.revolted' },
         ],
       },
     ],
   },
   {
     key: 'sadness',
-    color: '#60a5fa',
+    color: '#9E85C8',
     startAngle: 30,
     endAngle: 90,
     secondary: [
       {
-        key: 'sadness.guilty',
+        key: 'sadness.suffering',
         tertiary: [
-          { key: 'sadness.guilty.ashamed' },
-          { key: 'sadness.guilty.regretful' },
-          { key: 'sadness.guilty.remorseful' },
+          { key: 'sadness.suffering.agony' },
+          { key: 'sadness.suffering.hurt' },
         ],
       },
       {
-        key: 'sadness.lonely',
+        key: 'sadness.disappointed',
         tertiary: [
-          { key: 'sadness.lonely.isolated' },
-          { key: 'sadness.lonely.abandoned' },
-          { key: 'sadness.lonely.alienated' },
+          { key: 'sadness.disappointed.depressed' },
+          { key: 'sadness.disappointed.sorrow' },
         ],
       },
       {
-        key: 'sadness.hopeless',
+        key: 'sadness.shameful',
         tertiary: [
-          { key: 'sadness.hopeless.powerless' },
-          { key: 'sadness.hopeless.helpless' },
-          { key: 'sadness.hopeless.defeated' },
+          { key: 'sadness.shameful.regretful' },
+          { key: 'sadness.shameful.guilty' },
         ],
       },
       {
-        key: 'sadness.grieving',
+        key: 'sadness.neglected',
         tertiary: [
-          { key: 'sadness.grieving.sorrowful' },
-          { key: 'sadness.grieving.heartbroken' },
-          { key: 'sadness.grieving.bereaved' },
+          { key: 'sadness.neglected.isolated' },
+          { key: 'sadness.neglected.lonely' },
         ],
       },
       {
-        key: 'sadness.numb',
+        key: 'sadness.despair',
         tertiary: [
-          { key: 'sadness.numb.apathetic' },
-          { key: 'sadness.numb.indifferent' },
-          { key: 'sadness.numb.detached' },
+          { key: 'sadness.despair.grief' },
+          { key: 'sadness.despair.powerless' },
         ],
       },
     ],
   },
   {
     key: 'surprise',
-    color: '#34d399',
+    color: '#68B8B2',
     startAngle: 90,
     endAngle: 150,
     secondary: [
       {
-        key: 'surprise.startled',
+        key: 'surprise.stunned',
         tertiary: [
-          { key: 'surprise.startled.shocked' },
-          { key: 'surprise.startled.alarmed' },
-          { key: 'surprise.startled.dismayed' },
+          { key: 'surprise.stunned.shocked' },
+          { key: 'surprise.stunned.dismayed' },
         ],
       },
       {
         key: 'surprise.confused',
         tertiary: [
-          { key: 'surprise.confused.puzzled' },
+          { key: 'surprise.confused.disillusioned' },
           { key: 'surprise.confused.perplexed' },
-          { key: 'surprise.confused.baffled' },
         ],
       },
       {
         key: 'surprise.amazed',
         tertiary: [
-          { key: 'surprise.amazed.awestruck' },
           { key: 'surprise.amazed.astonished' },
-          { key: 'surprise.amazed.speechless' },
+          { key: 'surprise.amazed.awestruck' },
         ],
       },
       {
         key: 'surprise.overcome',
         tertiary: [
-          { key: 'surprise.overcome.touched' },
-          { key: 'surprise.overcome.stirred' },
-          { key: 'surprise.overcome.moved' },
+          { key: 'surprise.overcome.speechless' },
+          { key: 'surprise.overcome.astounded' },
         ],
       },
       {
-        key: 'surprise.eager',
+        key: 'surprise.moved',
         tertiary: [
-          { key: 'surprise.eager.energized' },
-          { key: 'surprise.eager.stimulated' },
-          { key: 'surprise.eager.thrilled' },
+          { key: 'surprise.moved.stimulated' },
+          { key: 'surprise.moved.touched' },
         ],
       },
     ],
   },
   {
     key: 'joy',
-    color: '#4ade80',
+    color: '#8DC878',
     startAngle: 150,
     endAngle: 210,
     secondary: [
       {
         key: 'joy.content',
         tertiary: [
-          { key: 'joy.content.peaceful' },
-          { key: 'joy.content.serene' },
-          { key: 'joy.content.calm' },
+          { key: 'joy.content.pleased' },
+          { key: 'joy.content.satisfied' },
+        ],
+      },
+      {
+        key: 'joy.happy',
+        tertiary: [
+          { key: 'joy.happy.amused' },
+          { key: 'joy.happy.delighted' },
         ],
       },
       {
         key: 'joy.cheerful',
         tertiary: [
-          { key: 'joy.cheerful.joyful' },
-          { key: 'joy.cheerful.delighted' },
-          { key: 'joy.cheerful.playful' },
+          { key: 'joy.cheerful.jovial' },
+          { key: 'joy.cheerful.blissful' },
         ],
       },
       {
         key: 'joy.proud',
         tertiary: [
-          { key: 'joy.proud.confident' },
           { key: 'joy.proud.triumphant' },
-          { key: 'joy.proud.fulfilled' },
+          { key: 'joy.proud.illustrious' },
         ],
       },
       {
-        key: 'joy.hopeful',
+        key: 'joy.optimistic',
         tertiary: [
-          { key: 'joy.hopeful.optimistic' },
-          { key: 'joy.hopeful.inspired' },
-          { key: 'joy.hopeful.motivated' },
-        ],
-      },
-      {
-        key: 'joy.ecstatic',
-        tertiary: [
-          { key: 'joy.ecstatic.elated' },
-          { key: 'joy.ecstatic.blissful' },
-          { key: 'joy.ecstatic.euphoric' },
+          { key: 'joy.optimistic.hopeful' },
+          { key: 'joy.optimistic.eager' },
         ],
       },
     ],
   },
   {
     key: 'love',
-    color: '#facc15',
+    color: '#E8C85A',
     startAngle: 210,
     endAngle: 270,
     secondary: [
       {
-        key: 'love.tender',
+        key: 'love.affectionate',
         tertiary: [
-          { key: 'love.tender.gentle' },
-          { key: 'love.tender.caring' },
-          { key: 'love.tender.warm' },
+          { key: 'love.affectionate.fondness' },
+          { key: 'love.affectionate.romantic' },
         ],
       },
       {
-        key: 'love.grateful',
+        key: 'love.enthralled',
         tertiary: [
-          { key: 'love.grateful.thankful' },
-          { key: 'love.grateful.blessed' },
-          { key: 'love.grateful.valued' },
+          { key: 'love.enthralled.rapture' },
+          { key: 'love.enthralled.enchanted' },
         ],
       },
       {
-        key: 'love.romantic',
+        key: 'love.longing',
         tertiary: [
-          { key: 'love.romantic.desired' },
-          { key: 'love.romantic.smitten' },
-          { key: 'love.romantic.adored' },
+          { key: 'love.longing.attracted' },
+          { key: 'love.longing.sentimental' },
         ],
       },
       {
-        key: 'love.trusting',
+        key: 'love.desire',
         tertiary: [
-          { key: 'love.trusting.secure' },
-          { key: 'love.trusting.safe' },
-          { key: 'love.trusting.connected' },
+          { key: 'love.desire.infatuation' },
+          { key: 'love.desire.passion' },
         ],
       },
       {
-        key: 'love.devoted',
+        key: 'love.tenderness',
         tertiary: [
-          { key: 'love.devoted.loyal' },
-          { key: 'love.devoted.faithful' },
-          { key: 'love.devoted.committed' },
+          { key: 'love.tenderness.caring' },
+          { key: 'love.tenderness.compassionate' },
         ],
       },
     ],
   },
   {
     key: 'fear',
-    color: '#f87171',
+    color: '#E8966E',
     startAngle: 270,
     endAngle: 330,
     secondary: [
       {
-        key: 'fear.scared',
+        key: 'fear.peaceful',
         tertiary: [
-          { key: 'fear.scared.terrified' },
-          { key: 'fear.scared.frightened' },
-          { key: 'fear.scared.petrified' },
+          { key: 'fear.peaceful.satisfied' },
+          { key: 'fear.peaceful.relieved' },
         ],
       },
       {
-        key: 'fear.anxious',
+        key: 'fear.scared',
         tertiary: [
-          { key: 'fear.anxious.worried' },
-          { key: 'fear.anxious.nervous' },
-          { key: 'fear.anxious.uneasy' },
+          { key: 'fear.scared.frightened' },
+          { key: 'fear.scared.helpless' },
+        ],
+      },
+      {
+        key: 'fear.terror',
+        tertiary: [
+          { key: 'fear.terror.panic' },
+          { key: 'fear.terror.hysterical' },
         ],
       },
       {
         key: 'fear.insecure',
         tertiary: [
-          { key: 'fear.insecure.vulnerable' },
+          { key: 'fear.insecure.inferior' },
           { key: 'fear.insecure.inadequate' },
-          { key: 'fear.insecure.worthless' },
         ],
       },
       {
-        key: 'fear.overwhelmed',
+        key: 'fear.nervous',
         tertiary: [
-          { key: 'fear.overwhelmed.panicked' },
-          { key: 'fear.overwhelmed.frantic' },
-          { key: 'fear.overwhelmed.desperate' },
-        ],
-      },
-      {
-        key: 'fear.rejected',
-        tertiary: [
-          { key: 'fear.rejected.humiliated' },
-          { key: 'fear.rejected.unwanted' },
-          { key: 'fear.rejected.excluded' },
+          { key: 'fear.nervous.worried' },
+          { key: 'fear.nervous.anxious' },
         ],
       },
     ],
