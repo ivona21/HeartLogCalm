@@ -13,3 +13,7 @@ export const TERTIARY_OUTER = 415;
 export const TERTIARY_TEXT_RADIUS = 335;
 
 export const VIEWBOX_SIZE = 440;
+
+export const MIN_ZOOM = 1;
+export const MAX_ZOOM = 5;
+export const DOUBLE_TAP_MS = 300;
