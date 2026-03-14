@@ -3,6 +3,7 @@ import { loginApi as loginApi } from '@/features/auth/api/login.api.ts';
 import { registerApi as registerApi } from '@/features/auth/api/register.api.ts';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useNavigate } from 'react-router-dom';
+import { DEFAULT_HOME_ROUTE } from '@/config/defaults.ts';
 
 export function useAuth() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: loginApi,
     onSuccess: () => {
-      navigate('/dashboard');
+      navigate(DEFAULT_HOME_ROUTE);
     },
   });
 
