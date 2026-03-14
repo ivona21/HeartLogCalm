@@ -15,7 +15,7 @@ import ManualWheelPage from '@/pages/manual-wheel.tsx';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/emotion-wheel" replace />,
   },
   {
     path: '/login',
