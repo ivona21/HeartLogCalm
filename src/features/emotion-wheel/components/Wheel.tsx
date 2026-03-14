@@ -191,7 +191,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
                 }}
               />
               <text
-                fontSize="9"
+                fontSize="11"
                 fontWeight="500"
                 fill="#1a1a1a"
                 pointerEvents="none"
@@ -245,7 +245,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
                   }}
                 />
                 <text
-                  fontSize="8"
+                  fontSize="10"
                   fontWeight="400"
                   fill="#1a1a1a"
                   pointerEvents="none"
