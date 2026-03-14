@@ -3,6 +3,7 @@ import { arc } from 'd3-shape';
 import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
 import { useTranslation } from '@/lib/i18n';
 import {
+  CENTER_RADIUS,
   CORE_INNER,
   CORE_OUTER,
   CORE_TEXT_RADIUS,
@@ -12,16 +13,15 @@ import {
   TERTIARY_INNER,
   TERTIARY_OUTER,
   TERTIARY_TEXT_RADIUS,
-  CENTER_RADIUS,
-  VIEWBOX_SIZE,
 } from '@/features/emotion-wheel/constants/radii.ts';
+import { useWheelGestures } from '@/features/emotion-wheel/hooks/useWheelGestures.ts';
 import {
-  toRad,
-  getMidAngle,
   buildTextArcPath,
-  tintColor,
-  radialTextTransform,
+  getMidAngle,
   keyToId,
+  radialTextTransform,
+  tintColor,
+  toRad,
 } from '@/features/emotion-wheel/helpers/helpers.ts';
 
 interface WheelProps {
@@ -56,6 +56,8 @@ function textArcPath(radius: number, startDeg: number, endDeg: number): string {
 export const Wheel = ({ onSelect }: WheelProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState<string | null>(null);
+
+  const { viewBox, touchHandlers } = useWheelGestures();
 
   const { translate } = useTranslation('emotions');
 
@@ -95,15 +97,20 @@ export const Wheel = ({ onSelect }: WheelProps) => {
     return paths;
   }, []);
 
-  const viewboxSize = VIEWBOX_SIZE;
-
   return (
     <svg
-      viewBox={`-${viewboxSize} -${viewboxSize} ${viewboxSize * 2} ${viewboxSize * 2}`}
+      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
       width="100%"
       height="100%"
-      style={{ display: 'block', maxWidth: 820, maxHeight: 820, margin: '0 auto' }}
+      style={{
+        display: 'block',
+        maxWidth: 820,
+        maxHeight: 820,
+        margin: '0 auto',
+        touchAction: 'none',
+      }}
       aria-label="Emotion wheel"
+      {...touchHandlers}
     >
       <defs>
         {allTextPaths.map((textPathDef) => (
