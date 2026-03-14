@@ -3,25 +3,28 @@ import { arc } from 'd3-shape';
 import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
 import { useTranslation } from '@/lib/i18n';
 import {
+  CENTER_RADIUS,
   CORE_INNER,
   CORE_OUTER,
   CORE_TEXT_RADIUS,
+  DOUBLE_TAP_MS,
+  MAX_ZOOM,
+  MIN_ZOOM,
   SECONDARY_INNER,
   SECONDARY_OUTER,
   SECONDARY_TEXT_RADIUS,
   TERTIARY_INNER,
   TERTIARY_OUTER,
   TERTIARY_TEXT_RADIUS,
-  CENTER_RADIUS,
   VIEWBOX_SIZE,
 } from '@/features/emotion-wheel/constants/radii.ts';
 import {
-  toRad,
-  getMidAngle,
   buildTextArcPath,
-  tintColor,
-  radialTextTransform,
+  getMidAngle,
   keyToId,
+  radialTextTransform,
+  tintColor,
+  toRad,
 } from '@/features/emotion-wheel/helpers/helpers.ts';
 
 interface WheelProps {
@@ -52,10 +55,6 @@ function textArcPath(radius: number, startDeg: number, endDeg: number): string {
   const reversed = norm >= 90 && norm <= 270;
   return buildTextArcPath(startDeg, endDeg, radius, reversed);
 }
-
-const MIN_ZOOM = 1;
-const MAX_ZOOM = 5;
-const DOUBLE_TAP_MS = 300;
 
 export const Wheel = ({ onSelect }: WheelProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
