@@ -57,7 +57,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const { vbX, vbY, vbW, vbH, touchHandlers } = useWheelGestures();
+  const { viewBox, touchHandlers } = useWheelGestures();
 
   const { translate } = useTranslation('emotions');
 
@@ -99,7 +99,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   return (
     <svg
-      viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`}
+      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
       width="100%"
       height="100%"
       style={{

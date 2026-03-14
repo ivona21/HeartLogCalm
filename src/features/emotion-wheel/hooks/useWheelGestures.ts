@@ -23,10 +23,12 @@ export function useWheelGestures() {
 
   const lastTapRef = useRef<number>(0);
 
-  const vbW = (2 * S) / zoom;
-  const vbH = (2 * S) / zoom;
-  const vbX = pan.x - S / zoom;
-  const vbY = pan.y - S / zoom;
+  const viewBox = {
+    x: pan.x - S / zoom,
+    y: pan.y - S / zoom,
+    width: (2 * S) / zoom,
+    height: (2 * S) / zoom,
+  };
 
   const handleTouchStart = (e: React.TouchEvent<SVGSVGElement>) => {
     if (e.touches.length === 2) {
@@ -70,8 +72,8 @@ export function useWheelGestures() {
 
       const centerScreenX = (t0.clientX + t1.clientX) / 2;
       const centerScreenY = (t0.clientY + t1.clientY) / 2;
-      const pivotX = vbX + ((centerScreenX - rect.left) / rect.width) * vbW;
-      const pivotY = vbY + ((centerScreenY - rect.top) / rect.height) * vbH;
+      const pivotX = viewBox.x + ((centerScreenX - rect.left) / rect.width) * viewBox.width;
+      const pivotY = viewBox.y + ((centerScreenY - rect.top) / rect.height) * viewBox.height;
 
       const rawPanX = pivotX + (pan.x - pivotX) * (zoom / newZoom);
       const rawPanY = pivotY + (pan.y - pivotY) * (zoom / newZoom);
@@ -84,8 +86,8 @@ export function useWheelGestures() {
       const t = e.touches[0];
       const dxScreen = t.clientX - gestureRef.current.lastTouch.x;
       const dyScreen = t.clientY - gestureRef.current.lastTouch.y;
-      const svgDx = -(dxScreen / rect.width) * vbW;
-      const svgDy = -(dyScreen / rect.height) * vbH;
+      const svgDx = -(dxScreen / rect.width) * viewBox.width;
+      const svgDy = -(dyScreen / rect.height) * viewBox.height;
       const clamped = clampPan(pan.x + svgDx, pan.y + svgDy, zoom);
 
       setPan(clamped);
@@ -99,10 +101,7 @@ export function useWheelGestures() {
   };
 
   return {
-    vbX,
-    vbY,
-    vbW,
-    vbH,
+    viewBox,
     touchHandlers: {
       onTouchStart: handleTouchStart,
       onTouchMove: handleTouchMove,
