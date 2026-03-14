@@ -62,12 +62,12 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   const handleClick = (key: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else if (next.size < 10) {
-        next.add(key);
-      }
-      onSelect?.(Array.from(next));
+      const exists = next.has(key);
+
+      if (exists) next.delete(key);
+      else if (next.size < 10) next.add(key);
+
+      onSelect?.([...next]);
       return next;
     });
   };
@@ -142,11 +142,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
               pointerEvents="none"
               style={{ userSelect: 'none' }}
             >
-              <textPath
-                href={`#tp-${keyToId(emotionKey)}`}
-                startOffset="50%"
-                textAnchor="middle"
-              >
+              <textPath href={`#tp-${keyToId(emotionKey)}`} startOffset="50%" textAnchor="middle">
                 {translate(emotionKey)}
               </textPath>
             </text>
