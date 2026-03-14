@@ -143,7 +143,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
               }}
             />
             <text
-              fontSize="13"
+              fontSize="18"
               fontWeight="700"
               fill="#1a1a1a"
               pointerEvents="none"
