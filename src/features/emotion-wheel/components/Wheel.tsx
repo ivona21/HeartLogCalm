@@ -157,7 +157,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
           >
             <path
               d={fillPath(CORE_INNER, CORE_OUTER, emotion.startAngle, emotion.endAngle)}
-              fill={ancestorFillMap.get(emotionKey) ?? emotion.color}
+              fill={selected.has(emotionKey) ? emotion.color : (ancestorFillMap.get(emotionKey) ?? emotion.color)}
               stroke="white"
               strokeWidth="1.5"
               style={{
