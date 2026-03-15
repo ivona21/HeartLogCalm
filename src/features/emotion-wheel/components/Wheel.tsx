@@ -61,18 +61,19 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   const { translate } = useTranslation('emotions');
 
-  const highlighted = useMemo(() => {
-    const result = new Set<string>(selected);
+  const { parentOf, grandparentOf } = useMemo(() => {
+    const parentOf = new Set<string>();
+    const grandparentOf = new Set<string>();
     for (const key of selected) {
       const parts = key.split('.');
       if (parts.length === 2) {
-        result.add(parts[0]);
+        parentOf.add(parts[0]);
       } else if (parts.length === 3) {
-        result.add(`${parts[0]}.${parts[1]}`);
-        result.add(parts[0]);
+        parentOf.add(`${parts[0]}.${parts[1]}`);
+        grandparentOf.add(parts[0]);
       }
     }
-    return result;
+    return { parentOf, grandparentOf };
   }, [selected]);
 
   const handleClick = (key: string) => {
@@ -90,7 +91,9 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   const segmentOpacity = (key: string) => {
     if (selected.size === 0) return 1;
-    if (highlighted.has(key)) return 1;
+    if (selected.has(key)) return 1;
+    if (parentOf.has(key)) return 0.85;
+    if (grandparentOf.has(key)) return 0.70;
     return 0.55;
   };
 
