@@ -93,7 +93,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
     if (selected.size === 0) return 1;
     if (selected.has(key)) return 1;
     if (parentOf.has(key)) return 0.95;
-    if (grandparentOf.has(key)) return 0.92;
+    if (grandparentOf.has(key)) return 0.95;
     return 0.55;
   };
 
