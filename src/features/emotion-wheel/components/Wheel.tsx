@@ -61,6 +61,20 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   const { translate } = useTranslation('emotions');
 
+  const highlighted = useMemo(() => {
+    const result = new Set<string>(selected);
+    for (const key of selected) {
+      const parts = key.split('.');
+      if (parts.length === 2) {
+        result.add(parts[0]);
+      } else if (parts.length === 3) {
+        result.add(`${parts[0]}.${parts[1]}`);
+        result.add(parts[0]);
+      }
+    }
+    return result;
+  }, [selected]);
+
   const handleClick = (key: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -76,7 +90,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   const segmentOpacity = (key: string) => {
     if (selected.size === 0) return 1;
-    if (selected.has(key)) return 1;
+    if (highlighted.has(key)) return 1;
     return 0.55;
   };
 
