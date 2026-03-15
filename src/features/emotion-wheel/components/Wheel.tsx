@@ -75,7 +75,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         ancestorOf.add(rootKey);
         const rootEmotion = CORE_EMOTIONS.find(e => e.key === rootKey);
         if (rootEmotion) {
-          const shade = tintColor(rootEmotion.color, 0.50);
+          const shade = tintColor(rootEmotion.color, 0.22);
           if (!ancestorFillMap.has(rootKey)) ancestorFillMap.set(rootKey, shade);
           if (!ancestorFillMap.has(secondaryKey)) ancestorFillMap.set(secondaryKey, shade);
         }
