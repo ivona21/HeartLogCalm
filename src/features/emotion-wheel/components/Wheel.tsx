@@ -92,8 +92,8 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   const segmentOpacity = (key: string) => {
     if (selected.size === 0) return 1;
     if (selected.has(key)) return 1;
-    if (parentOf.has(key)) return 0.85;
-    if (grandparentOf.has(key)) return 0.70;
+    if (parentOf.has(key)) return 0.95;
+    if (grandparentOf.has(key)) return 0.92;
     return 0.55;
   };
 
