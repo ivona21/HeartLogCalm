@@ -61,6 +61,29 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   const { translate } = useTranslation('emotions');
 
+  const { ancestorOf, ancestorFillMap } = useMemo(() => {
+    const ancestorOf = new Set<string>();
+    const ancestorFillMap = new Map<string, string>();
+    for (const key of selected) {
+      const parts = key.split('.');
+      if (parts.length === 2) {
+        ancestorOf.add(parts[0]);
+      } else if (parts.length === 3) {
+        const rootKey = parts[0];
+        const secondaryKey = `${parts[0]}.${parts[1]}`;
+        ancestorOf.add(secondaryKey);
+        ancestorOf.add(rootKey);
+        const rootEmotion = CORE_EMOTIONS.find(e => e.key === rootKey);
+        if (rootEmotion) {
+          const shade = tintColor(rootEmotion.color, 0.50);
+          if (!ancestorFillMap.has(rootKey)) ancestorFillMap.set(rootKey, shade);
+          if (!ancestorFillMap.has(secondaryKey)) ancestorFillMap.set(secondaryKey, shade);
+        }
+      }
+    }
+    return { ancestorOf, ancestorFillMap };
+  }, [selected]);
+
   const handleClick = (key: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -77,6 +100,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   const segmentOpacity = (key: string) => {
     if (selected.size === 0) return 1;
     if (selected.has(key)) return 1;
+    if (ancestorOf.has(key)) return 0.95;
     return 0.55;
   };
 
@@ -133,13 +157,13 @@ export const Wheel = ({ onSelect }: WheelProps) => {
           >
             <path
               d={fillPath(CORE_INNER, CORE_OUTER, emotion.startAngle, emotion.endAngle)}
-              fill={emotion.color}
+              fill={ancestorFillMap.get(emotionKey) ?? emotion.color}
               stroke="white"
               strokeWidth="1.5"
               style={{
                 opacity: segmentOpacity(emotionKey),
                 filter: segmentFilter(emotionKey),
-                transition: 'opacity 180ms ease, filter 180ms ease',
+                transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
               }}
             />
             <text
@@ -181,13 +205,13 @@ export const Wheel = ({ onSelect }: WheelProps) => {
             >
               <path
                 d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                fill={selected.has(emotionKey) ? emotion.color : secondaryFillColor}
+                fill={selected.has(emotionKey) ? emotion.color : (ancestorFillMap.get(emotionKey) ?? secondaryFillColor)}
                 stroke="white"
                 strokeWidth="1"
                 style={{
                   opacity: segmentOpacity(emotionKey),
                   filter: segmentFilter(emotionKey),
-                  transition: 'opacity 180ms ease, filter 180ms ease',
+                  transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
                 }}
               />
               <text
