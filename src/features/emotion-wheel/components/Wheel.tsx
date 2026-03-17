@@ -23,6 +23,8 @@ import {
   tintColor,
   toRad,
 } from '@/features/emotion-wheel/helpers/helpers.ts';
+import { useAuth } from '@/features/auth';
+import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 
 interface WheelProps {
   onSelect?: (emotionKeys: string[]) => void;
@@ -56,6 +58,8 @@ function textArcPath(radius: number, startDeg: number, endDeg: number): string {
 export const Wheel = ({ onSelect }: WheelProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -91,6 +95,8 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   }, [selected]);
 
   const handleClick = (key: string) => {
+    const isFirstSelection = selected.size === 0 && !selected.has(key);
+
     setSelected((prev) => {
       const next = new Set(prev);
       const exists = next.has(key);
@@ -101,6 +107,10 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       onSelect?.([...next]);
       return next;
     });
+
+    if (isFirstSelection && !isAuthenticated) {
+      setAuthModalOpen(true);
+    }
   };
 
   const segmentOpacity = (key: string) => {
@@ -129,6 +139,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   }, []);
 
   return (
+    <>
     <svg
       viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
       width="100%"
@@ -312,5 +323,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         HeartLog
       </text>
     </svg>
+    <AuthPromptModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+    </>
   );
 };
