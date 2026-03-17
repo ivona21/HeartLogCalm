@@ -16,13 +16,11 @@ HeartLog is a beautifully designed emotional wellness tracking application with 
 - ✅ Form validation with Zod
 - ✅ Loading and error states
 - ✅ Dashboard with calming nature GIF welcome screen
-  - Peaceful moonlit ocean with gentle waves animation
-  - Personalized "Welcome, {username}" message overlay
-  - Serene gradient overlay for text readability
-  - Introductory cards about the wellness journey
+- ✅ Interactive D3 SVG emotion wheel (Junto Institute model: 6 core, 5 secondary, 2 tertiary per branch)
+- ✅ Emotion wheel publicly accessible — no login required
+- ✅ Configurable home route via `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts`
 - ✅ Frontend-only architecture with clean root-level structure
 - ✅ Direct Vite dev server on port 5000
-- ✅ E2E tested authentication flow with Playwright
 
 ### Architecture
 The project follows **Bulletproof React** principles:
@@ -106,6 +104,35 @@ See `BACKEND_INTEGRATION.md` for complete API contract.
 - JWT tokens stored in `localStorage` under `auth_token`
 - Tokens included in Authorization header: `Bearer {token}`
 - Auto-logout on 401 responses
+
+## Routing Architecture
+
+### Configurable Home Route
+
+The app root (`/`) always renders whichever feature is set as `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts`. This is resolved at build time by `src/shared/routing/HomeRoute.tsx`.
+
+**Current configuration:** `DEFAULT_HOME_ROUTE = '/emotion-wheel'` → `/` shows the emotion wheel.
+
+**To change the home feature:**
+1. Update `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts` to the desired route path (e.g. `'/dashboard'`)
+2. Ensure the corresponding component is registered in `HOME_COMPONENTS` inside `src/shared/routing/HomeRoute.tsx`
+
+**Key behaviours:**
+- `/` and the named route (e.g. `/emotion-wheel`) both render the same page independently — no redirects
+- After login or registration, users are always sent to `/`
+- The named routes (e.g. `/emotion-wheel`, `/dashboard`) remain accessible at their own URLs regardless of the home setting
+- The emotion wheel (`/emotion-wheel` and `/`) is publicly accessible — no login required
+- `/dashboard` is protected and requires authentication
+
+### Route Summary
+
+| Path | Auth required | Description |
+|------|--------------|-------------|
+| `/` | No | Home — renders `DEFAULT_HOME_ROUTE` feature |
+| `/emotion-wheel` | No | Emotion wheel (always public) |
+| `/login` | No | Login page |
+| `/register` | No | Registration page |
+| `/dashboard` | Yes | User dashboard |
 
 ## Development Guidelines
 
