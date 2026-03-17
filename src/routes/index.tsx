@@ -1,5 +1,6 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedRoute } from '@/shared/routing/ProtectedRoute.tsx';
+import { HomeRoute } from '@/shared/routing/HomeRoute.tsx';
 import LoginPage from '@/pages/login';
 import RegisterPage from '@/pages/register';
 import DashboardPage from '@/pages/dashboard';
@@ -10,7 +11,11 @@ import AppLayout from '@/components/layout/AppLayout.tsx';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/login" replace />,
+    element: (
+      <AppLayout>
+        <HomeRoute />
+      </AppLayout>
+    ),
   },
   {
     path: '/login',
