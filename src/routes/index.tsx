@@ -33,11 +33,9 @@ export const router = createBrowserRouter([
   {
     path: '/emotion-wheel',
     element: (
-      <ProtectedRoute>
-        <AppLayout>
-          <EmotionWheelPage />
-        </AppLayout>
-      </ProtectedRoute>
+      <AppLayout>
+        <EmotionWheelPage />
+      </AppLayout>
     ),
   },
   {
