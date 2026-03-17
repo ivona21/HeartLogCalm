@@ -13,7 +13,7 @@ export function Header() {
   };
 
   return (
-    <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="fixed -top-[60px] left-0 right-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-200 border-b border-border bg-background/80 backdrop-blur-sm hover:translate-y-[60px] transition-transform duration-200">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => goToHome()}>
           <HeartIcon className="w-6 h-6 text-primary" fill="currentColor" />
