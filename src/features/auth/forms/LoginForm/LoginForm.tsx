@@ -41,7 +41,7 @@ export function LoginForm() {
         </div>
 
         {loginError && (
-          <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-red-500" />
             <AlertDescription className="text-red-500">
               {(loginError as ApiError).message || 'Login failed. Please check your credentials.'}
@@ -61,7 +61,7 @@ export function LoginForm() {
                   type="email"
                   placeholder="Your email"
                   disabled={isLoggingIn}
-                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
+                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-email"
                 />
               </FormControl>
@@ -81,7 +81,7 @@ export function LoginForm() {
                   {...field}
                   placeholder="Your password"
                   disabled={isLoggingIn}
-                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
+                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-password"
                 />
               </FormControl>
@@ -101,7 +101,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-primary to-[#8FA888] hover:from-[#8FA888] hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+          className="w-full bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground font-medium transition-all duration-200"
           disabled={isLoggingIn}
           data-testid="button-submit"
         >

@@ -187,7 +187,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
             <text
               fontSize="18"
               fontWeight="700"
-              fill="#1a1a1a"
+              fill="hsl(var(--foreground))"
               pointerEvents="none"
               style={{ userSelect: 'none' }}
             >
@@ -235,7 +235,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
               <text
                 fontSize="16"
                 fontWeight="500"
-                fill="#1a1a1a"
+                fill="hsl(var(--foreground))"
                 pointerEvents="none"
                 transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
                 textAnchor="middle"
@@ -289,7 +289,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
                 <text
                   fontSize="17"
                   fontWeight="400"
-                  fill="#1a1a1a"
+                  fill="hsl(var(--foreground))"
                   pointerEvents="none"
                   transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
                   textAnchor="middle"
@@ -308,7 +308,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       <circle
         r={CENTER_RADIUS}
         fill="white"
-        stroke="#e5e7eb"
+        stroke="hsl(var(--border))"
         strokeWidth="1.5"
         style={{ pointerEvents: 'none' }}
       />
@@ -317,7 +317,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         dominantBaseline="central"
         fontSize="11"
         fontWeight="500"
-        fill="#6b7280"
+        fill="hsl(var(--muted-foreground))"
         style={{ pointerEvents: 'none', userSelect: 'none' }}
       >
         HeartLog

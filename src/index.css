@@ -43,6 +43,12 @@
   --chart-3: 280 45% 38%;
   --chart-4: 35 55% 40%;
   --chart-5: 150 48% 35%;
+  --gradient-sand: 37 71% 85%;
+  --gradient-sky: 195 35% 88%;
+  --color-white: 0 0% 100%;
+  --color-text-dark: 0 0% 10%;
+  --color-border-light: 0 0% 90%;
+  --color-border-subtle: 150 8% 90%;
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
@@ -127,6 +133,12 @@
   --chart-3: 280 45% 70%;
   --chart-4: 35 55% 72%;
   --chart-5: 150 48% 65%;
+  --gradient-sand: 37 71% 85%;
+  --gradient-sky: 195 35% 88%;
+  --color-white: 0 0% 100%;
+  --color-text-dark: 0 0% 10%;
+  --color-border-light: 0 0% 90%;
+  --color-border-subtle: 150 8% 90%;
   --shadow-2xs: 0px 2px 0px 0px hsl(150 10% 4% / 0.15);
   --shadow-xs: 0px 2px 0px 0px hsl(150 10% 4% / 0.20);
   --shadow-sm: 0px 2px 0px 0px hsl(150 10% 4% / 0.18), 0px 1px 2px -1px hsl(150 10% 4% / 0.25);

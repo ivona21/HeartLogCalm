@@ -75,6 +75,12 @@ export default {
           foreground: "hsl(var(--sidebar-accent-foreground) / <alpha-value>)",
           border: "var(--sidebar-accent-border)",
         },
+        "gradient-sand": "hsl(var(--gradient-sand) / <alpha-value>)",
+        "gradient-sky": "hsl(var(--gradient-sky) / <alpha-value>)",
+        "color-white": "hsl(var(--color-white) / <alpha-value>)",
+        "color-text-dark": "hsl(var(--color-text-dark) / <alpha-value>)",
+        "color-border-light": "hsl(var(--color-border-light) / <alpha-value>)",
+        "color-border-subtle": "hsl(var(--color-border-subtle) / <alpha-value>)",
         status: {
           online: "rgb(34 197 94)",
           away: "rgb(245 158 11)",
