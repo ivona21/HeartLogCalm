@@ -1,5 +1,5 @@
 import LogoFullImage from '@/assets/LogoFullTransparent.png';
-import LogoSimpleImage from '@/assets/LogoSimple.png';
+import LogoSimpleImage from '@/assets/LogoSimpleWithText.png';
 
 interface LogoProps {
   variant?: 'full' | 'simple';
