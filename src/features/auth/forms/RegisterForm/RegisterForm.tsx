@@ -16,6 +16,7 @@ import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
+import { Logo } from '@/components/Logo.tsx';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
@@ -40,9 +41,11 @@ export function RegisterForm() {
           <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Oasis</h2>
           <p className="text-sm text-muted-foreground">Start your emotional wellness journey</p>
         </div>
-
+        <div className="flex justify-center mb-8">
+          <Logo variant="full" className="h-40" />
+        </div>
         {registerError && (
-          <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-red-500" />
             <AlertDescription className="text-red-500">
               {(registerError as ApiError).message || 'Registration failed. Please try again.'}
@@ -113,7 +116,7 @@ export function RegisterForm() {
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-primary to-[#8FA888] hover:from-[#8FA888] hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+          className="w-full text-primary-foreground font-medium transition-all duration-200"
           disabled={isRegistering}
           data-testid="button-submit"
         >

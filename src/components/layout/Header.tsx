@@ -1,7 +1,8 @@
-import { HeartIcon, LogOutIcon, LogInIcon } from 'lucide-react';
+import { LogOutIcon, LogInIcon } from 'lucide-react';
 import { Button } from '@/components/ui/Button.tsx';
 import { useAuth } from '@/features/auth';
 import { useNavigate } from 'react-router-dom';
+import { Logo } from '@/components/Logo.tsx';
 
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
@@ -11,8 +12,7 @@ export function Header() {
     <header className="fixed -top-[60px] left-0 right-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-200 border-b border-border bg-background/80 backdrop-blur-sm hover:translate-y-[60px] transition-transform duration-200">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-          <HeartIcon className="w-6 h-6 text-primary" fill="currentColor" />
-          <h1 className="text-xl font-semibold text-primary">HeartLog</h1>
+          <Logo variant="full" className="h-16" />
         </div>
         {isAuthenticated ? (
           <Button

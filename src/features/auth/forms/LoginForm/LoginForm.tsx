@@ -16,6 +16,7 @@ import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
+import { Logo } from '@/components/Logo.tsx';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
@@ -40,8 +41,12 @@ export function LoginForm() {
           <p className="text-sm text-muted-foreground">Continue your journey to calm</p>
         </div>
 
+        <div className="flex justify-center mb-8">
+          <Logo variant="full" className="h-40" />
+        </div>
+
         {loginError && (
-          <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-red-500" />
             <AlertDescription className="text-red-500">
               {(loginError as ApiError).message || 'Login failed. Please check your credentials.'}
@@ -101,7 +106,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-primary to-[#8FA888] hover:from-[#8FA888] hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+          className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
           disabled={isLoggingIn}
           data-testid="button-submit"
         >
