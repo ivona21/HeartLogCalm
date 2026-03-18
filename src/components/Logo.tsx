@@ -1,4 +1,4 @@
-import LogoFullImage from '@/assets/LogoFullWhite.png';
+import LogoFullImage from '@/assets/LogoFullTransparent.png';
 import LogoSimpleImage from '@/assets/LogoSimple.png';
 
 interface LogoProps {

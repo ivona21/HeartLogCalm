@@ -16,6 +16,7 @@ import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
+import { Logo } from '@/components/Logo.tsx';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
@@ -38,6 +39,10 @@ export function LoginForm() {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
           <p className="text-sm text-muted-foreground">Continue your journey to calm</p>
+        </div>
+
+        <div className="flex justify-center mb-8">
+          <Logo variant="full" className="h-40" />
         </div>
 
         {loginError && (
@@ -101,7 +106,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-primary to-[#8FA888] hover:from-[#8FA888] hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+          className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
           disabled={isLoggingIn}
           data-testid="button-submit"
         >
