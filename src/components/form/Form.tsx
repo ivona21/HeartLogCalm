@@ -67,7 +67,7 @@ export function FormMessage() {
 
   if (!error) return null;
 
-  return <p className="text-red-500 font-medium text-xs">{String(error.message)}</p>;
+  return <p className="text-destructive font-medium text-xs">{String(error.message)}</p>;
 }
 
 export const Form = FormProvider;

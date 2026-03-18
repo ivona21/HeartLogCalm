@@ -77,6 +77,7 @@ export default {
         },
         'gradient-sand': 'hsl(var(--gradient-sand) / <alpha-value>)',
         'gradient-sky': 'hsl(var(--gradient-sky) / <alpha-value>)',
+        'on-dark': 'hsl(var(--on-dark) / <alpha-value>)',
         'color-white': 'hsl(var(--color-white) / <alpha-value>)',
         'color-text-dark': 'hsl(var(--color-text-dark) / <alpha-value>)',
         'color-border-light': 'hsl(var(--color-border-light) / <alpha-value>)',
