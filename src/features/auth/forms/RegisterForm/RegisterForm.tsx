@@ -62,7 +62,7 @@ export function RegisterForm() {
                   type="email"
                   placeholder="Your email"
                   disabled={isRegistering}
-                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
+                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-email"
                 />
               </FormControl>
@@ -82,7 +82,7 @@ export function RegisterForm() {
                   {...field}
                   placeholder="Choose a username"
                   disabled={isRegistering}
-                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
+                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-username"
                 />
               </FormControl>
@@ -102,7 +102,7 @@ export function RegisterForm() {
                   {...field}
                   placeholder="Create a secure password"
                   disabled={isRegistering}
-                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
+                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-password"
                 />
               </FormControl>

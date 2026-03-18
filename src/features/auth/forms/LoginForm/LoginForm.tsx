@@ -61,7 +61,7 @@ export function LoginForm() {
                   type="email"
                   placeholder="Your email"
                   disabled={isLoggingIn}
-                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
+                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-email"
                 />
               </FormControl>
@@ -81,7 +81,7 @@ export function LoginForm() {
                   {...field}
                   placeholder="Your password"
                   disabled={isLoggingIn}
-                  className="bg-color-white border-color-border-subtle focus-visible:ring-primary transition-all duration-200"
+                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-password"
                 />
               </FormControl>
