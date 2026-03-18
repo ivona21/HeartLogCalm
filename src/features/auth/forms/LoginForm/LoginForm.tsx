@@ -47,8 +47,8 @@ export function LoginForm() {
 
         {loginError && (
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircleIcon className="h-4 w-4 text-red-500" />
-            <AlertDescription className="text-red-500">
+            <AlertCircleIcon className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">
               {(loginError as ApiError).message || 'Login failed. Please check your credentials.'}
             </AlertDescription>
           </Alert>
@@ -66,11 +66,11 @@ export function LoginForm() {
                   type="email"
                   placeholder="Your email"
                   disabled={isLoggingIn}
-                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-email"
                 />
               </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
+              <FormMessage className="text-destructive text-sm" />
             </FormItem>
           )}
         />
@@ -86,11 +86,11 @@ export function LoginForm() {
                   {...field}
                   placeholder="Your password"
                   disabled={isLoggingIn}
-                  className="bg-white border-[#E8E6E3] focus-visible:ring-primary transition-all duration-200"
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-password"
                 />
               </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
+              <FormMessage className="text-destructive text-sm" />
               <div className="text-right mt-2">
                 <button
                   type="button"

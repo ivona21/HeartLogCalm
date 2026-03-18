@@ -12,7 +12,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5E6D3]/30 via-background to-[#B8D8E8]/20">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gradient-sand/30 via-background to-gradient-sky/20">
         <Loader2Icon className="w-8 h-8 text-primary animate-spin" />
       </div>
     );

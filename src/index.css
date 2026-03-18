@@ -57,6 +57,7 @@
 
     --gradient-sand: 38 88% 85%;
     --gradient-sky: 195 70% 91%;
+    --on-dark: 0 0% 100%;
 
     --color-white: 0 0% 100%;
     --color-text-dark: 252 19% 18%;
@@ -163,6 +164,7 @@
 
     --gradient-sand: 38 88% 85%;
     --gradient-sky: 195 70% 91%;
+    --on-dark: 0 0% 100%;
 
     --color-white: 0 0% 100%;
     --color-text-dark: 0 0% 10%;

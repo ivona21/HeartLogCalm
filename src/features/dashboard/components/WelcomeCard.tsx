@@ -15,12 +15,12 @@ export default function WelcomeCard() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex items-end justify-center pb-8 md:pb-12">
           <div className="text-center px-4 space-y-2 md:space-y-3">
             <h2
-              className="text-3xl md:text-5xl lg:text-6xl font-semibold text-white drop-shadow-lg"
+              className="text-3xl md:text-5xl lg:text-6xl font-semibold text-on-dark drop-shadow-lg"
               data-testid="text-welcome-message"
             >
               Welcome, {user?.username}
             </h2>
-            <p className="text-base md:text-xl text-white/90 drop-shadow-md max-w-2xl">
+            <p className="text-base md:text-xl text-on-dark/90 drop-shadow-md max-w-2xl">
               Take a deep breath. Your emotional wellness sanctuary awaits.
             </p>
           </div>
