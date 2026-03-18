@@ -42,7 +42,7 @@ export function RegisterForm() {
         </div>
 
         {registerError && (
-          <Alert variant="destructive" className="bg-[#E8A59C]/10 border-[#E8A59C]/30">
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-red-500" />
             <AlertDescription className="text-red-500">
               {(registerError as ApiError).message || 'Registration failed. Please try again.'}

@@ -11,7 +11,7 @@ export default function RegisterPage() {
           Already have an account?{' '}
           <Link
             to="/login"
-            className="text-primary hover:text-[#8FA888] font-medium transition-colors duration-150"
+            className="text-primary hover:text-secondary font-medium transition-colors duration-150"
             data-testid="link-login"
           >
             Log in
