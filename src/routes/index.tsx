@@ -6,9 +6,10 @@ import RegisterPage from '@/pages/register';
 import DashboardPage from '@/pages/dashboard';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
+import DesignSystemPage from '@/pages/dev/DesignSystem.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 
-export const router = createBrowserRouter([
+const routes = [
   {
     path: '/',
     element: (
@@ -47,4 +48,17 @@ export const router = createBrowserRouter([
     path: '*',
     element: <NotFound />,
   },
-]);
+];
+
+if (import.meta.env.DEV) {
+  routes.push({
+    path: '/dev/design-system',
+    element: (
+      <AppLayout>
+        <DesignSystemPage />
+      </AppLayout>
+    ),
+  });
+}
+
+export const router = createBrowserRouter(routes);
