@@ -1,4 +1,4 @@
-import LogoFullImage from '@/assets/LogoFull.png';
+import LogoFullImage from '@/assets/LogoFullWhite.png';
 import LogoSimpleImage from '@/assets/LogoSimple.png';
 
 interface LogoProps {
@@ -9,12 +9,6 @@ interface LogoProps {
 export function Logo({ variant = 'simple', className = '' }: LogoProps) {
   const src = variant === 'full' ? LogoFullImage : LogoSimpleImage;
   const altText = variant === 'full' ? 'HeartLog - Emotion Logger' : 'HeartLog';
-  
-  return (
-    <img
-      src={src}
-      alt={altText}
-      className={className}
-    />
-  );
+
+  return <img src={src} alt={altText} className={className} />;
 }
