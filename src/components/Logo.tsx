@@ -1,14 +1,19 @@
-import LogoFullImage from '@/assets/LogoComplex.png';
+import LogoComplexImage from '@/assets/LogoComplex.png';
 import LogoSimpleImage from '@/assets/LogoSimpleWithText.png';
+import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 
 interface LogoProps {
-  variant?: 'full' | 'simple';
+  variant?: 'complex' | 'simple' | 'icon';
   className?: string;
 }
 
-export function Logo({ variant = 'simple', className = '' }: LogoProps) {
-  const src = variant === 'full' ? LogoFullImage : LogoSimpleImage;
-  const altText = variant === 'full' ? 'HeartLog - Emotion Logger' : 'HeartLog';
+const LOGO_MAP = {
+  complex: { src: LogoComplexImage, alt: 'HeartLog - Emotion Logger' },
+  simple:  { src: LogoSimpleImage,  alt: 'HeartLog' },
+  icon:    { src: LogoIconImage,    alt: 'HeartLog' },
+};
 
-  return <img src={src} alt={altText} className={className} />;
+export function Logo({ variant = 'simple', className = '' }: LogoProps) {
+  const { src, alt } = LOGO_MAP[variant];
+  return <img src={src} alt={alt} className={className} />;
 }

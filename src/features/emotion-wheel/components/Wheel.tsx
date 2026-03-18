@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
 import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
 import { useTranslation } from '@/lib/i18n';
@@ -312,16 +313,14 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         strokeWidth="1.5"
         style={{ pointerEvents: 'none' }}
       />
-      <text
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize="11"
-        fontWeight="500"
-        fill="hsl(var(--muted-foreground))"
-        style={{ pointerEvents: 'none', userSelect: 'none' }}
-      >
-        HeartLog
-      </text>
+      <image
+        href={LogoIconImage}
+        x={-CENTER_RADIUS * 0.7}
+        y={-CENTER_RADIUS * 0.7}
+        width={CENTER_RADIUS * 1.4}
+        height={CENTER_RADIUS * 1.4}
+        style={{ pointerEvents: 'none' }}
+      />
     </svg>
     <AuthPromptModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>

@@ -42,7 +42,7 @@ export function LoginForm() {
         </div>
 
         <div className="flex justify-center mb-8">
-          <Logo variant="full" className="h-40" />
+          <Logo variant="complex" className="h-40" />
         </div>
 
         {loginError && (
