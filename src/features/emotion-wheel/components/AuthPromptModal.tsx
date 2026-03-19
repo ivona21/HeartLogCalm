@@ -32,7 +32,7 @@ export function AuthPromptModal({ open, onClose }: AuthPromptModalProps) {
       <DialogContent className="max-w-sm text-center">
         <DialogHeader className="items-center gap-3">
           <DialogTitle className="text-xl">Save your emotions</DialogTitle>
-          <Logo variant="complex" className="h-24" />
+          <Logo variant="complexFull" className="h-24" />
           <DialogDescription className="text-base leading-relaxed">
             Log in or create a free account to track and revisit your emotional journey over time.
           </DialogDescription>

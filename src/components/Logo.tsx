@@ -1,16 +1,18 @@
-import LogoComplexImage from '@/assets/LogoComplex-optimized.png';
+import LogoComplexFullSmallImage from '@/assets/LogoComplexFullSmall.png';
+import LogoComplexSmallImage from '@/assets/LogoComplexSmall.png';
 import LogoSimpleImage from '@/assets/LogoSimpleWithText.png';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 
 interface LogoProps {
-  variant?: 'complex' | 'simple' | 'icon';
+  variant?: 'complexFull' | 'complex' | 'simple' | 'icon';
   className?: string;
 }
 
 const LOGO_MAP = {
-  complex: { src: LogoComplexImage, alt: 'HeartLog - Emotion Logger' },
-  simple:  { src: LogoSimpleImage,  alt: 'HeartLog' },
-  icon:    { src: LogoIconImage,    alt: 'HeartLog' },
+  complexFull: { src: LogoComplexFullSmallImage, alt: 'HeartLog - Emotion Logger' },
+  complex: { src: LogoComplexSmallImage, alt: 'HeartLog' },
+  simple: { src: LogoSimpleImage, alt: 'HeartLog' },
+  icon: { src: LogoIconImage, alt: 'HeartLog' },
 };
 
 export function Logo({ variant = 'simple', className = '' }: LogoProps) {
