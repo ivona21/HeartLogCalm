@@ -1,6 +1,6 @@
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { LoginForm } from '@/features/auth/forms/LoginForm/LoginForm.tsx';
-import { Link } from 'react-router-dom';
+import { AppLink } from '@/components/ui/AppLink.tsx';
 
 export default function LoginPage() {
   return (
@@ -9,13 +9,9 @@ export default function LoginPage() {
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
           Don't have an account?{' '}
-          <Link
-            to="/register"
-            className="text-primary hover:text-secondary font-medium transition-colors duration-150"
-            data-testid="link-register"
-          >
+          <AppLink to="/register" className="font-medium" data-testid="link-register">
             Sign up
-          </Link>
+          </AppLink>
         </p>
       </div>
     </AuthLayout>
