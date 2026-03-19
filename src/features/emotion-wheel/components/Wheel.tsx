@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
-import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
-import { useTranslation } from '@/lib/i18n';
+import { MOCK_EMOTIONS } from '@/features/emotion-wheel/data/mock-emotions.ts';
+import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
 import {
   CENTER_RADIUS,
   CORE_INNER,
@@ -17,9 +17,7 @@ import {
 } from '@/features/emotion-wheel/constants/radii.ts';
 import { useWheelGestures } from '@/features/emotion-wheel/hooks/useWheelGestures.ts';
 import {
-  buildTextArcPath,
   getMidAngle,
-  keyToId,
   radialTextTransform,
   tintColor,
   toRad,
@@ -28,7 +26,7 @@ import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 
 interface WheelProps {
-  onSelect?: (emotionKeys: string[]) => void;
+  onSelect?: (emotionIds: string[]) => void;
 }
 
 const arcGen = arc();
@@ -41,19 +39,12 @@ function fillPath(
 ): string {
   return (
     arcGen({
-      innerRadius: innerRadius,
-      outerRadius: outerRadius,
+      innerRadius,
+      outerRadius,
       startAngle: toRad(startDeg),
       endAngle: toRad(endDeg),
     }) ?? ''
   );
-}
-
-function textArcPath(radius: number, startDeg: number, endDeg: number): string {
-  const midpointAngle = getMidAngle(startDeg, endDeg);
-  const norm = ((midpointAngle % 360) + 360) % 360;
-  const reversed = norm >= 90 && norm <= 270;
-  return buildTextArcPath(startDeg, endDeg, radius, reversed);
 }
 
 export const Wheel = ({ onSelect }: WheelProps) => {
@@ -64,46 +55,55 @@ export const Wheel = ({ onSelect }: WheelProps) => {
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
-  const { translate } = useTranslation('emotions');
+  const wheelLayout = useMemo(() => computeWheelLayout(MOCK_EMOTIONS), []);
 
   const { ancestorOf, directParentOf, ancestorFillMap } = useMemo(() => {
     const ancestorOf = new Set<string>();
     const directParentOf = new Set<string>();
     const ancestorFillMap = new Map<string, string>();
-    for (const key of selected) {
-      const parts = key.split('.');
+
+    const coreColorById = new Map<string, string>();
+    for (const core of wheelLayout) {
+      coreColorById.set(core.id, core.color);
+      for (const sec of core.children) {
+        coreColorById.set(sec.id, core.color);
+      }
+    }
+
+    for (const id of selected) {
+      const parts = id.split('.');
       if (parts.length === 2) {
-        const rootKey = parts[0];
-        ancestorOf.add(rootKey);
-        directParentOf.add(rootKey);
+        const rootId = parts[0];
+        ancestorOf.add(rootId);
+        directParentOf.add(rootId);
       } else if (parts.length === 3) {
-        const rootKey = parts[0];
-        const secondaryKey = `${parts[0]}.${parts[1]}`;
-        ancestorOf.add(secondaryKey);
-        ancestorOf.add(rootKey);
-        const rootEmotion = CORE_EMOTIONS.find(e => e.key === rootKey);
-        if (rootEmotion) {
-          const shade = tintColor(rootEmotion.color, 0.22);
-          if (!ancestorFillMap.has(rootKey)) ancestorFillMap.set(rootKey, shade);
-          if (!ancestorFillMap.has(secondaryKey)) ancestorFillMap.set(secondaryKey, shade);
+        const rootId = parts[0];
+        const secondaryId = `${parts[0]}.${parts[1]}`;
+        ancestorOf.add(secondaryId);
+        ancestorOf.add(rootId);
+        const coreColor = coreColorById.get(rootId);
+        if (coreColor) {
+          const shade = tintColor(coreColor, 0.22);
+          if (!ancestorFillMap.has(rootId)) ancestorFillMap.set(rootId, shade);
+          if (!ancestorFillMap.has(secondaryId)) ancestorFillMap.set(secondaryId, shade);
         }
       }
     }
-    for (const parentKey of directParentOf) {
-      ancestorFillMap.delete(parentKey);
+    for (const parentId of directParentOf) {
+      ancestorFillMap.delete(parentId);
     }
     return { ancestorOf, directParentOf, ancestorFillMap };
-  }, [selected]);
+  }, [selected, wheelLayout]);
 
-  const handleClick = (key: string) => {
-    const isFirstSelection = selected.size === 0 && !selected.has(key);
+  const handleClick = (id: string) => {
+    const isFirstSelection = selected.size === 0 && !selected.has(id);
 
     setSelected((prev) => {
       const next = new Set(prev);
-      const exists = next.has(key);
+      const exists = next.has(id);
 
-      if (exists) next.delete(key);
-      else if (next.size < 10) next.add(key);
+      if (exists) next.delete(id);
+      else if (next.size < 10) next.add(id);
 
       onSelect?.([...next]);
       return next;
@@ -114,30 +114,19 @@ export const Wheel = ({ onSelect }: WheelProps) => {
     }
   };
 
-  const segmentOpacity = (key: string) => {
+  const segmentOpacity = (id: string) => {
     if (selected.size === 0) return 1;
-    if (selected.has(key)) return 1;
-    if (directParentOf.has(key)) return 1;
-    if (ancestorOf.has(key)) return 0.95;
+    if (selected.has(id)) return 1;
+    if (directParentOf.has(id)) return 1;
+    if (ancestorOf.has(id)) return 0.95;
     return 0.55;
   };
 
-  const segmentFilter = (key: string) => {
-    if (selected.has(key)) return 'brightness(1.08)';
-    if (key === hovered) return 'brightness(1.06)';
+  const segmentFilter = (id: string) => {
+    if (selected.has(id)) return 'brightness(1.08)';
+    if (id === hovered) return 'brightness(1.06)';
     return 'none';
   };
-
-  const allTextPaths = useMemo(() => {
-    const paths: { id: string; d: string }[] = [];
-    CORE_EMOTIONS.forEach((emotion) => {
-      paths.push({
-        id: `tp-${keyToId(emotion.key)}`,
-        d: textArcPath(CORE_TEXT_RADIUS, emotion.startAngle, emotion.endAngle),
-      });
-    });
-    return paths;
-  }, []);
 
   return (
     <>
@@ -155,81 +144,74 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       aria-label="Emotion wheel"
       {...touchHandlers}
     >
-      <defs>
-        {allTextPaths.map((textPathDef) => (
-          <path key={textPathDef.id} id={textPathDef.id} d={textPathDef.d} fill="none" />
-        ))}
-      </defs>
-
       {/* ── CORE ring ── */}
-      {CORE_EMOTIONS.map((emotion) => {
-        const emotionKey = emotion.key;
-        return (
-          <g
-            key={emotionKey}
-            style={{ cursor: 'pointer' }}
-            onClick={() => handleClick(emotionKey)}
-            onMouseEnter={() => setHovered(emotionKey)}
-            onMouseLeave={() => setHovered(null)}
-            aria-label={translate(emotionKey)}
-            role="button"
+      {wheelLayout.map((core) => (
+        <g
+          key={core.id}
+          style={{ cursor: 'pointer' }}
+          onClick={() => handleClick(core.id)}
+          onMouseEnter={() => setHovered(core.id)}
+          onMouseLeave={() => setHovered(null)}
+          aria-label={core.label}
+          role="button"
+        >
+          <path
+            d={fillPath(CORE_INNER, CORE_OUTER, core.startAngle, core.endAngle)}
+            fill={
+              selected.has(core.id)
+                ? core.color
+                : (ancestorFillMap.get(core.id) ?? core.color)
+            }
+            stroke="white"
+            strokeWidth="1.5"
+            style={{
+              opacity: segmentOpacity(core.id),
+              filter: segmentFilter(core.id),
+              transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
+            }}
+          />
+          <text
+            fontSize="18"
+            fontWeight="700"
+            fill="hsl(var(--foreground))"
+            pointerEvents="none"
+            transform={radialTextTransform(getMidAngle(core.startAngle, core.endAngle), CORE_TEXT_RADIUS)}
+            textAnchor="middle"
+            dominantBaseline="central"
+            style={{ userSelect: 'none' }}
           >
-            <path
-              d={fillPath(CORE_INNER, CORE_OUTER, emotion.startAngle, emotion.endAngle)}
-              fill={selected.has(emotionKey) ? emotion.color : (ancestorFillMap.get(emotionKey) ?? emotion.color)}
-              stroke="white"
-              strokeWidth="1.5"
-              style={{
-                opacity: segmentOpacity(emotionKey),
-                filter: segmentFilter(emotionKey),
-                transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
-              }}
-            />
-            <text
-              fontSize="18"
-              fontWeight="700"
-              fill="hsl(var(--foreground))"
-              pointerEvents="none"
-              style={{ userSelect: 'none' }}
-            >
-              <textPath href={`#tp-${keyToId(emotionKey)}`} startOffset="50%" textAnchor="middle">
-                {translate(emotionKey)}
-              </textPath>
-            </text>
-          </g>
-        );
-      })}
+            {core.label}
+          </text>
+        </g>
+      ))}
 
       {/* ── SECONDARY ring ── */}
-      {CORE_EMOTIONS.map((emotion) => {
-        const secondaryAngleDelta =
-          (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
-        const secondaryFillColor = tintColor(emotion.color, 0.38);
-
-        return emotion.secondary.map((secondaryEmotion, secondaryIndex) => {
-          const segmentStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
-          const segmentEndAngle = segmentStartAngle + secondaryAngleDelta;
-          const midpointAngle = getMidAngle(segmentStartAngle, segmentEndAngle);
-          const emotionKey = secondaryEmotion.key;
-
+      {wheelLayout.map((core) => {
+        const secondaryFillColor = tintColor(core.color, 0.38);
+        return core.children.map((sec) => {
+          const midpointAngle = getMidAngle(sec.startAngle, sec.endAngle);
           return (
             <g
-              key={emotionKey}
+              key={sec.id}
               style={{ cursor: 'pointer' }}
-              onClick={() => handleClick(emotionKey)}
-              onMouseEnter={() => setHovered(emotionKey)}
+              onClick={() => handleClick(sec.id)}
+              onMouseEnter={() => setHovered(sec.id)}
               onMouseLeave={() => setHovered(null)}
-              aria-label={translate(emotionKey)}
+              aria-label={sec.label}
               role="button"
             >
               <path
-                d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                fill={selected.has(emotionKey) ? emotion.color : (ancestorFillMap.get(emotionKey) ?? secondaryFillColor)}
+                d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, sec.startAngle, sec.endAngle)}
+                fill={
+                  selected.has(sec.id)
+                    ? core.color
+                    : (ancestorFillMap.get(sec.id) ?? secondaryFillColor)
+                }
                 stroke="white"
                 strokeWidth="1"
                 style={{
-                  opacity: segmentOpacity(emotionKey),
-                  filter: segmentFilter(emotionKey),
+                  opacity: segmentOpacity(sec.id),
+                  filter: segmentFilter(sec.id),
                   transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
                 }}
               />
@@ -243,7 +225,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
                 dominantBaseline="central"
                 style={{ userSelect: 'none' }}
               >
-                {translate(emotionKey)}
+                {sec.label}
               </text>
             </g>
           );
@@ -251,39 +233,29 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       })}
 
       {/* ── TERTIARY ring ── */}
-      {CORE_EMOTIONS.map((emotion) => {
-        const secondaryAngleDelta =
-          (emotion.endAngle - emotion.startAngle) / emotion.secondary.length;
-        const tertiaryFillColor = tintColor(emotion.color, 0.63);
-
-        return emotion.secondary.map((secondaryEmotion, secondaryIndex) => {
-          const secondaryStartAngle = emotion.startAngle + secondaryIndex * secondaryAngleDelta;
-          const tertiaryAngleDelta = secondaryAngleDelta / secondaryEmotion.tertiary.length;
-
-          return secondaryEmotion.tertiary.map((tertiaryEmotion, tertiaryIndex) => {
-            const segmentStartAngle = secondaryStartAngle + tertiaryIndex * tertiaryAngleDelta;
-            const segmentEndAngle = segmentStartAngle + tertiaryAngleDelta;
-            const midpointAngle = getMidAngle(segmentStartAngle, segmentEndAngle);
-            const emotionKey = tertiaryEmotion.key;
-
+      {wheelLayout.map((core) => {
+        const tertiaryFillColor = tintColor(core.color, 0.63);
+        return core.children.map((sec) =>
+          sec.children.map((ter) => {
+            const midpointAngle = getMidAngle(ter.startAngle, ter.endAngle);
             return (
               <g
-                key={emotionKey}
+                key={ter.id}
                 style={{ cursor: 'pointer' }}
-                onClick={() => handleClick(emotionKey)}
-                onMouseEnter={() => setHovered(emotionKey)}
+                onClick={() => handleClick(ter.id)}
+                onMouseEnter={() => setHovered(ter.id)}
                 onMouseLeave={() => setHovered(null)}
-                aria-label={translate(emotionKey)}
+                aria-label={ter.label}
                 role="button"
               >
                 <path
-                  d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, segmentStartAngle, segmentEndAngle)}
-                  fill={selected.has(emotionKey) ? emotion.color : tertiaryFillColor}
+                  d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, ter.startAngle, ter.endAngle)}
+                  fill={selected.has(ter.id) ? core.color : tertiaryFillColor}
                   stroke="white"
                   strokeWidth="0.7"
                   style={{
-                    opacity: segmentOpacity(emotionKey),
-                    filter: segmentFilter(emotionKey),
+                    opacity: segmentOpacity(ter.id),
+                    filter: segmentFilter(ter.id),
                     transition: 'opacity 180ms ease, filter 180ms ease',
                   }}
                 />
@@ -297,12 +269,12 @@ export const Wheel = ({ onSelect }: WheelProps) => {
                   dominantBaseline="central"
                   style={{ userSelect: 'none' }}
                 >
-                  {translate(emotionKey)}
+                  {ter.label}
                 </text>
               </g>
             );
-          });
-        });
+          }),
+        );
       })}
 
       {/* ── Centre ── */}
