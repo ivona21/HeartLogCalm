@@ -36,7 +36,8 @@ export class ApiClient {
     } catch (error) {
       // Network error (backend unreachable)
       throw {
-        message: "We're sorry, something went wrong. Our team is on it. Please come later",
+        message:
+          "Something went wrong on our end. We're working on fixing it. Please try again in a few minutes.",
         errors: null,
       };
     }
