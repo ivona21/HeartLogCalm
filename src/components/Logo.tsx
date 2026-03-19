@@ -1,4 +1,4 @@
-import LogoComplexImage from '@/assets/LogoComplex.png';
+import LogoComplexImage from '@/assets/LogoComplex-optimized.png';
 import LogoSimpleImage from '@/assets/LogoSimpleWithText.png';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 
