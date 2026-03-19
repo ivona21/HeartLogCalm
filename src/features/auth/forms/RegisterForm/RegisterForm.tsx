@@ -42,7 +42,7 @@ export function RegisterForm() {
           <p className="text-sm text-muted-foreground">Start your emotional wellness journey</p>
         </div>
         <div className="flex justify-center mb-8">
-          <Logo variant="full" className="h-40" />
+          <Logo variant="complex" className="h-40" />
         </div>
         {registerError && (
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">

@@ -1,4 +1,3 @@
-import { HeartIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
@@ -8,6 +7,7 @@ import {
   DialogDescription,
 } from '@/components/ui/Dialog.tsx';
 import { Button } from '@/components/ui/Button.tsx';
+import { Logo } from '@/components/Logo.tsx';
 
 interface AuthPromptModalProps {
   open: boolean;
@@ -31,9 +31,7 @@ export function AuthPromptModal({ open, onClose }: AuthPromptModalProps) {
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-sm text-center">
         <DialogHeader className="items-center gap-3">
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10">
-            <HeartIcon className="w-6 h-6 text-primary" fill="currentColor" />
-          </div>
+          <Logo variant="simple" className="h-20" />
           <DialogTitle className="text-xl">Save your emotions</DialogTitle>
           <DialogDescription className="text-base leading-relaxed">
             Log in or create a free account to track and revisit your emotional journey over time.
