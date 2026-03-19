@@ -17,9 +17,7 @@ import {
 } from '@/features/emotion-wheel/constants/radii.ts';
 import { useWheelGestures } from '@/features/emotion-wheel/hooks/useWheelGestures.ts';
 import {
-  buildTextArcPath,
   getMidAngle,
-  keyToId,
   radialTextTransform,
   tintColor,
   toRad,
@@ -47,13 +45,6 @@ function fillPath(
       endAngle: toRad(endDeg),
     }) ?? ''
   );
-}
-
-function textArcPath(radius: number, startDeg: number, endDeg: number): string {
-  const midpointAngle = getMidAngle(startDeg, endDeg);
-  const norm = ((midpointAngle % 360) + 360) % 360;
-  const reversed = norm >= 90 && norm <= 270;
-  return buildTextArcPath(startDeg, endDeg, radius, reversed);
 }
 
 export const Wheel = ({ onSelect }: WheelProps) => {
@@ -137,13 +128,6 @@ export const Wheel = ({ onSelect }: WheelProps) => {
     return 'none';
   };
 
-  const allTextPaths = useMemo(() => {
-    return wheelLayout.map((core) => ({
-      id: `tp-${keyToId(core.id)}`,
-      d: textArcPath(CORE_TEXT_RADIUS, core.startAngle, core.endAngle),
-    }));
-  }, [wheelLayout]);
-
   return (
     <>
     <svg
@@ -160,12 +144,6 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       aria-label="Emotion wheel"
       {...touchHandlers}
     >
-      <defs>
-        {allTextPaths.map((tp) => (
-          <path key={tp.id} id={tp.id} d={tp.d} fill="none" />
-        ))}
-      </defs>
-
       {/* ── CORE ring ── */}
       {wheelLayout.map((core) => (
         <g
@@ -197,15 +175,12 @@ export const Wheel = ({ onSelect }: WheelProps) => {
             fontWeight="700"
             fill="hsl(var(--foreground))"
             pointerEvents="none"
+            transform={radialTextTransform(getMidAngle(core.startAngle, core.endAngle), CORE_TEXT_RADIUS)}
+            textAnchor="middle"
+            dominantBaseline="central"
             style={{ userSelect: 'none' }}
           >
-            <textPath
-              href={`#tp-${keyToId(core.id)}`}
-              startOffset="50%"
-              textAnchor="middle"
-            >
-              {core.label}
-            </textPath>
+            {core.label}
           </text>
         </g>
       ))}
