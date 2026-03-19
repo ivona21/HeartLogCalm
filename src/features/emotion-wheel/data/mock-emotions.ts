@@ -2,103 +2,48 @@ import { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emoti
 
 export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
-    id: 'joy',
-    label: 'Joy',
-    color: '#F2C94C',
+    id: 'fear',
+    label: 'Fear',
+    color: '#F2994A',
     children: [
       {
-        id: 'joy.cheerful',
-        label: 'Cheerful',
+        id: 'fear.uneasy',
+        label: 'Uneasy',
         children: [
-          { id: 'joy.cheerful.happy', label: 'Happy' },
-          { id: 'joy.cheerful.delighted', label: 'Delighted' },
+          { id: 'fear.uneasy.uneasy', label: 'Uneasy' },
+          { id: 'fear.uneasy.apprehensive', label: 'Apprehensive' },
         ],
       },
       {
-        id: 'joy.playful',
-        label: 'Playful',
+        id: 'fear.anxious',
+        label: 'Anxious',
         children: [
-          { id: 'joy.playful.amused', label: 'Amused' },
-          { id: 'joy.playful.lighthearted', label: 'Lighthearted' },
+          { id: 'fear.anxious.worried', label: 'Worried' },
+          { id: 'fear.anxious.stressed', label: 'Stressed' },
         ],
       },
       {
-        id: 'joy.proud',
-        label: 'Proud',
+        id: 'fear.insecure',
+        label: 'Insecure',
         children: [
-          { id: 'joy.proud.confident', label: 'Confident' },
-          { id: 'joy.proud.accomplished', label: 'Accomplished' },
+          { id: 'fear.insecure.inadequate', label: 'Inadequate' },
+          { id: 'fear.insecure.inferior', label: 'Inferior' },
         ],
       },
       {
-        id: 'joy.fulfilled',
-        label: 'Fulfilled',
+        id: 'fear.frightened',
+        label: 'Frightened',
         children: [
-          { id: 'joy.fulfilled.satisfied', label: 'Satisfied' },
-          { id: 'joy.fulfilled.content', label: 'Content' },
+          { id: 'fear.frightened.scared', label: 'Scared' },
+          { id: 'fear.frightened.alarmed', label: 'Alarmed' },
         ],
       },
       {
-        id: 'joy.hopeful',
-        label: 'Hopeful',
+        id: 'fear.terrified',
+        label: 'Terrified',
         children: [
-          { id: 'joy.hopeful.hopeful', label: 'Hopeful' },
-          { id: 'joy.hopeful.optimistic', label: 'Optimistic' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'sadness',
-    label: 'Sadness',
-    color: '#9B8AC9',
-    children: [
-      {
-        id: 'sadness.hurt',
-        label: 'Hurt',
-        children: [
-          { id: 'sadness.hurt.wounded', label: 'Wounded' },
-          { id: 'sadness.hurt.crushed', label: 'Crushed' },
-        ],
-      },
-      {
-        id: 'sadness.lonely',
-        label: 'Lonely',
-        children: [
-          { id: 'sadness.lonely.isolated', label: 'Isolated' },
-          { id: 'sadness.lonely.abandoned', label: 'Abandoned' },
-        ],
-      },
-      {
-        id: 'sadness.disappointed',
-        label: 'Disappointed',
-        children: [
-          { id: 'sadness.disappointed.let-down', label: 'Let down' },
-          { id: 'sadness.disappointed.discouraged', label: 'Discouraged' },
-        ],
-      },
-      {
-        id: 'sadness.grieving',
-        label: 'Grieving',
-        children: [
-          { id: 'sadness.grieving.sorrowful', label: 'Sorrowful' },
-          { id: 'sadness.grieving.heartbroken', label: 'Heartbroken' },
-        ],
-      },
-      {
-        id: 'sadness.despairing',
-        label: 'Despairing',
-        children: [
-          { id: 'sadness.despairing.hopeless', label: 'Hopeless' },
-          { id: 'sadness.despairing.powerless', label: 'Powerless' },
-        ],
-      },
-      {
-        id: 'sadness.regretful',
-        label: 'Regretful',
-        children: [
-          { id: 'sadness.regretful.guilty', label: 'Guilty' },
-          { id: 'sadness.regretful.remorseful', label: 'Remorseful' },
+          { id: 'fear.terrified.panicked', label: 'Panicked' },
+          { id: 'fear.terrified.horrified', label: 'Horrified' },
         ],
       },
     ],
@@ -151,48 +96,118 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
     ],
   },
   {
-    id: 'fear',
-    label: 'Fear',
-    color: '#F2994A',
+    id: 'disgust',
+    label: 'Disgust',
+    color: '#8D6E63',
     children: [
       {
-        id: 'fear.uneasy',
-        label: 'Uneasy',
+        id: 'disgust.repulsed',
+        label: 'Repulsed',
         children: [
-          { id: 'fear.uneasy.uneasy', label: 'Uneasy' },
-          { id: 'fear.uneasy.apprehensive', label: 'Apprehensive' },
+          { id: 'disgust.repulsed.disgusted', label: 'Disgusted' },
+          { id: 'disgust.repulsed.revolted', label: 'Revolted' },
         ],
       },
       {
-        id: 'fear.anxious',
-        label: 'Anxious',
+        id: 'disgust.contempt',
+        label: 'Contempt',
         children: [
-          { id: 'fear.anxious.worried', label: 'Worried' },
-          { id: 'fear.anxious.stressed', label: 'Stressed' },
+          { id: 'disgust.contempt.scornful', label: 'Scornful' },
+          { id: 'disgust.contempt.disdainful', label: 'Disdainful' },
         ],
       },
       {
-        id: 'fear.insecure',
-        label: 'Insecure',
+        id: 'disgust.averse',
+        label: 'Averse',
         children: [
-          { id: 'fear.insecure.inadequate', label: 'Inadequate' },
-          { id: 'fear.insecure.inferior', label: 'Inferior' },
+          { id: 'disgust.averse.uncomfortable', label: 'Uncomfortable' },
+          { id: 'disgust.averse.resistant', label: 'Resistant' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'calm',
+    label: 'Calm',
+    color: '#6FCF97',
+    children: [
+      {
+        id: 'calm.relaxed',
+        label: 'Relaxed',
+        children: [
+          { id: 'calm.relaxed.at-ease', label: 'At ease' },
+          { id: 'calm.relaxed.restful', label: 'Restful' },
         ],
       },
       {
-        id: 'fear.frightened',
-        label: 'Frightened',
+        id: 'calm.safe',
+        label: 'Safe',
         children: [
-          { id: 'fear.frightened.scared', label: 'Scared' },
-          { id: 'fear.frightened.alarmed', label: 'Alarmed' },
+          { id: 'calm.safe.secure', label: 'Secure' },
+          { id: 'calm.safe.protected', label: 'Protected' },
         ],
       },
       {
-        id: 'fear.terrified',
-        label: 'Terrified',
+        id: 'calm.relieved',
+        label: 'Relieved',
         children: [
-          { id: 'fear.terrified.panicked', label: 'Panicked' },
-          { id: 'fear.terrified.horrified', label: 'Horrified' },
+          { id: 'calm.relieved.reassured', label: 'Reassured' },
+          { id: 'calm.relieved.comforted', label: 'Comforted' },
+        ],
+      },
+      {
+        id: 'calm.peaceful',
+        label: 'Peaceful',
+        children: [
+          { id: 'calm.peaceful.tranquil', label: 'Tranquil' },
+          { id: 'calm.peaceful.serene', label: 'Serene' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'joy',
+    label: 'Joy',
+    color: '#F2C94C',
+    children: [
+      {
+        id: 'joy.cheerful',
+        label: 'Cheerful',
+        children: [
+          { id: 'joy.cheerful.happy', label: 'Happy' },
+          { id: 'joy.cheerful.delighted', label: 'Delighted' },
+        ],
+      },
+      {
+        id: 'joy.playful',
+        label: 'Playful',
+        children: [
+          { id: 'joy.playful.amused', label: 'Amused' },
+          { id: 'joy.playful.lighthearted', label: 'Lighthearted' },
+        ],
+      },
+      {
+        id: 'joy.proud',
+        label: 'Proud',
+        children: [
+          { id: 'joy.proud.confident', label: 'Confident' },
+          { id: 'joy.proud.accomplished', label: 'Accomplished' },
+        ],
+      },
+      {
+        id: 'joy.fulfilled',
+        label: 'Fulfilled',
+        children: [
+          { id: 'joy.fulfilled.satisfied', label: 'Satisfied' },
+          { id: 'joy.fulfilled.content', label: 'Content' },
+        ],
+      },
+      {
+        id: 'joy.hopeful',
+        label: 'Hopeful',
+        children: [
+          { id: 'joy.hopeful.hopeful', label: 'Hopeful' },
+          { id: 'joy.hopeful.optimistic', label: 'Optimistic' },
         ],
       },
     ],
@@ -200,7 +215,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
     id: 'love',
     label: 'Love',
-    color: '#6FCF97',
+    color: '#9B8AC9',
     children: [
       {
         id: 'love.affectionate',
@@ -245,79 +260,9 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
     ],
   },
   {
-    id: 'calm',
-    label: 'Calm',
-    color: '#56CCF2',
-    children: [
-      {
-        id: 'calm.relaxed',
-        label: 'Relaxed',
-        children: [
-          { id: 'calm.relaxed.at-ease', label: 'At ease' },
-          { id: 'calm.relaxed.restful', label: 'Restful' },
-        ],
-      },
-      {
-        id: 'calm.safe',
-        label: 'Safe',
-        children: [
-          { id: 'calm.safe.secure', label: 'Secure' },
-          { id: 'calm.safe.protected', label: 'Protected' },
-        ],
-      },
-      {
-        id: 'calm.relieved',
-        label: 'Relieved',
-        children: [
-          { id: 'calm.relieved.reassured', label: 'Reassured' },
-          { id: 'calm.relieved.comforted', label: 'Comforted' },
-        ],
-      },
-      {
-        id: 'calm.peaceful',
-        label: 'Peaceful',
-        children: [
-          { id: 'calm.peaceful.tranquil', label: 'Tranquil' },
-          { id: 'calm.peaceful.serene', label: 'Serene' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'disgust',
-    label: 'Disgust',
-    color: '#8D6E63',
-    children: [
-      {
-        id: 'disgust.repulsed',
-        label: 'Repulsed',
-        children: [
-          { id: 'disgust.repulsed.disgusted', label: 'Disgusted' },
-          { id: 'disgust.repulsed.revolted', label: 'Revolted' },
-        ],
-      },
-      {
-        id: 'disgust.contempt',
-        label: 'Contempt',
-        children: [
-          { id: 'disgust.contempt.scornful', label: 'Scornful' },
-          { id: 'disgust.contempt.disdainful', label: 'Disdainful' },
-        ],
-      },
-      {
-        id: 'disgust.averse',
-        label: 'Averse',
-        children: [
-          { id: 'disgust.averse.uncomfortable', label: 'Uncomfortable' },
-          { id: 'disgust.averse.resistant', label: 'Resistant' },
-        ],
-      },
-    ],
-  },
-  {
     id: 'surprise',
     label: 'Surprise',
-    color: '#2D9CDB',
+    color: '#56CCF2',
     children: [
       {
         id: 'surprise.startled',
@@ -341,6 +286,61 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         children: [
           { id: 'surprise.amazed.astonished', label: 'Astonished' },
           { id: 'surprise.amazed.awestruck', label: 'Awestruck' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sadness',
+    label: 'Sadness',
+    color: '#2D9CDB',
+    children: [
+      {
+        id: 'sadness.hurt',
+        label: 'Hurt',
+        children: [
+          { id: 'sadness.hurt.wounded', label: 'Wounded' },
+          { id: 'sadness.hurt.crushed', label: 'Crushed' },
+        ],
+      },
+      {
+        id: 'sadness.lonely',
+        label: 'Lonely',
+        children: [
+          { id: 'sadness.lonely.isolated', label: 'Isolated' },
+          { id: 'sadness.lonely.abandoned', label: 'Abandoned' },
+        ],
+      },
+      {
+        id: 'sadness.disappointed',
+        label: 'Disappointed',
+        children: [
+          { id: 'sadness.disappointed.let-down', label: 'Let down' },
+          { id: 'sadness.disappointed.discouraged', label: 'Discouraged' },
+        ],
+      },
+      {
+        id: 'sadness.grieving',
+        label: 'Grieving',
+        children: [
+          { id: 'sadness.grieving.sorrowful', label: 'Sorrowful' },
+          { id: 'sadness.grieving.heartbroken', label: 'Heartbroken' },
+        ],
+      },
+      {
+        id: 'sadness.despairing',
+        label: 'Despairing',
+        children: [
+          { id: 'sadness.despairing.hopeless', label: 'Hopeless' },
+          { id: 'sadness.despairing.powerless', label: 'Powerless' },
+        ],
+      },
+      {
+        id: 'sadness.regretful',
+        label: 'Regretful',
+        children: [
+          { id: 'sadness.regretful.guilty', label: 'Guilty' },
+          { id: 'sadness.regretful.remorseful', label: 'Remorseful' },
         ],
       },
     ],
