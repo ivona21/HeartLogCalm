@@ -6,13 +6,17 @@ import type {
 } from '@/features/emotion-wheel/types/wheel-segment.ts';
 
 export function computeWheelLayout(emotions: BackendCoreEmotion[]): CoreSegment[] {
-  const coreSpan = 360 / emotions.length;
-  const startOffset = -(coreSpan / 2);
+  const totalSecondary = emotions.reduce((sum, core) => sum + core.children.length, 0);
+  const secondarySpan = 360 / totalSecondary;
+  const startOffset = -(emotions[0].children.length * secondarySpan) / 2;
 
-  return emotions.map((core, coreIndex): CoreSegment => {
-    const coreStart = startOffset + coreIndex * coreSpan;
+  let runningAngle = startOffset;
+
+  return emotions.map((core): CoreSegment => {
+    const coreSpan = core.children.length * secondarySpan;
+    const coreStart = runningAngle;
     const coreEnd = coreStart + coreSpan;
-    const secondarySpan = coreSpan / core.children.length;
+    runningAngle = coreEnd;
 
     const children: SecondarySegment[] = core.children.map(
       (secondary, secIndex): SecondarySegment => {
