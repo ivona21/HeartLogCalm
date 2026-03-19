@@ -1,49 +1,49 @@
-import type { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emotion.ts';
+import { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emotion.ts';
 
 export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
-    id: 'anger',
-    label: 'Anger',
-    color: '#DC6B82',
+    id: 'joy',
+    label: 'Joy',
+    color: '#F2C94C',
     children: [
       {
-        id: 'anger.rage',
-        label: 'Rage',
+        id: 'joy.cheerful',
+        label: 'Cheerful',
         children: [
-          { id: 'anger.rage.hate', label: 'Hate' },
-          { id: 'anger.rage.hostile', label: 'Hostile' },
+          { id: 'joy.cheerful.happy', label: 'Happy' },
+          { id: 'joy.cheerful.delighted', label: 'Delighted' },
         ],
       },
       {
-        id: 'anger.exasperated',
-        label: 'Exasperated',
+        id: 'joy.playful',
+        label: 'Playful',
         children: [
-          { id: 'anger.exasperated.agitated', label: 'Agitated' },
-          { id: 'anger.exasperated.frustrated', label: 'Frustrated' },
+          { id: 'joy.playful.amused', label: 'Amused' },
+          { id: 'joy.playful.lighthearted', label: 'Lighthearted' },
         ],
       },
       {
-        id: 'anger.irritable',
-        label: 'Irritable',
+        id: 'joy.proud',
+        label: 'Proud',
         children: [
-          { id: 'anger.irritable.annoyed', label: 'Annoyed' },
-          { id: 'anger.irritable.aggravated', label: 'Aggravated' },
+          { id: 'joy.proud.confident', label: 'Confident' },
+          { id: 'joy.proud.accomplished', label: 'Accomplished' },
         ],
       },
       {
-        id: 'anger.envy',
-        label: 'Envy',
+        id: 'joy.fulfilled',
+        label: 'Fulfilled',
         children: [
-          { id: 'anger.envy.resentful', label: 'Resentful' },
-          { id: 'anger.envy.jealous', label: 'Jealous' },
+          { id: 'joy.fulfilled.satisfied', label: 'Satisfied' },
+          { id: 'joy.fulfilled.content', label: 'Content' },
         ],
       },
       {
-        id: 'anger.disgust',
-        label: 'Disgust',
+        id: 'joy.hopeful',
+        label: 'Hopeful',
         children: [
-          { id: 'anger.disgust.contempt', label: 'Contempt' },
-          { id: 'anger.disgust.revolted', label: 'Revolted' },
+          { id: 'joy.hopeful.hopeful', label: 'Hopeful' },
+          { id: 'joy.hopeful.optimistic', label: 'Optimistic' },
         ],
       },
     ],
@@ -51,46 +51,265 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
     id: 'sadness',
     label: 'Sadness',
-    color: '#9E85C8',
+    color: '#9B8AC9',
     children: [
       {
-        id: 'sadness.suffering',
-        label: 'Suffering',
+        id: 'sadness.hurt',
+        label: 'Hurt',
         children: [
-          { id: 'sadness.suffering.agony', label: 'Agony' },
-          { id: 'sadness.suffering.hurt', label: 'Hurt' },
+          { id: 'sadness.hurt.wounded', label: 'Wounded' },
+          { id: 'sadness.hurt.crushed', label: 'Crushed' },
+        ],
+      },
+      {
+        id: 'sadness.lonely',
+        label: 'Lonely',
+        children: [
+          { id: 'sadness.lonely.isolated', label: 'Isolated' },
+          { id: 'sadness.lonely.abandoned', label: 'Abandoned' },
         ],
       },
       {
         id: 'sadness.disappointed',
         label: 'Disappointed',
         children: [
-          { id: 'sadness.disappointed.depressed', label: 'Depressed' },
-          { id: 'sadness.disappointed.sorrow', label: 'Sorrow' },
+          { id: 'sadness.disappointed.let-down', label: 'Let down' },
+          { id: 'sadness.disappointed.discouraged', label: 'Discouraged' },
         ],
       },
       {
-        id: 'sadness.shameful',
-        label: 'Shameful',
+        id: 'sadness.grieving',
+        label: 'Grieving',
         children: [
-          { id: 'sadness.shameful.regretful', label: 'Regretful' },
-          { id: 'sadness.shameful.guilty', label: 'Guilty' },
+          { id: 'sadness.grieving.sorrowful', label: 'Sorrowful' },
+          { id: 'sadness.grieving.heartbroken', label: 'Heartbroken' },
         ],
       },
       {
-        id: 'sadness.neglected',
-        label: 'Neglected',
+        id: 'sadness.despairing',
+        label: 'Despairing',
         children: [
-          { id: 'sadness.neglected.isolated', label: 'Isolated' },
-          { id: 'sadness.neglected.lonely', label: 'Lonely' },
+          { id: 'sadness.despairing.hopeless', label: 'Hopeless' },
+          { id: 'sadness.despairing.powerless', label: 'Powerless' },
         ],
       },
       {
-        id: 'sadness.despair',
-        label: 'Despair',
+        id: 'sadness.regretful',
+        label: 'Regretful',
         children: [
-          { id: 'sadness.despair.grief', label: 'Grief' },
-          { id: 'sadness.despair.powerless', label: 'Powerless' },
+          { id: 'sadness.regretful.guilty', label: 'Guilty' },
+          { id: 'sadness.regretful.remorseful', label: 'Remorseful' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'anger',
+    label: 'Anger',
+    color: '#EB5757',
+    children: [
+      {
+        id: 'anger.irritated',
+        label: 'Irritated',
+        children: [
+          { id: 'anger.irritated.annoyed', label: 'Annoyed' },
+          { id: 'anger.irritated.frustrated', label: 'Frustrated' },
+        ],
+      },
+      {
+        id: 'anger.resentful',
+        label: 'Resentful',
+        children: [
+          { id: 'anger.resentful.bitter', label: 'Bitter' },
+          { id: 'anger.resentful.offended', label: 'Offended' },
+        ],
+      },
+      {
+        id: 'anger.furious',
+        label: 'Furious',
+        children: [
+          { id: 'anger.furious.enraged', label: 'Enraged' },
+          { id: 'anger.furious.livid', label: 'Livid' },
+        ],
+      },
+      {
+        id: 'anger.defensive',
+        label: 'Defensive',
+        children: [
+          { id: 'anger.defensive.guarded', label: 'Guarded' },
+          { id: 'anger.defensive.provoked', label: 'Provoked' },
+        ],
+      },
+      {
+        id: 'anger.wronged',
+        label: 'Wronged',
+        children: [
+          { id: 'anger.wronged.insulted', label: 'Insulted' },
+          { id: 'anger.wronged.betrayed', label: 'Betrayed' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'fear',
+    label: 'Fear',
+    color: '#F2994A',
+    children: [
+      {
+        id: 'fear.uneasy',
+        label: 'Uneasy',
+        children: [
+          { id: 'fear.uneasy.uneasy', label: 'Uneasy' },
+          { id: 'fear.uneasy.apprehensive', label: 'Apprehensive' },
+        ],
+      },
+      {
+        id: 'fear.anxious',
+        label: 'Anxious',
+        children: [
+          { id: 'fear.anxious.worried', label: 'Worried' },
+          { id: 'fear.anxious.stressed', label: 'Stressed' },
+        ],
+      },
+      {
+        id: 'fear.insecure',
+        label: 'Insecure',
+        children: [
+          { id: 'fear.insecure.inadequate', label: 'Inadequate' },
+          { id: 'fear.insecure.inferior', label: 'Inferior' },
+        ],
+      },
+      {
+        id: 'fear.frightened',
+        label: 'Frightened',
+        children: [
+          { id: 'fear.frightened.scared', label: 'Scared' },
+          { id: 'fear.frightened.alarmed', label: 'Alarmed' },
+        ],
+      },
+      {
+        id: 'fear.terrified',
+        label: 'Terrified',
+        children: [
+          { id: 'fear.terrified.panicked', label: 'Panicked' },
+          { id: 'fear.terrified.horrified', label: 'Horrified' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'love',
+    label: 'Love',
+    color: '#6FCF97',
+    children: [
+      {
+        id: 'love.affectionate',
+        label: 'Affectionate',
+        children: [
+          { id: 'love.affectionate.loving', label: 'Loving' },
+          { id: 'love.affectionate.warm', label: 'Warm' },
+        ],
+      },
+      {
+        id: 'love.caring',
+        label: 'Caring',
+        children: [
+          { id: 'love.caring.compassionate', label: 'Compassionate' },
+          { id: 'love.caring.nurturing', label: 'Nurturing' },
+        ],
+      },
+      {
+        id: 'love.tender',
+        label: 'Tender',
+        children: [
+          { id: 'love.tender.gentle', label: 'Gentle' },
+          { id: 'love.tender.softhearted', label: 'Softhearted' },
+        ],
+      },
+      {
+        id: 'love.attracted',
+        label: 'Attracted',
+        children: [
+          { id: 'love.attracted.enchanted', label: 'Enchanted' },
+          { id: 'love.attracted.infatuated', label: 'Infatuated' },
+        ],
+      },
+      {
+        id: 'love.connected',
+        label: 'Connected',
+        children: [
+          { id: 'love.connected.close', label: 'Close' },
+          { id: 'love.connected.trusting', label: 'Trusting' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'calm',
+    label: 'Calm',
+    color: '#56CCF2',
+    children: [
+      {
+        id: 'calm.relaxed',
+        label: 'Relaxed',
+        children: [
+          { id: 'calm.relaxed.at-ease', label: 'At ease' },
+          { id: 'calm.relaxed.restful', label: 'Restful' },
+        ],
+      },
+      {
+        id: 'calm.safe',
+        label: 'Safe',
+        children: [
+          { id: 'calm.safe.secure', label: 'Secure' },
+          { id: 'calm.safe.protected', label: 'Protected' },
+        ],
+      },
+      {
+        id: 'calm.relieved',
+        label: 'Relieved',
+        children: [
+          { id: 'calm.relieved.reassured', label: 'Reassured' },
+          { id: 'calm.relieved.comforted', label: 'Comforted' },
+        ],
+      },
+      {
+        id: 'calm.peaceful',
+        label: 'Peaceful',
+        children: [
+          { id: 'calm.peaceful.tranquil', label: 'Tranquil' },
+          { id: 'calm.peaceful.serene', label: 'Serene' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'disgust',
+    label: 'Disgust',
+    color: '#8D6E63',
+    children: [
+      {
+        id: 'disgust.repulsed',
+        label: 'Repulsed',
+        children: [
+          { id: 'disgust.repulsed.disgusted', label: 'Disgusted' },
+          { id: 'disgust.repulsed.revolted', label: 'Revolted' },
+        ],
+      },
+      {
+        id: 'disgust.contempt',
+        label: 'Contempt',
+        children: [
+          { id: 'disgust.contempt.scornful', label: 'Scornful' },
+          { id: 'disgust.contempt.disdainful', label: 'Disdainful' },
+        ],
+      },
+      {
+        id: 'disgust.averse',
+        label: 'Averse',
+        children: [
+          { id: 'disgust.averse.uncomfortable', label: 'Uncomfortable' },
+          { id: 'disgust.averse.resistant', label: 'Resistant' },
         ],
       },
     ],
@@ -98,21 +317,21 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
     id: 'surprise',
     label: 'Surprise',
-    color: '#68B8B2',
+    color: '#2D9CDB',
     children: [
       {
-        id: 'surprise.stunned',
-        label: 'Stunned',
+        id: 'surprise.startled',
+        label: 'Startled',
         children: [
-          { id: 'surprise.stunned.shocked', label: 'Shocked' },
-          { id: 'surprise.stunned.dismayed', label: 'Dismayed' },
+          { id: 'surprise.startled.jolted', label: 'Jolted' },
+          { id: 'surprise.startled.shaken', label: 'Shaken' },
         ],
       },
       {
         id: 'surprise.confused',
         label: 'Confused',
         children: [
-          { id: 'surprise.confused.disillusioned', label: 'Disillusioned' },
+          { id: 'surprise.confused.puzzled', label: 'Puzzled' },
           { id: 'surprise.confused.perplexed', label: 'Perplexed' },
         ],
       },
@@ -121,164 +340,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Amazed',
         children: [
           { id: 'surprise.amazed.astonished', label: 'Astonished' },
-          { id: 'surprise.amazed.awestruck', label: 'Awe-struck' },
-        ],
-      },
-      {
-        id: 'surprise.overcome',
-        label: 'Overcome',
-        children: [
-          { id: 'surprise.overcome.speechless', label: 'Speechless' },
-          { id: 'surprise.overcome.astounded', label: 'Astounded' },
-        ],
-      },
-      {
-        id: 'surprise.moved',
-        label: 'Moved',
-        children: [
-          { id: 'surprise.moved.stimulated', label: 'Stimulated' },
-          { id: 'surprise.moved.touched', label: 'Touched' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'joy',
-    label: 'Joy',
-    color: '#8DC878',
-    children: [
-      {
-        id: 'joy.content',
-        label: 'Content',
-        children: [
-          { id: 'joy.content.pleased', label: 'Pleased' },
-          { id: 'joy.content.satisfied', label: 'Satisfied' },
-        ],
-      },
-      {
-        id: 'joy.happy',
-        label: 'Happy',
-        children: [
-          { id: 'joy.happy.amused', label: 'Amused' },
-          { id: 'joy.happy.delighted', label: 'Delighted' },
-        ],
-      },
-      {
-        id: 'joy.cheerful',
-        label: 'Cheerful',
-        children: [
-          { id: 'joy.cheerful.jovial', label: 'Jovial' },
-          { id: 'joy.cheerful.blissful', label: 'Blissful' },
-        ],
-      },
-      {
-        id: 'joy.proud',
-        label: 'Proud',
-        children: [
-          { id: 'joy.proud.triumphant', label: 'Triumphant' },
-          { id: 'joy.proud.illustrious', label: 'Illustrious' },
-        ],
-      },
-      {
-        id: 'joy.optimistic',
-        label: 'Optimistic',
-        children: [
-          { id: 'joy.optimistic.hopeful', label: 'Hopeful' },
-          { id: 'joy.optimistic.eager', label: 'Eager' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'love',
-    label: 'Love',
-    color: '#E8C85A',
-    children: [
-      {
-        id: 'love.affectionate',
-        label: 'Affectionate',
-        children: [
-          { id: 'love.affectionate.fondness', label: 'Fondness' },
-          { id: 'love.affectionate.romantic', label: 'Romantic' },
-        ],
-      },
-      {
-        id: 'love.enthralled',
-        label: 'Enthralled',
-        children: [
-          { id: 'love.enthralled.rapture', label: 'Rapture' },
-          { id: 'love.enthralled.enchanted', label: 'Enchanted' },
-        ],
-      },
-      {
-        id: 'love.longing',
-        label: 'Longing',
-        children: [
-          { id: 'love.longing.attracted', label: 'Attracted' },
-          { id: 'love.longing.sentimental', label: 'Sentimental' },
-        ],
-      },
-      {
-        id: 'love.desire',
-        label: 'Desire',
-        children: [
-          { id: 'love.desire.infatuation', label: 'Infatuation' },
-          { id: 'love.desire.passion', label: 'Passion' },
-        ],
-      },
-      {
-        id: 'love.tenderness',
-        label: 'Tenderness',
-        children: [
-          { id: 'love.tenderness.caring', label: 'Caring' },
-          { id: 'love.tenderness.compassionate', label: 'Compassionate' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'fear',
-    label: 'Fear',
-    color: '#E8966E',
-    children: [
-      {
-        id: 'fear.peaceful',
-        label: 'Peaceful',
-        children: [
-          { id: 'fear.peaceful.satisfied', label: 'Satisfied' },
-          { id: 'fear.peaceful.relieved', label: 'Relieved' },
-        ],
-      },
-      {
-        id: 'fear.scared',
-        label: 'Scared',
-        children: [
-          { id: 'fear.scared.frightened', label: 'Frightened' },
-          { id: 'fear.scared.helpless', label: 'Helpless' },
-        ],
-      },
-      {
-        id: 'fear.terror',
-        label: 'Terror',
-        children: [
-          { id: 'fear.terror.panic', label: 'Panic' },
-          { id: 'fear.terror.hysterical', label: 'Hysterical' },
-        ],
-      },
-      {
-        id: 'fear.insecure',
-        label: 'Insecure',
-        children: [
-          { id: 'fear.insecure.inferior', label: 'Inferior' },
-          { id: 'fear.insecure.inadequate', label: 'Inadequate' },
-        ],
-      },
-      {
-        id: 'fear.nervous',
-        label: 'Nervous',
-        children: [
-          { id: 'fear.nervous.worried', label: 'Worried' },
-          { id: 'fear.nervous.anxious', label: 'Anxious' },
+          { id: 'surprise.amazed.awestruck', label: 'Awestruck' },
         ],
       },
     ],
