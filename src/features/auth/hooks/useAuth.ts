@@ -30,7 +30,7 @@ export function useAuth() {
 
   const logout = () => {
     clearAuth();
-    navigate('/login');
+    navigate('/');
   };
 
   return {
