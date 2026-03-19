@@ -315,10 +315,10 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       />
       <image
         href={LogoIconImage}
-        x={-CENTER_RADIUS * 0.525}
-        y={-CENTER_RADIUS * 0.525}
-        width={CENTER_RADIUS * 1.05}
-        height={CENTER_RADIUS * 1.05}
+        x={-CENTER_RADIUS * 0.39375}
+        y={-CENTER_RADIUS * 0.39375}
+        width={CENTER_RADIUS * 0.7875}
+        height={CENTER_RADIUS * 0.7875}
         style={{ pointerEvents: 'none' }}
       />
     </svg>
