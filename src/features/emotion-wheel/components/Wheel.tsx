@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import LogoSimpleImage from '@/assets/LogoSimpleWithText.png';
+import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
 import { CORE_EMOTIONS } from '@/features/emotion-wheel/constants/core-emotions.ts';
 import { useTranslation } from '@/lib/i18n';
@@ -314,11 +314,11 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         style={{ pointerEvents: 'none' }}
       />
       <image
-        href={LogoSimpleImage}
-        x={-CENTER_RADIUS * 0.85}
-        y={-CENTER_RADIUS * 0.38}
-        width={CENTER_RADIUS * 1.7}
-        height={CENTER_RADIUS * 0.76}
+        href={LogoIconImage}
+        x={-CENTER_RADIUS * 0.39375}
+        y={-CENTER_RADIUS * 0.39375}
+        width={CENTER_RADIUS * 0.7875}
+        height={CENTER_RADIUS * 0.7875}
         style={{ pointerEvents: 'none' }}
       />
     </svg>
