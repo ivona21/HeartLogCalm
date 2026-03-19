@@ -27,10 +27,19 @@ export class ApiClient {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      ...options,
-      headers,
-    });
+    let response;
+    try {
+      response = await fetch(`${this.baseURL}${endpoint}`, {
+        ...options,
+        headers,
+      });
+    } catch (error) {
+      // Network error (backend unreachable)
+      throw {
+        message: "We're sorry, something went wrong. Our team is on it. Please come later",
+        errors: null,
+      };
+    }
 
     if (!response.ok) {
       let errorBody: any = null;
