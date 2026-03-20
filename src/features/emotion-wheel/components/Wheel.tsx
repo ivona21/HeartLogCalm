@@ -51,7 +51,7 @@ function fillPath(
 }
 
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
-  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary } = useWheelMode(mode, onSelect);
+  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecId } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -179,9 +179,11 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       ))}
 
       {/* ── SECONDARY ring ── */}
-      {showSecondary && wheelLayout.map((core) => {
-        const secondaryFillColor = tintColor(core.color, 0.38);
-        return core.children.map((sec) => {
+      {showSecondary && wheelLayout
+        .filter((core) => mode === 'full' || core.id === activeCoreId)
+        .map((core) => {
+          const secondaryFillColor = tintColor(core.color, 0.38);
+          return core.children.map((sec) => {
           const midpointAngle = getMidAngle(sec.startAngle, sec.endAngle);
           return (
             <g
@@ -222,14 +224,16 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
               </text>
             </g>
           );
-        });
-      })}
+          });
+        })}
 
       {/* ── TERTIARY ring ── */}
       {showTertiary && wheelLayout.map((core) => {
         const tertiaryFillColor = tintColor(core.color, 0.63);
-        return core.children.map((sec) =>
-          sec.children.map((ter) => {
+        return core.children
+          .filter((sec) => mode === 'full' || sec.id === activeSecId)
+          .map((sec) =>
+            sec.children.map((ter) => {
             const midpointAngle = getMidAngle(ter.startAngle, ter.endAngle);
             return (
               <g
