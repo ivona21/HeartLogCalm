@@ -7,6 +7,7 @@ interface UseWheelModeReturn {
   hovered: string | null;
   activeCoreId: string | null;
   activeSecId: string | null;
+  activeTertiaryId: string | null;
   showSecondary: boolean;
   showTertiary: boolean;
   handleClick: (id: string) => void;
@@ -19,6 +20,7 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
   const [hovered, setHovered] = useState<string | null>(null);
   const [activeCoreId, setActiveCoreId] = useState<string | null>(null);
   const [activeSecId, setActiveSecId] = useState<string | null>(null);
+  const [activeTertiaryId, setActiveTertiaryId] = useState<string | null>(null);
 
   const handleClick = useCallback((id: string) => {
     if (mode === 'full') {
@@ -41,8 +43,10 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
       } else if (parts.length === 2) {
         // Secondary clicked: drill into this secondary
         setActiveSecId(id);
+        setActiveTertiaryId(null);
       } else if (parts.length === 3) {
-        // Tertiary clicked: add to selection
+        // Tertiary clicked: activate it (for visual feedback) and add to selection
+        setActiveTertiaryId(id);
         setSelected((prev) => {
           const next = new Set(prev);
           const exists = next.has(id);
@@ -63,6 +67,7 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
     hovered,
     activeCoreId,
     activeSecId,
+    activeTertiaryId,
     showSecondary,
     showTertiary,
     handleClick,

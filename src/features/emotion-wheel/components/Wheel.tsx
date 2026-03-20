@@ -51,7 +51,7 @@ function fillPath(
 }
 
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
-  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecId } = useWheelMode(mode, onSelect);
+  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecId, activeTertiaryId } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -118,6 +118,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const segmentFilter = (id: string) => {
     if (selected.has(id)) return 'brightness(1.08)';
     if (id === hovered) return 'brightness(1.06)';
+    if (id === activeTertiaryId) return 'brightness(1.1)';
     return 'none';
   };
 
