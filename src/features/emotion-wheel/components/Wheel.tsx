@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
+import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { MOCK_EMOTIONS } from '@/features/emotion-wheel/data/mock-emotions.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
+import { useWheelMode } from '@/features/emotion-wheel/hooks/useWheelMode.ts';
 import {
   CENTER_RADIUS,
   CORE_INNER,
@@ -26,6 +28,7 @@ import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 
 interface WheelProps {
+  mode?: WheelDisplayMode;
   onSelect?: (emotionIds: string[]) => void;
 }
 
@@ -47,9 +50,8 @@ function fillPath(
   );
 }
 
-export const Wheel = ({ onSelect }: WheelProps) => {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [hovered, setHovered] = useState<string | null>(null);
+export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
+  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -95,19 +97,10 @@ export const Wheel = ({ onSelect }: WheelProps) => {
     return { ancestorOf, directParentOf, ancestorFillMap };
   }, [selected, wheelLayout]);
 
-  const handleClick = (id: string) => {
+  const handleWheelClick = (id: string) => {
     const isFirstSelection = selected.size === 0 && !selected.has(id);
-
-    setSelected((prev) => {
-      const next = new Set(prev);
-      const exists = next.has(id);
-
-      if (exists) next.delete(id);
-      else if (next.size < 10) next.add(id);
-
-      onSelect?.([...next]);
-      return next;
-    });
+    
+    handleClick(id);
 
     if (isFirstSelection && !isAuthenticated) {
       setAuthModalOpen(true);
@@ -149,7 +142,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         <g
           key={core.id}
           style={{ cursor: 'pointer' }}
-          onClick={() => handleClick(core.id)}
+          onClick={() => handleWheelClick(core.id)}
           onMouseEnter={() => setHovered(core.id)}
           onMouseLeave={() => setHovered(null)}
           aria-label={core.label}
@@ -186,7 +179,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       ))}
 
       {/* ── SECONDARY ring ── */}
-      {wheelLayout.map((core) => {
+      {showSecondary && wheelLayout.map((core) => {
         const secondaryFillColor = tintColor(core.color, 0.38);
         return core.children.map((sec) => {
           const midpointAngle = getMidAngle(sec.startAngle, sec.endAngle);
@@ -194,7 +187,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
             <g
               key={sec.id}
               style={{ cursor: 'pointer' }}
-              onClick={() => handleClick(sec.id)}
+              onClick={() => handleWheelClick(sec.id)}
               onMouseEnter={() => setHovered(sec.id)}
               onMouseLeave={() => setHovered(null)}
               aria-label={sec.label}
@@ -233,7 +226,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       })}
 
       {/* ── TERTIARY ring ── */}
-      {wheelLayout.map((core) => {
+      {showTertiary && wheelLayout.map((core) => {
         const tertiaryFillColor = tintColor(core.color, 0.63);
         return core.children.map((sec) =>
           sec.children.map((ter) => {
@@ -242,7 +235,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
               <g
                 key={ter.id}
                 style={{ cursor: 'pointer' }}
-                onClick={() => handleClick(ter.id)}
+                onClick={() => handleWheelClick(ter.id)}
                 onMouseEnter={() => setHovered(ter.id)}
                 onMouseLeave={() => setHovered(null)}
                 aria-label={ter.label}
