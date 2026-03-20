@@ -278,7 +278,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Attracted',
         children: [
           { id: 'love.attracted.interested', label: 'Interested' },
-          { id: 'love.attracted.infatuated', label: 'Infatuated' },
+          { id: 'love.attracted.longing', label: 'Longing' },
         ],
       },
       {
@@ -389,6 +389,22 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         children: [
           { id: 'sadness.exposed.embarrassed', label: 'Embarrassed' },
           { id: 'sadness.exposed.ashamed', label: 'Ashamed' },
+        ],
+      },
+      {
+        id: 'sadness.fatigued',
+        label: 'Fatigued',
+        children: [
+          { id: 'sadness.fatigued.tired', label: 'Tired' },
+          { id: 'sadness.fatigued.exhausted', label: 'Exhausted' },
+        ],
+      },
+      {
+        id: 'sadness.numb',
+        label: 'Numb',
+        children: [
+          { id: 'sadness.numb.empty', label: 'Empty' },
+          { id: 'sadness.numb.disconnected', label: 'Disconnected' },
         ],
       },
     ],
