@@ -27,4 +27,4 @@ export const DEFAULT_HOME_ROUTE = '/emotion-wheel';
  * In the future, this will be configurable by users in their app settings.
  */
 export type WheelDisplayMode = 'full' | 'progressive';
-export const DEFAULT_WHEEL_DISPLAY_MODE: WheelDisplayMode = 'progressive';
+export const DEFAULT_WHEEL_DISPLAY_MODE: WheelDisplayMode = 'full';
