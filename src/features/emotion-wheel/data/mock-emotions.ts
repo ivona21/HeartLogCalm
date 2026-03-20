@@ -10,7 +10,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         id: 'fear.uneasy',
         label: 'Uneasy',
         children: [
-          { id: 'fear.uneasy.uneasy', label: 'Uneasy' },
+          { id: 'fear.uneasy.restless', label: 'Restless' },
           { id: 'fear.uneasy.apprehensive', label: 'Apprehensive' },
         ],
       },
@@ -20,6 +20,14 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         children: [
           { id: 'fear.anxious.worried', label: 'Worried' },
           { id: 'fear.anxious.stressed', label: 'Stressed' },
+        ],
+      },
+      {
+        id: 'fear.overloaded',
+        label: 'Overloaded',
+        children: [
+          { id: 'fear.overloaded.overwhelmed', label: 'Overwhelmed' },
+          { id: 'fear.overloaded.pressured', label: 'Pressured' },
         ],
       },
       {
@@ -58,7 +66,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Irritated',
         children: [
           { id: 'anger.irritated.annoyed', label: 'Annoyed' },
-          { id: 'anger.irritated.frustrated', label: 'Frustrated' },
+          { id: 'anger.irritated.bored', label: 'Bored' },
         ],
       },
       {
@@ -82,7 +90,15 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Defensive',
         children: [
           { id: 'anger.defensive.guarded', label: 'Guarded' },
-          { id: 'anger.defensive.provoked', label: 'Provoked' },
+          { id: 'anger.defensive.attacked', label: 'Attacked' },
+        ],
+      },
+      {
+        id: 'anger.comparing',
+        label: 'Comparing',
+        children: [
+          { id: 'anger.comparing.envious', label: 'Envious' },
+          { id: 'anger.comparing.jealous', label: 'Jealous' },
         ],
       },
       {
@@ -98,7 +114,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
     id: 'disgust',
     label: 'Disgust',
-    color: '#8D6E63',
+    color: '#A3B83C',
     children: [
       {
         id: 'disgust.repulsed',
@@ -121,7 +137,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Averse',
         children: [
           { id: 'disgust.averse.uncomfortable', label: 'Uncomfortable' },
-          { id: 'disgust.averse.resistant', label: 'Resistant' },
+          { id: 'disgust.averse.avoidant', label: 'Avoidant' },
         ],
       },
     ],
@@ -136,7 +152,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Relaxed',
         children: [
           { id: 'calm.relaxed.at-ease', label: 'At ease' },
-          { id: 'calm.relaxed.restful', label: 'Restful' },
+          { id: 'calm.relaxed.loose', label: 'Loose' },
         ],
       },
       {
@@ -190,7 +206,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         id: 'joy.proud',
         label: 'Proud',
         children: [
-          { id: 'joy.proud.confident', label: 'Confident' },
+          { id: 'joy.proud.capable', label: 'Capable' },
           { id: 'joy.proud.accomplished', label: 'Accomplished' },
         ],
       },
@@ -206,8 +222,16 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         id: 'joy.hopeful',
         label: 'Hopeful',
         children: [
-          { id: 'joy.hopeful.hopeful', label: 'Hopeful' },
+          { id: 'joy.hopeful.encouraged', label: 'Encouraged' },
           { id: 'joy.hopeful.optimistic', label: 'Optimistic' },
+        ],
+      },
+      {
+        id: 'joy.excited',
+        label: 'Excited',
+        children: [
+          { id: 'joy.excited.eager', label: 'Eager' },
+          { id: 'joy.excited.thrilled', label: 'Thrilled' },
         ],
       },
     ],
@@ -230,7 +254,15 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Caring',
         children: [
           { id: 'love.caring.compassionate', label: 'Compassionate' },
-          { id: 'love.caring.nurturing', label: 'Nurturing' },
+          { id: 'love.caring.supportive', label: 'Supportive' },
+        ],
+      },
+      {
+        id: 'love.grateful',
+        label: 'Grateful',
+        children: [
+          { id: 'love.grateful.thankful', label: 'Thankful' },
+          { id: 'love.grateful.blessed', label: 'Blessed' },
         ],
       },
       {
@@ -245,7 +277,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         id: 'love.attracted',
         label: 'Attracted',
         children: [
-          { id: 'love.attracted.enchanted', label: 'Enchanted' },
+          { id: 'love.attracted.interested', label: 'Interested' },
           { id: 'love.attracted.infatuated', label: 'Infatuated' },
         ],
       },
@@ -262,7 +294,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
   {
     id: 'surprise',
     label: 'Surprise',
-    color: '#56CCF2',
+    color: '#6EC9DA',
     children: [
       {
         id: 'surprise.startled',
@@ -285,7 +317,15 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Amazed',
         children: [
           { id: 'surprise.amazed.astonished', label: 'Astonished' },
-          { id: 'surprise.amazed.awestruck', label: 'Awestruck' },
+          { id: 'surprise.amazed.curious', label: 'Curious' },
+        ],
+      },
+      {
+        id: 'surprise.shocked',
+        label: 'Shocked',
+        children: [
+          { id: 'surprise.shocked.stunned', label: 'Stunned' },
+          { id: 'surprise.shocked.speechless', label: 'Speechless' },
         ],
       },
     ],
@@ -300,7 +340,7 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         label: 'Hurt',
         children: [
           { id: 'sadness.hurt.wounded', label: 'Wounded' },
-          { id: 'sadness.hurt.crushed', label: 'Crushed' },
+          { id: 'sadness.hurt.rejected', label: 'Rejected' },
         ],
       },
       {
@@ -341,6 +381,14 @@ export const MOCK_EMOTIONS: BackendCoreEmotion[] = [
         children: [
           { id: 'sadness.regretful.guilty', label: 'Guilty' },
           { id: 'sadness.regretful.remorseful', label: 'Remorseful' },
+        ],
+      },
+      {
+        id: 'sadness.exposed',
+        label: 'Exposed',
+        children: [
+          { id: 'sadness.exposed.embarrassed', label: 'Embarrassed' },
+          { id: 'sadness.exposed.ashamed', label: 'Ashamed' },
         ],
       },
     ],
