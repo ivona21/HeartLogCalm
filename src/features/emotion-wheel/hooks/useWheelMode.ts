@@ -7,7 +7,7 @@ interface UseWheelModeReturn {
   selected: Set<string>;
   hovered: string | null;
   activeCoreId: string | null;
-  activeSecId: string | null;
+  activeSecondaryId: string | null;
   activeTertiaryId: string | null;
   showSecondary: boolean;
   showTertiary: boolean;
@@ -20,7 +20,7 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState<string | null>(null);
   const [activeCoreId, setActiveCoreId] = useState<string | null>(null);
-  const [activeSecId, setActiveSecId] = useState<string | null>(null);
+  const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(null);
   const [activeTertiaryId, setActiveTertiaryId] = useState<string | null>(null);
 
   const handleClick = useCallback((id: string) => {
@@ -40,10 +40,10 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
       if (parts.length === EMOTION_DEPTH.CORE) {
         // Core clicked: drill into this core
         setActiveCoreId(id);
-        setActiveSecId(null);
+        setActiveSecondaryId(null);
       } else if (parts.length === EMOTION_DEPTH.SECONDARY) {
         // Secondary clicked: drill into this secondary
-        setActiveSecId(id);
+        setActiveSecondaryId(id);
         setActiveTertiaryId(null);
       } else if (parts.length === EMOTION_DEPTH.TERTIARY) {
         // Tertiary clicked: activate it (for visual feedback) and add to selection
@@ -61,13 +61,13 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
   }, [mode, onSelect]);
 
   const showSecondary = mode === 'full' || activeCoreId !== null;
-  const showTertiary = mode === 'full' || activeSecId !== null;
+  const showTertiary = mode === 'full' || activeSecondaryId !== null;
 
   return {
     selected,
     hovered,
     activeCoreId,
-    activeSecId,
+    activeSecondaryId,
     activeTertiaryId,
     showSecondary,
     showTertiary,

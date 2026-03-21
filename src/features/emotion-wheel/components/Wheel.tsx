@@ -51,7 +51,7 @@ function fillPath(
 }
 
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
-  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecId, activeTertiaryId } = useWheelMode(mode, onSelect);
+  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecondaryId, activeTertiaryId } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -184,47 +184,47 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
         .filter((core) => mode === 'full' || core.id === activeCoreId)
         .map((core) => {
           const secondaryFillColor = tintColor(core.color, 0.38);
-          return core.children.map((sec) => {
-          const midpointAngle = getMidAngle(sec.startAngle, sec.endAngle);
-          return (
-            <g
-              key={sec.id}
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleWheelClick(sec.id)}
-              onMouseEnter={() => setHovered(sec.id)}
-              onMouseLeave={() => setHovered(null)}
-              aria-label={sec.label}
-              role="button"
-            >
-              <path
-                d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, sec.startAngle, sec.endAngle)}
-                fill={
-                  selected.has(sec.id)
-                    ? core.color
-                    : (ancestorFillMap.get(sec.id) ?? secondaryFillColor)
-                }
-                stroke="white"
-                strokeWidth="1"
-                style={{
-                  opacity: segmentOpacity(sec.id),
-                  filter: segmentFilter(sec.id),
-                  transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
-                }}
-              />
-              <text
-                fontSize="16"
-                fontWeight="500"
-                fill="hsl(var(--foreground))"
-                pointerEvents="none"
-                transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
-                textAnchor="middle"
-                dominantBaseline="central"
-                style={{ userSelect: 'none' }}
+          return core.children.map((secondary) => {
+            const midpointAngle = getMidAngle(secondary.startAngle, secondary.endAngle);
+            return (
+              <g
+                key={secondary.id}
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleWheelClick(secondary.id)}
+                onMouseEnter={() => setHovered(secondary.id)}
+                onMouseLeave={() => setHovered(null)}
+                aria-label={secondary.label}
+                role="button"
               >
-                {sec.label}
-              </text>
-            </g>
-          );
+                <path
+                  d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, secondary.startAngle, secondary.endAngle)}
+                  fill={
+                    selected.has(secondary.id)
+                      ? core.color
+                      : (ancestorFillMap.get(secondary.id) ?? secondaryFillColor)
+                  }
+                  stroke="white"
+                  strokeWidth="1"
+                  style={{
+                    opacity: segmentOpacity(secondary.id),
+                    filter: segmentFilter(secondary.id),
+                    transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
+                  }}
+                />
+                <text
+                  fontSize="16"
+                  fontWeight="500"
+                  fill="hsl(var(--foreground))"
+                  pointerEvents="none"
+                  transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  style={{ userSelect: 'none' }}
+                >
+                  {secondary.label}
+                </text>
+              </g>
+            );
           });
         })}
 
@@ -232,47 +232,47 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       {showTertiary && wheelLayout.map((core) => {
         const tertiaryFillColor = tintColor(core.color, 0.63);
         return core.children
-          .filter((sec) => mode === 'full' || sec.id === activeSecId)
-          .map((sec) =>
-            sec.children.map((ter) => {
-            const midpointAngle = getMidAngle(ter.startAngle, ter.endAngle);
-            return (
-              <g
-                key={ter.id}
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleWheelClick(ter.id)}
-                onMouseEnter={() => setHovered(ter.id)}
-                onMouseLeave={() => setHovered(null)}
-                aria-label={ter.label}
-                role="button"
-              >
-                <path
-                  d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, ter.startAngle, ter.endAngle)}
-                  fill={selected.has(ter.id) ? core.color : tertiaryFillColor}
-                  stroke="white"
-                  strokeWidth="0.7"
-                  style={{
-                    opacity: segmentOpacity(ter.id),
-                    filter: segmentFilter(ter.id),
-                    transition: 'opacity 180ms ease, filter 180ms ease',
-                  }}
-                />
-                <text
-                  fontSize="17"
-                  fontWeight="400"
-                  fill="hsl(var(--foreground))"
-                  pointerEvents="none"
-                  transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  style={{ userSelect: 'none' }}
+          .filter((secondary) => mode === 'full' || secondary.id === activeSecondaryId)
+          .map((secondary) =>
+            secondary.children.map((tertiary) => {
+              const midpointAngle = getMidAngle(tertiary.startAngle, tertiary.endAngle);
+              return (
+                <g
+                  key={tertiary.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleWheelClick(tertiary.id)}
+                  onMouseEnter={() => setHovered(tertiary.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  aria-label={tertiary.label}
+                  role="button"
                 >
-                  {ter.label}
-                </text>
-              </g>
-            );
-          }),
-        );
+                  <path
+                    d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, tertiary.startAngle, tertiary.endAngle)}
+                    fill={selected.has(tertiary.id) ? core.color : tertiaryFillColor}
+                    stroke="white"
+                    strokeWidth="0.7"
+                    style={{
+                      opacity: segmentOpacity(tertiary.id),
+                      filter: segmentFilter(tertiary.id),
+                      transition: 'opacity 180ms ease, filter 180ms ease',
+                    }}
+                  />
+                  <text
+                    fontSize="17"
+                    fontWeight="400"
+                    fill="hsl(var(--foreground))"
+                    pointerEvents="none"
+                    transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {tertiary.label}
+                  </text>
+                </g>
+              );
+            })
+          );
       })}
 
       {/* ── Centre ── */}
