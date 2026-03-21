@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { EMOTION_DEPTH, MAX_SELECTED_EMOTIONS } from '@/features/emotion-wheel/constants/emotion-hierarchy.ts';
 
 export type WheelDisplayMode = 'full' | 'progressive';
 
@@ -29,29 +30,29 @@ export function useWheelMode(mode: WheelDisplayMode, onSelect?: (emotionIds: str
         const next = new Set(prev);
         const exists = next.has(id);
         if (exists) next.delete(id);
-        else if (next.size < 10) next.add(id);
+        else if (next.size < MAX_SELECTED_EMOTIONS) next.add(id);
         onSelect?.([...next]);
         return next;
       });
     } else {
       // Progressive mode: drill-down navigation
       const parts = id.split('.');
-      if (parts.length === 1) {
+      if (parts.length === EMOTION_DEPTH.CORE) {
         // Core clicked: drill into this core
         setActiveCoreId(id);
         setActiveSecId(null);
-      } else if (parts.length === 2) {
+      } else if (parts.length === EMOTION_DEPTH.SECONDARY) {
         // Secondary clicked: drill into this secondary
         setActiveSecId(id);
         setActiveTertiaryId(null);
-      } else if (parts.length === 3) {
+      } else if (parts.length === EMOTION_DEPTH.TERTIARY) {
         // Tertiary clicked: activate it (for visual feedback) and add to selection
         setActiveTertiaryId(id);
         setSelected((prev) => {
           const next = new Set(prev);
           const exists = next.has(id);
           if (exists) next.delete(id);
-          else if (next.size < 10) next.add(id);
+          else if (next.size < MAX_SELECTED_EMOTIONS) next.add(id);
           onSelect?.([...next]);
           return next;
         });
