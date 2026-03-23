@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
+import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { MOCK_EMOTIONS } from '@/features/emotion-wheel/data/mock-emotions.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
+import { useWheelMode } from '@/features/emotion-wheel/hooks/useWheelMode.ts';
 import {
   CENTER_RADIUS,
   CORE_INNER,
@@ -26,6 +28,7 @@ import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 
 interface WheelProps {
+  mode?: WheelDisplayMode;
   onSelect?: (emotionIds: string[]) => void;
 }
 
@@ -47,9 +50,8 @@ function fillPath(
   );
 }
 
-export const Wheel = ({ onSelect }: WheelProps) => {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [hovered, setHovered] = useState<string | null>(null);
+export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
+  const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecondaryId, activeTertiaryId } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -95,19 +97,10 @@ export const Wheel = ({ onSelect }: WheelProps) => {
     return { ancestorOf, directParentOf, ancestorFillMap };
   }, [selected, wheelLayout]);
 
-  const handleClick = (id: string) => {
+  const handleWheelClick = (id: string) => {
     const isFirstSelection = selected.size === 0 && !selected.has(id);
-
-    setSelected((prev) => {
-      const next = new Set(prev);
-      const exists = next.has(id);
-
-      if (exists) next.delete(id);
-      else if (next.size < 10) next.add(id);
-
-      onSelect?.([...next]);
-      return next;
-    });
+    
+    handleClick(id);
 
     if (isFirstSelection && !isAuthenticated) {
       setAuthModalOpen(true);
@@ -125,6 +118,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
   const segmentFilter = (id: string) => {
     if (selected.has(id)) return 'brightness(1.08)';
     if (id === hovered) return 'brightness(1.06)';
+    if (id === activeTertiaryId) return 'brightness(1.1)';
     return 'none';
   };
 
@@ -149,7 +143,7 @@ export const Wheel = ({ onSelect }: WheelProps) => {
         <g
           key={core.id}
           style={{ cursor: 'pointer' }}
-          onClick={() => handleClick(core.id)}
+          onClick={() => handleWheelClick(core.id)}
           onMouseEnter={() => setHovered(core.id)}
           onMouseLeave={() => setHovered(null)}
           aria-label={core.label}
@@ -186,95 +180,99 @@ export const Wheel = ({ onSelect }: WheelProps) => {
       ))}
 
       {/* ── SECONDARY ring ── */}
-      {wheelLayout.map((core) => {
-        const secondaryFillColor = tintColor(core.color, 0.38);
-        return core.children.map((sec) => {
-          const midpointAngle = getMidAngle(sec.startAngle, sec.endAngle);
-          return (
-            <g
-              key={sec.id}
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleClick(sec.id)}
-              onMouseEnter={() => setHovered(sec.id)}
-              onMouseLeave={() => setHovered(null)}
-              aria-label={sec.label}
-              role="button"
-            >
-              <path
-                d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, sec.startAngle, sec.endAngle)}
-                fill={
-                  selected.has(sec.id)
-                    ? core.color
-                    : (ancestorFillMap.get(sec.id) ?? secondaryFillColor)
-                }
-                stroke="white"
-                strokeWidth="1"
-                style={{
-                  opacity: segmentOpacity(sec.id),
-                  filter: segmentFilter(sec.id),
-                  transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
-                }}
-              />
-              <text
-                fontSize="16"
-                fontWeight="500"
-                fill="hsl(var(--foreground))"
-                pointerEvents="none"
-                transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
-                textAnchor="middle"
-                dominantBaseline="central"
-                style={{ userSelect: 'none' }}
-              >
-                {sec.label}
-              </text>
-            </g>
-          );
-        });
-      })}
-
-      {/* ── TERTIARY ring ── */}
-      {wheelLayout.map((core) => {
-        const tertiaryFillColor = tintColor(core.color, 0.63);
-        return core.children.map((sec) =>
-          sec.children.map((ter) => {
-            const midpointAngle = getMidAngle(ter.startAngle, ter.endAngle);
+      {showSecondary && wheelLayout
+        .filter((core) => mode === 'full' || core.id === activeCoreId)
+        .map((core) => {
+          const secondaryFillColor = tintColor(core.color, 0.38);
+          return core.children.map((secondary) => {
+            const midpointAngle = getMidAngle(secondary.startAngle, secondary.endAngle);
             return (
               <g
-                key={ter.id}
+                key={secondary.id}
                 style={{ cursor: 'pointer' }}
-                onClick={() => handleClick(ter.id)}
-                onMouseEnter={() => setHovered(ter.id)}
+                onClick={() => handleWheelClick(secondary.id)}
+                onMouseEnter={() => setHovered(secondary.id)}
                 onMouseLeave={() => setHovered(null)}
-                aria-label={ter.label}
+                aria-label={secondary.label}
                 role="button"
               >
                 <path
-                  d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, ter.startAngle, ter.endAngle)}
-                  fill={selected.has(ter.id) ? core.color : tertiaryFillColor}
+                  d={fillPath(SECONDARY_INNER, SECONDARY_OUTER, secondary.startAngle, secondary.endAngle)}
+                  fill={
+                    selected.has(secondary.id)
+                      ? core.color
+                      : (ancestorFillMap.get(secondary.id) ?? secondaryFillColor)
+                  }
                   stroke="white"
-                  strokeWidth="0.7"
+                  strokeWidth="1"
                   style={{
-                    opacity: segmentOpacity(ter.id),
-                    filter: segmentFilter(ter.id),
-                    transition: 'opacity 180ms ease, filter 180ms ease',
+                    opacity: segmentOpacity(secondary.id),
+                    filter: segmentFilter(secondary.id),
+                    transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
                   }}
                 />
                 <text
-                  fontSize="17"
-                  fontWeight="400"
+                  fontSize="16"
+                  fontWeight="500"
                   fill="hsl(var(--foreground))"
                   pointerEvents="none"
-                  transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
+                  transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
                   textAnchor="middle"
                   dominantBaseline="central"
                   style={{ userSelect: 'none' }}
                 >
-                  {ter.label}
+                  {secondary.label}
                 </text>
               </g>
             );
-          }),
-        );
+          });
+        })}
+
+      {/* ── TERTIARY ring ── */}
+      {showTertiary && wheelLayout.map((core) => {
+        const tertiaryFillColor = tintColor(core.color, 0.63);
+        return core.children
+          .filter((secondary) => mode === 'full' || secondary.id === activeSecondaryId)
+          .map((secondary) =>
+            secondary.children.map((tertiary) => {
+              const midpointAngle = getMidAngle(tertiary.startAngle, tertiary.endAngle);
+              return (
+                <g
+                  key={tertiary.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleWheelClick(tertiary.id)}
+                  onMouseEnter={() => setHovered(tertiary.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  aria-label={tertiary.label}
+                  role="button"
+                >
+                  <path
+                    d={fillPath(TERTIARY_INNER, TERTIARY_OUTER, tertiary.startAngle, tertiary.endAngle)}
+                    fill={selected.has(tertiary.id) ? core.color : tertiaryFillColor}
+                    stroke="white"
+                    strokeWidth="0.7"
+                    style={{
+                      opacity: segmentOpacity(tertiary.id),
+                      filter: segmentFilter(tertiary.id),
+                      transition: 'opacity 180ms ease, filter 180ms ease',
+                    }}
+                  />
+                  <text
+                    fontSize="17"
+                    fontWeight="400"
+                    fill="hsl(var(--foreground))"
+                    pointerEvents="none"
+                    transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {tertiary.label}
+                  </text>
+                </g>
+              );
+            })
+          );
       })}
 
       {/* ── Centre ── */}
