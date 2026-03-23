@@ -1,12 +1,10 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Locale, LocaleBundle } from '@/lib/i18n/types.ts';
-import enEmotions from '@/lib/i18n/locales/en/emotions.ts';
 import enCommon from '@/lib/i18n/locales/en/common.ts';
 
 const LOCALE_BUNDLES: Record<Locale, LocaleBundle> = {
   en: {
-    emotions: enEmotions,
     common: enCommon,
   },
 };
@@ -30,9 +28,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <I18nContext.Provider value={{ locale, setLocale, getBundle }}>
-      {children}
-    </I18nContext.Provider>
+    <I18nContext.Provider value={{ locale, setLocale, getBundle }}>{children}</I18nContext.Provider>
   );
 }
 
