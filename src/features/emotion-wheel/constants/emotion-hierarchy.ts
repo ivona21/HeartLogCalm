@@ -10,4 +10,4 @@ export const EMOTION_DEPTH = {
 /**
  * Maximum number of emotions that can be selected simultaneously
  */
-export const MAX_SELECTED_EMOTIONS = 10;
+export const MAX_SELECTED_EMOTIONS = 900;
