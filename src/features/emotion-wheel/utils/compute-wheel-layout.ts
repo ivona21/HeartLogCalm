@@ -6,6 +6,10 @@ import type {
 } from '@/features/emotion-wheel/types/wheel-segment.ts';
 
 export function computeWheelLayout(emotions: BackendCoreEmotion[]): CoreSegment[] {
+  if (emotions.length === 0) {
+    return [];
+  }
+
   const totalSecondary = emotions.reduce((sum, core) => sum + core.children.length, 0);
   const secondarySpan = 360 / totalSecondary;
   const startOffset = -(emotions[0].children.length * secondarySpan) / 2;
