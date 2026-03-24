@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
-import { MOCK_EMOTIONS } from '@/features/emotion-wheel/data/mock-emotions.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
 import { useWheelMode } from '@/features/emotion-wheel/hooks/useWheelMode.ts';
 import {
@@ -26,6 +25,7 @@ import {
 } from '@/features/emotion-wheel/helpers/helpers.ts';
 import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
+import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -54,10 +54,11 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecondaryId, activeTertiaryId } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  const { data: emotions = [] } = useEmotions();
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
-  const wheelLayout = useMemo(() => computeWheelLayout(MOCK_EMOTIONS), []);
+  const wheelLayout = useMemo(() => computeWheelLayout(emotions), [emotions]);
 
   const { ancestorOf, directParentOf, ancestorFillMap } = useMemo(() => {
     const ancestorOf = new Set<string>();
