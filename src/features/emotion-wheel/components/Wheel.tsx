@@ -26,6 +26,7 @@ import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import { EmotionWheelCenter } from '@/features/emotion-wheel/components/EmotionWheelCenter.tsx';
+import { SaveEmotionModal } from '@/features/emotion-wheel/components/SaveEmotionModal.tsx';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -53,6 +54,7 @@ function fillPath(
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
   const { selected, hovered, setHovered, handleClick, showSecondary, showTertiary, activeCoreId, activeSecondaryId, activeTertiaryId } = useWheelMode(mode, onSelect);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
   const { data: emotions = [] } = useEmotions();
 
@@ -117,6 +119,24 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     return [...colorCounts.entries()].flatMap(([color, count]) =>
       Array.from({ length: count }, () => color),
     );
+  }, [selected, wheelLayout]);
+
+  const selectedEmotionLabels = useMemo(() => {
+    const emotionLabelById = new Map<string, string>();
+
+    for (const core of wheelLayout) {
+      emotionLabelById.set(core.id, core.label);
+      for (const secondary of core.children) {
+        emotionLabelById.set(secondary.id, secondary.label);
+        for (const tertiary of secondary.children) {
+          emotionLabelById.set(tertiary.id, tertiary.label);
+        }
+      }
+    }
+
+    return [...selected]
+      .map((id) => emotionLabelById.get(id))
+      .filter((label): label is string => Boolean(label));
   }, [selected, wheelLayout]);
 
   const handleWheelClick = (id: string) => {
@@ -303,10 +323,15 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
         isAuthenticated={isAuthenticated}
         selectionCount={selected.size}
         selectedColors={selectedHeartColors}
-        onHeartClick={() => window.alert('clicked')}
+        onHeartClick={() => setSaveModalOpen(true)}
       />
     </svg>
     <AuthPromptModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+    <SaveEmotionModal
+      open={saveModalOpen}
+      emotionLabels={selectedEmotionLabels}
+      onClose={() => setSaveModalOpen(false)}
+    />
     </>
   );
 };
