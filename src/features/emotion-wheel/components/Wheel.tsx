@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import LogoIconImage from '@/assets/LogoSimpleNoText.png';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
@@ -26,6 +25,7 @@ import {
 import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
+import { EmotionWheelCenter } from '@/features/emotion-wheel/components/EmotionWheelCenter.tsx';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -96,6 +96,23 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       ancestorFillMap.delete(parentId);
     }
     return { ancestorOf, directParentOf, ancestorFillMap };
+  }, [selected, wheelLayout]);
+
+  const selectedHeartColors = useMemo(() => {
+    const coreColorByRootId = new Map<string, string>();
+
+    for (const core of wheelLayout) {
+      coreColorByRootId.set(core.id, core.color);
+    }
+
+    const colors = new Set<string>();
+    for (const id of selected) {
+      const rootId = id.split('.')[0];
+      const color = coreColorByRootId.get(rootId);
+      if (color) colors.add(color);
+    }
+
+    return [...colors];
   }, [selected, wheelLayout]);
 
   const handleWheelClick = (id: string) => {
@@ -277,20 +294,12 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       })}
 
       {/* ── Centre ── */}
-      <circle
-        r={CENTER_RADIUS}
-        fill="white"
-        stroke="hsl(var(--border))"
-        strokeWidth="1.5"
-        style={{ pointerEvents: 'none' }}
-      />
-      <image
-        href={LogoIconImage}
-        x={-CENTER_RADIUS * 0.39375}
-        y={-CENTER_RADIUS * 0.39375}
-        width={CENTER_RADIUS * 0.7875}
-        height={CENTER_RADIUS * 0.7875}
-        style={{ pointerEvents: 'none' }}
+      <EmotionWheelCenter
+        centerRadius={CENTER_RADIUS}
+        isAuthenticated={isAuthenticated}
+        selectionCount={selected.size}
+        selectedColors={selectedHeartColors}
+        onHeartClick={() => window.alert('clicked')}
       />
     </svg>
     <AuthPromptModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
