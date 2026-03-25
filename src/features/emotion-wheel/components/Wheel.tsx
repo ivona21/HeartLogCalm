@@ -105,14 +105,18 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       coreColorByRootId.set(core.id, core.color);
     }
 
-    const colors = new Set<string>();
+    const colorCounts = new Map<string, number>();
     for (const id of selected) {
       const rootId = id.split('.')[0];
       const color = coreColorByRootId.get(rootId);
-      if (color) colors.add(color);
+      if (color) {
+        colorCounts.set(color, (colorCounts.get(color) ?? 0) + 1);
+      }
     }
 
-    return [...colors];
+    return [...colorCounts.entries()].flatMap(([color, count]) =>
+      Array.from({ length: count }, () => color),
+    );
   }, [selected, wheelLayout]);
 
   const handleWheelClick = (id: string) => {

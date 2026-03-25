@@ -63,20 +63,16 @@ export function EmotionWheelCenter({
         </mask>
         <linearGradient id={colorGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
           {selectedColors.map((color, index) => {
-            const offset = selectedColors.length === 1
-              ? '0%'
-              : `${(index / (selectedColors.length - 1)) * 100}%`;
+            const offset =
+              selectedColors.length === 1
+                ? '0%'
+                : `${(index / (selectedColors.length - 1)) * 100}%`;
 
             return <stop key={`${color}-${offset}`} offset={offset} stopColor={color} />;
           })}
         </linearGradient>
       </defs>
-      <circle
-        r={centerRadius}
-        fill="white"
-        stroke="hsl(var(--border))"
-        strokeWidth="1.5"
-      />
+      <circle r={centerRadius} fill="white" stroke="hsl(var(--border))" strokeWidth="1.5" />
       <g>
         {!isActive ? (
           <image
