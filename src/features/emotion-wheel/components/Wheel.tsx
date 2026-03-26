@@ -4,6 +4,7 @@ import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defa
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
 import { useWheelMode } from '@/features/emotion-wheel/hooks/useWheelMode.ts';
 import { useSaveReminderToast } from '@/features/emotion-wheel/hooks/useSaveReminderToast.ts';
+import { useEmotionEntrySummary } from '@/features/emotion-wheel/hooks/useEmotionEntrySummary.ts';
 import { useWheelSelectionDecorations } from '@/features/emotion-wheel/hooks/useWheelSelectionDecorations.ts';
 import {
   CENTER_RADIUS,
@@ -69,6 +70,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const [interactionCount, setInteractionCount] = useState(0);
   const { isAuthenticated } = useAuth();
   const { data: emotions = [] } = useEmotions();
+  const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated);
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -96,8 +98,11 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     }
   };
 
+  const canShowFirstEntryReminder =
+    isAuthenticated && emotionEntrySummaryQuery.data?.totalEntries === 0;
+
   useSaveReminderToast({
-    canShowReminder: isAuthenticated,
+    canShowReminder: canShowFirstEntryReminder,
     hasSelection: selected.size > 0,
     blocked: saveModalOpen,
     activityKey: interactionCount,
