@@ -22,21 +22,25 @@ export function useSaveReminderToast({
   const hasShownRef = useRef(false);
 
   useEffect(() => {
-    dismissToastRef.current?.();
-    dismissToastRef.current = null;
-
     if (timeoutRef.current !== null) {
       window.clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
 
-    if (!canShowReminder || !hasSelection || blocked || hasShownRef.current) {
+    if (blocked) {
+      dismissToastRef.current?.();
+      dismissToastRef.current = null;
+      return;
+    }
+
+    if (!canShowReminder || !hasSelection || hasShownRef.current) {
       return;
     }
 
     timeoutRef.current = window.setTimeout(() => {
       const activeToast = toast({
         description: SAVE_TOAST_MESSAGE,
+        duration: Number.POSITIVE_INFINITY,
       });
 
       hasShownRef.current = true;
