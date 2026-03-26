@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { tintColor } from '@/features/emotion-wheel/helpers/helpers.ts';
-import type { WheelSegmentCore } from '@/features/emotion-wheel/types/wheel-segment.ts';
+import type { CoreSegment } from '@/features/emotion-wheel/types/wheel-segment.ts';
 
 interface UseWheelSelectionDecorationsParams {
-  wheelLayout: WheelSegmentCore[];
+  wheelLayout: CoreSegment[];
   selected: Set<string>;
 }
 
