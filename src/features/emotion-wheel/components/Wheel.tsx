@@ -4,6 +4,7 @@ import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defa
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
 import { useWheelMode } from '@/features/emotion-wheel/hooks/useWheelMode.ts';
 import { useSaveReminderToast } from '@/features/emotion-wheel/hooks/useSaveReminderToast.ts';
+import { useWheelSelectionDecorations } from '@/features/emotion-wheel/hooks/useWheelSelectionDecorations.ts';
 import {
   CENTER_RADIUS,
   CORE_INNER,
@@ -72,86 +73,20 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const { viewBox, touchHandlers } = useWheelGestures();
 
   const wheelLayout = useMemo(() => computeWheelLayout(emotions), [emotions]);
-
-  const { ancestorOf, directParentOf, ancestorFillMap } = useMemo(() => {
-    const ancestorOf = new Set<string>();
-    const directParentOf = new Set<string>();
-    const ancestorFillMap = new Map<string, string>();
-
-    const coreColorById = new Map<string, string>();
-    for (const core of wheelLayout) {
-      coreColorById.set(core.id, core.color);
-      for (const sec of core.children) {
-        coreColorById.set(sec.id, core.color);
-      }
-    }
-
-    for (const id of selected) {
-      const parts = id.split('.');
-      if (parts.length === 2) {
-        const rootId = parts[0];
-        ancestorOf.add(rootId);
-        directParentOf.add(rootId);
-      } else if (parts.length === 3) {
-        const rootId = parts[0];
-        const secondaryId = `${parts[0]}.${parts[1]}`;
-        ancestorOf.add(secondaryId);
-        ancestorOf.add(rootId);
-        const coreColor = coreColorById.get(rootId);
-        if (coreColor) {
-          const shade = tintColor(coreColor, 0.22);
-          if (!ancestorFillMap.has(rootId)) ancestorFillMap.set(rootId, shade);
-          if (!ancestorFillMap.has(secondaryId)) ancestorFillMap.set(secondaryId, shade);
-        }
-      }
-    }
-    for (const parentId of directParentOf) {
-      ancestorFillMap.delete(parentId);
-    }
-    return { ancestorOf, directParentOf, ancestorFillMap };
-  }, [selected, wheelLayout]);
-
-  const selectedHeartColors = useMemo(() => {
-    const coreColorByRootId = new Map<string, string>();
-
-    for (const core of wheelLayout) {
-      coreColorByRootId.set(core.id, core.color);
-    }
-
-    const colorCounts = new Map<string, number>();
-    for (const id of selected) {
-      const rootId = id.split('.')[0];
-      const color = coreColorByRootId.get(rootId);
-      if (color) {
-        colorCounts.set(color, (colorCounts.get(color) ?? 0) + 1);
-      }
-    }
-
-    return [...colorCounts.entries()].flatMap(([color, count]) =>
-      Array.from({ length: count }, () => color),
-    );
-  }, [selected, wheelLayout]);
-
-  const selectedEmotionLabels = useMemo(() => {
-    const emotionLabelById = new Map<string, string>();
-
-    for (const core of wheelLayout) {
-      emotionLabelById.set(core.id, core.label);
-      for (const secondary of core.children) {
-        emotionLabelById.set(secondary.id, secondary.label);
-        for (const tertiary of secondary.children) {
-          emotionLabelById.set(tertiary.id, tertiary.label);
-        }
-      }
-    }
-
-    return [...selected]
-      .map((id) => emotionLabelById.get(id))
-      .filter((label): label is string => Boolean(label));
-  }, [selected, wheelLayout]);
+  const {
+    ancestorOf,
+    directParentOf,
+    ancestorFillMap,
+    selectedHeartColors,
+    selectedEmotionLabels,
+  } = useWheelSelectionDecorations({
+    wheelLayout,
+    selected,
+  });
 
   const handleWheelClick = (id: string) => {
-    const isFirstSelection = selected.size === 0 && !selected.has(id);
+    const isSelectingEmotion = mode === 'full' || id.split('.').length === 3;
+    const isFirstSelection = isSelectingEmotion && selected.size === 0 && !selected.has(id);
 
     setInteractionCount((count) => count + 1);
     handleClick(id);

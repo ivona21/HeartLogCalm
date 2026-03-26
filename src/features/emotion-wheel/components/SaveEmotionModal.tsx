@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/Dialog.tsx';
+import { Dialog, DialogContent, DialogDescription, DialogFooter } from '@/components/ui/Dialog.tsx';
 import { Button } from '@/components/ui/Button.tsx';
 
 interface SaveEmotionModalProps {
@@ -23,11 +18,7 @@ function formatEmotionSummary(emotionLabels: string[]): string {
   return `It seems you're feeling ${emotionLabels[0]}, ${emotionLabels[1]}, and ${emotionLabels[2]} right now.`;
 }
 
-export function SaveEmotionModal({
-  open,
-  emotionLabels,
-  onClose,
-}: SaveEmotionModalProps) {
+export function SaveEmotionModal({ open, emotionLabels, onClose }: SaveEmotionModalProps) {
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-sm">
