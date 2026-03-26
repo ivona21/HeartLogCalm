@@ -8,7 +8,7 @@ interface UseSaveReminderToastParams {
   activityKey: number;
 }
 
-const SAVE_TOAST_DELAY_MS = 10000;
+const SAVE_TOAST_DELAY_MS = 5000;
 const SAVE_TOAST_MESSAGE = "When you're ready, click the heart in the center to save";
 
 export function useSaveReminderToast({
