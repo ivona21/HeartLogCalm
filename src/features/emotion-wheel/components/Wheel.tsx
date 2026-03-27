@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
+import { useCreateEmotionEntry } from '@/features/emotion-wheel/hooks/useCreateEmotionEntry.ts';
 import { useWheelMode } from '@/features/emotion-wheel/hooks/useWheelMode.ts';
 import { useSaveReminderToast } from '@/features/emotion-wheel/hooks/useSaveReminderToast.ts';
 import { useEmotionEntrySummary } from '@/features/emotion-wheel/hooks/useEmotionEntrySummary.ts';
@@ -56,9 +57,12 @@ function fillPath(
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
   const {
     selected,
+    selectionOrder,
+    primaryEmotionKey,
     hovered,
     setHovered,
     handleClick,
+    clearSelection,
     showSecondary,
     showTertiary,
     activeCoreId,
@@ -68,9 +72,10 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [interactionCount, setInteractionCount] = useState(0);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { data: emotions = [] } = useEmotions();
-  const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated);
+  const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
+  const createEmotionEntryMutation = useCreateEmotionEntry();
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -84,6 +89,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   } = useWheelSelectionDecorations({
     wheelLayout,
     selected,
+    selectionOrder,
   });
 
   const handleWheelClick = (id: string) => {
@@ -107,6 +113,19 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     blocked: saveModalOpen,
     activityKey: interactionCount,
   });
+
+  const handleSaveEmotionEntry = async (comment: string) => {
+    if (selectionOrder.length === 0 || !primaryEmotionKey) return;
+
+    await createEmotionEntryMutation.mutateAsync({
+      emotionKeys: selectionOrder,
+      primaryEmotionKey,
+      comment,
+    });
+
+    setSaveModalOpen(false);
+    clearSelection();
+  };
 
   const segmentOpacity = (id: string) => {
     if (selected.size === 0) return 1;
@@ -302,6 +321,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       <SaveEmotionModal
         open={saveModalOpen}
         emotionLabels={selectedEmotionLabels}
+        isSaving={createEmotionEntryMutation.isPending}
+        onConfirm={handleSaveEmotionEntry}
         onClose={() => setSaveModalOpen(false)}
       />
     </>

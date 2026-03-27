@@ -5,11 +5,13 @@ import type { CoreSegment } from '@/features/emotion-wheel/types/wheel-segment.t
 interface UseWheelSelectionDecorationsParams {
   wheelLayout: CoreSegment[];
   selected: Set<string>;
+  selectionOrder?: string[];
 }
 
 export function useWheelSelectionDecorations({
   wheelLayout,
   selected,
+  selectionOrder = [],
 }: UseWheelSelectionDecorationsParams) {
   const emotionLabelById = useMemo(() => {
     const labelMap = new Map<string, string>();
@@ -95,10 +97,10 @@ export function useWheelSelectionDecorations({
 
   const selectedEmotionLabels = useMemo(
     () =>
-      [...selected]
+      (selectionOrder.length > 0 ? selectionOrder : [...selected])
         .map((id) => emotionLabelById.get(id))
         .filter((label): label is string => Boolean(label)),
-    [emotionLabelById, selected],
+    [emotionLabelById, selected, selectionOrder],
   );
 
   return {
