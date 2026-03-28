@@ -31,6 +31,7 @@ import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptM
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import { EmotionWheelCenter } from '@/features/emotion-wheel/components/EmotionWheelCenter.tsx';
 import { SaveEmotionModal } from '@/features/emotion-wheel/components/SaveEmotionModal.tsx';
+import { toast } from '@/shared/hooks/use-toast.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -86,6 +87,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     ancestorFillMap,
     selectedHeartColors,
     selectedEmotionLabels,
+    selectedPrimaryGroups,
   } = useWheelSelectionDecorations({
     wheelLayout,
     selected,
@@ -125,6 +127,9 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
     setSaveModalOpen(false);
     clearSelection();
+    toast({
+      description: 'Saved',
+    });
   };
 
   const segmentOpacity = (id: string) => {
@@ -320,7 +325,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       <AuthPromptModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       <SaveEmotionModal
         open={saveModalOpen}
-        emotionLabels={selectedEmotionLabels}
+        primaryGroups={selectedPrimaryGroups}
         isSaving={createEmotionEntryMutation.isPending}
         onConfirm={handleSaveEmotionEntry}
         onClose={() => setSaveModalOpen(false)}

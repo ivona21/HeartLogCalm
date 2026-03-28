@@ -5,6 +5,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter } from '@/compon
 import { Button } from '@/components/ui/Button.tsx';
 import { Textarea } from '@/components/ui/Textarea.tsx';
 import {
+  formatSaveEmotionSummary,
+  type PrimaryGroupSummary,
+} from '@/features/emotion-wheel/helpers/format-save-emotion-summary.ts';
+import {
   Form,
   FormControl,
   FormDescription,
@@ -15,7 +19,7 @@ import {
 
 interface SaveEmotionModalProps {
   open: boolean;
-  emotionLabels: string[];
+  primaryGroups: PrimaryGroupSummary[];
   isSaving: boolean;
   onConfirm: (comment: string) => Promise<void> | void;
   onClose: () => void;
@@ -25,23 +29,9 @@ type SaveEmotionFormValues = {
   comment: string;
 };
 
-function getEmotionSummary(emotionLabels: string[]): string {
-  if (emotionLabels.length > 3) return "It seems you're feeling a lot right now.";
-  if (emotionLabels.length === 2) {
-    return `It seems you're feeling ${emotionLabels[0]} and ${emotionLabels[1]} right now.`;
-  }
-  if (emotionLabels.length === 3) {
-    return `It seems you're feeling ${emotionLabels[0]}, ${emotionLabels[1]}, and ${emotionLabels[2]} right now.`;
-  }
-  if (emotionLabels.length === 1) {
-    return `It seems you're feeling ${emotionLabels[0]} right now.`;
-  }
-  return "It seems you're feeling something right now.";
-}
-
 export function SaveEmotionModal({
   open,
-  emotionLabels,
+  primaryGroups,
   isSaving,
   onConfirm,
   onClose,
@@ -63,27 +53,24 @@ export function SaveEmotionModal({
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-2xl p-8">
-        <DialogDescription className="pt-4 text-lg leading-relaxed text-foreground">
-          {getEmotionSummary(emotionLabels)}
+        <DialogDescription className="pt-4 text-[15px] leading-relaxed text-foreground">
+          {formatSaveEmotionSummary(primaryGroups)}
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
             <FormField
               control={form.control}
               name="comment"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Comment</FormLabel>
-                  <FormDescription>
-                    Write as much or as little as you want. This space is here if you want to
-                    unpack what is going on.
-                  </FormDescription>
+                <FormItem className="space-y-4">
+                  <FormLabel></FormLabel>
+                  <FormDescription>Write anything you want — or nothing at all.</FormDescription>
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder="Add an optional note"
+                      placeholder="Write here..."
                       disabled={isSaving}
-                      className="min-h-[220px] resize-y text-base leading-7"
+                      className="mt-4 min-h-[220px] resize-y text-base leading-7"
                     />
                   </FormControl>
                 </FormItem>
@@ -97,7 +84,7 @@ export function SaveEmotionModal({
                     Saving...
                   </>
                 ) : (
-                  'OK'
+                  'Done'
                 )}
               </Button>
             </DialogFooter>
