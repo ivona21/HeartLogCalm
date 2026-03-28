@@ -23,13 +23,12 @@ export function formatSaveEmotionSummary(primaryGroups: PrimaryGroupSummary[]): 
 
   if (primaryGroups.length === 1) {
     const [group] = primaryGroups;
-    const visibleLabels = group.selectedEmotionLabels
-      .slice(0, MAX_SAME_PRIMARY_EMOTIONS)
-      .map(toLowerLabel);
-    const hiddenCount = group.selectedEmotionLabels.length - visibleLabels.length;
-    const suffix = hiddenCount > 0 ? ` +${hiddenCount} more` : '';
+    if (group.selectedEmotionLabels.length > MAX_SAME_PRIMARY_EMOTIONS) {
+      return `Feeling ${toLowerLabel(group.primaryLabel)}`;
+    }
 
-    return `Feeling ${formatList(visibleLabels)}${suffix}`;
+    const visibleLabels = group.selectedEmotionLabels.map(toLowerLabel);
+    return `Feeling ${formatList(visibleLabels)}`;
   }
 
   if (primaryGroups.length === 2) {
