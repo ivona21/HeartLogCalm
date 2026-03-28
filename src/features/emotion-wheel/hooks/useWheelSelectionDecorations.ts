@@ -29,6 +29,16 @@ export function useWheelSelectionDecorations({
     return labelMap;
   }, [wheelLayout]);
 
+  const primaryLabelByRootId = useMemo(() => {
+    const labelMap = new Map<string, string>();
+
+    for (const core of wheelLayout) {
+      labelMap.set(core.id, core.label);
+    }
+
+    return labelMap;
+  }, [wheelLayout]);
+
   const coreColorByRootId = useMemo(() => {
     const colorMap = new Map<string, string>();
 
@@ -103,11 +113,46 @@ export function useWheelSelectionDecorations({
     [emotionLabelById, selected, selectionOrder],
   );
 
+  const selectedPrimaryGroups = useMemo(() => {
+    const orderedSelection = selectionOrder.length > 0 ? selectionOrder : [...selected];
+    const groups = new Map<
+      string,
+      {
+        primaryId: string;
+        primaryLabel: string;
+        selectedEmotionLabels: string[];
+      }
+    >();
+
+    for (const id of orderedSelection) {
+      const rootId = id.split('.')[0];
+      const primaryLabel = primaryLabelByRootId.get(rootId);
+      const selectedEmotionLabel = emotionLabelById.get(id);
+
+      if (!primaryLabel || !selectedEmotionLabel) continue;
+
+      const existingGroup = groups.get(rootId);
+      if (existingGroup) {
+        existingGroup.selectedEmotionLabels.push(selectedEmotionLabel);
+        continue;
+      }
+
+      groups.set(rootId, {
+        primaryId: rootId,
+        primaryLabel,
+        selectedEmotionLabels: [selectedEmotionLabel],
+      });
+    }
+
+    return [...groups.values()];
+  }, [emotionLabelById, primaryLabelByRootId, selected, selectionOrder]);
+
   return {
     ancestorOf,
     directParentOf,
     ancestorFillMap,
     selectedHeartColors,
     selectedEmotionLabels,
+    selectedPrimaryGroups,
   };
 }
