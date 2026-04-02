@@ -7,4 +7,10 @@ export const DASHBOARD_FEATURES: DashboardFeature[] = [
       'Click to start tracking your emotions. Log your feelings, discover patterns, and grow.',
     routeName: '/emotion-wheel',
   },
+  {
+    title: 'Reflection History',
+    description:
+      'Read back through your emotion entries in a calm timeline, with your newest reflections first.',
+    routeName: '/emotion-entries',
+  },
 ];

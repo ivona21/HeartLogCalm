@@ -6,6 +6,7 @@ import RegisterPage from '@/pages/register';
 import DashboardPage from '@/pages/dashboard';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
+import EmotionEntriesPage from '@/pages/emotion-entries.tsx';
 import DesignSystemPage from '@/pages/dev/DesignSystem.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 
@@ -42,6 +43,16 @@ const routes = [
       <AppLayout>
         <EmotionWheelPage />
       </AppLayout>
+    ),
+  },
+  {
+    path: '/emotion-entries',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <EmotionEntriesPage />
+        </AppLayout>
+      </ProtectedRoute>
     ),
   },
   {
