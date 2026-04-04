@@ -1,6 +1,31 @@
 import { useAuthStore } from '@/features/auth/stores/authStore';
+import type { ApiError } from '@/shared/types/api-types.ts';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+export const AUTH_UNAUTHORIZED_EVENT = 'auth:unauthorized';
+export const AUTH_LOGOUT_EVENT = 'auth:logout';
+
+function buildApiError(message: string, status?: number, errors?: Record<string, string[]> | null) {
+  return {
+    message,
+    status,
+    errors: errors ?? null,
+  } satisfies ApiError;
+}
+
+function handleUnauthorizedResponse() {
+  const authStore = useAuthStore.getState();
+
+  if (!authStore.token) {
+    return;
+  }
+
+  authStore.clearAuth();
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(AUTH_UNAUTHORIZED_EVENT));
+  }
+}
 
 export class ApiClient {
   private baseURL: string;
@@ -35,11 +60,9 @@ export class ApiClient {
       });
     } catch (error) {
       // Network error (backend unreachable)
-      throw {
-        message:
-          "Something went wrong on our end. We're working on fixing it. Please try again in a few minutes.",
-        errors: null,
-      };
+      throw buildApiError(
+        "Something went wrong on our end. We're working on fixing it. Please try again in a few minutes.",
+      );
     }
 
     if (!response.ok) {
@@ -50,16 +73,22 @@ export class ApiClient {
       } catch (_) {
         // Not JSON (unexpected backend format)
         const fallbackText = await response.text().catch(() => '');
-        throw {
-          message: fallbackText || 'Unexpected error',
-          errors: null,
-        };
+        if (response.status === 401) {
+          handleUnauthorizedResponse();
+        }
+
+        throw buildApiError(fallbackText || 'Unexpected error', response.status);
       }
 
-      throw {
-        message: errorBody.message || errorBody.Message || 'Unexpected error',
-        errors: errorBody.errors || errorBody.Errors || null,
-      };
+      if (response.status === 401) {
+        handleUnauthorizedResponse();
+      }
+
+      throw buildApiError(
+        errorBody.message || errorBody.Message || 'Unexpected error',
+        response.status,
+        errorBody.errors || errorBody.Errors || null,
+      );
     }
 
     return response.json();
