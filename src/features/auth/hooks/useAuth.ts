@@ -3,10 +3,11 @@ import { loginApi as loginApi } from '@/features/auth/api/login.api.ts';
 import { registerApi as registerApi } from '@/features/auth/api/register.api.ts';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useNavigate } from 'react-router-dom';
+import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 
 export function useAuth() {
   const navigate = useNavigate();
-  const { user, clearAuth, isAuthenticated } = useAuthStore();
+  const { authStatus, clearAuth, token, user } = useAuthStore();
 
   const loginMutation = useMutation({
     mutationFn: loginApi,
@@ -30,13 +31,16 @@ export function useAuth() {
 
   const logout = () => {
     clearAuth();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
+    }
     navigate('/');
   };
 
   return {
     user,
-    isLoading: false,
-    isAuthenticated: isAuthenticated(),
+    isLoading: authStatus === 'checking' || (authStatus === 'idle' && !!token),
+    isAuthenticated: authStatus === 'authenticated',
     login: loginMutation.mutate,
     register: registerMutation.mutate,
     logout,

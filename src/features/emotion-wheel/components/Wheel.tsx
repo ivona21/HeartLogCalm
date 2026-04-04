@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
@@ -32,6 +32,8 @@ import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import { EmotionWheelCenter } from '@/features/emotion-wheel/components/EmotionWheelCenter.tsx';
 import { SaveEmotionModal } from '@/features/emotion-wheel/components/SaveEmotionModal.tsx';
 import { toast } from '@/shared/hooks/use-toast.ts';
+import type { ApiError } from '@/shared/types/api-types.ts';
+import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -116,14 +118,38 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     activityKey: interactionCount,
   });
 
+  useEffect(() => {
+    const handleLogout = () => {
+      clearSelection();
+      setSaveModalOpen(false);
+      setAuthModalOpen(false);
+    };
+
+    window.addEventListener(AUTH_LOGOUT_EVENT, handleLogout);
+
+    return () => {
+      window.removeEventListener(AUTH_LOGOUT_EVENT, handleLogout);
+    };
+  }, [clearSelection]);
+
   const handleSaveEmotionEntry = async (comment: string) => {
     if (selectionOrder.length === 0 || !primaryEmotionKey) return;
 
-    await createEmotionEntryMutation.mutateAsync({
-      emotionKeys: selectionOrder,
-      primaryEmotionKey,
-      comment,
-    });
+    try {
+      await createEmotionEntryMutation.mutateAsync({
+        emotionKeys: selectionOrder,
+        primaryEmotionKey,
+        comment,
+      });
+    } catch (error) {
+      if ((error as ApiError).status === 401) {
+        setSaveModalOpen(false);
+        setAuthModalOpen(true);
+        return;
+      }
+
+      throw error;
+    }
 
     setSaveModalOpen(false);
     clearSelection();
