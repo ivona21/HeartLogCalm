@@ -4,6 +4,7 @@ import { registerApi as registerApi } from '@/features/auth/api/register.api.ts'
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
+import { toast } from '@/shared/hooks/use-toast.ts';
 
 export function useAuth() {
   const navigate = useNavigate();
@@ -34,6 +35,16 @@ export function useAuth() {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
     }
+
+    const logoutToast = toast({
+      variant: 'info',
+      description: 'You can still explore your feelings — log in to remember them.',
+    });
+
+    window.setTimeout(() => {
+      logoutToast.dismiss();
+    }, 4500);
+
     navigate('/');
   };
 
