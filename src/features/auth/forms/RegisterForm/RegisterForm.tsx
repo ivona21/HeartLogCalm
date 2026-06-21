@@ -25,7 +25,6 @@ export function RegisterForm() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: '',
-      username: '',
       password: '',
     },
   });
@@ -67,26 +66,6 @@ export function RegisterForm() {
                   disabled={isRegistering}
                   className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-email"
-                />
-              </FormControl>
-              <FormMessage className="text-destructive text-sm" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">Username</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Choose a username"
-                  disabled={isRegistering}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-username"
                 />
               </FormControl>
               <FormMessage className="text-destructive text-sm" />
