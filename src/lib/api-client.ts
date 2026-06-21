@@ -16,7 +16,7 @@ function buildApiError(message: string, status?: number, errors?: Record<string,
 function handleUnauthorizedResponse() {
   const authStore = useAuthStore.getState();
 
-  if (!authStore.token) {
+  if (!authStore.session) {
     return;
   }
 
@@ -35,7 +35,7 @@ export class ApiClient {
   }
 
   private getAuthToken(): string | null {
-    return useAuthStore.getState().token;
+    return useAuthStore.getState().getAccessToken();
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
