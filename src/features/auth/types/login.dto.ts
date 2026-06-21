@@ -1,5 +1,3 @@
-export interface LoginResponseDto {
-  email: string;
-  token: string;
-  username?: string;
-}
+import type { AuthSession } from '@/features/auth/types/auth-session.ts';
+
+export type LoginResponseDto = AuthSession;
