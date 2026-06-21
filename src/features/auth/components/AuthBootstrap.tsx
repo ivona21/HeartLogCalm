@@ -6,7 +6,7 @@ import { toast } from '@/shared/hooks/use-toast.ts';
 import type { ApiError } from '@/shared/types/api-types.ts';
 
 export function AuthBootstrap() {
-  const { authStatus, setAuthChecking, token } = useAuthStore();
+  const { authStatus, setAuthChecking, session } = useAuthStore();
 
   useEffect(() => {
     const handleUnauthorized = () => {
@@ -23,7 +23,7 @@ export function AuthBootstrap() {
   }, []);
 
   useEffect(() => {
-    if (!token || authStatus !== 'idle') {
+    if (!session || authStatus !== 'idle') {
       return;
     }
 
@@ -53,7 +53,7 @@ export function AuthBootstrap() {
     return () => {
       cancelled = true;
     };
-  }, [authStatus, setAuthChecking, token]);
+  }, [authStatus, setAuthChecking, session]);
 
   return null;
 }

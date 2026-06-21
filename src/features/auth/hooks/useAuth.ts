@@ -8,7 +8,7 @@ import { toast } from '@/shared/hooks/use-toast.ts';
 
 export function useAuth() {
   const navigate = useNavigate();
-  const { authStatus, clearAuth, token, user } = useAuthStore();
+  const { authStatus, clearAuth, session, user } = useAuthStore();
 
   const loginMutation = useMutation({
     mutationFn: loginApi,
@@ -50,7 +50,7 @@ export function useAuth() {
 
   return {
     user,
-    isLoading: authStatus === 'checking' || (authStatus === 'idle' && !!token),
+    isLoading: authStatus === 'checking' || (authStatus === 'idle' && !!session),
     isAuthenticated: authStatus === 'authenticated',
     login: loginMutation.mutate,
     register: registerMutation.mutate,

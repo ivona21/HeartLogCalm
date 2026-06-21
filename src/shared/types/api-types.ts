@@ -6,6 +6,6 @@ export interface ApiResponse<T = void> {
 
 export interface ApiError {
   message: string;
-  errors?: Record<string, string[]>;
+  errors?: Record<string, string[]> | null;
   status?: number;
 }

@@ -9,12 +9,12 @@ export async function loginApi(data: LoginInput): Promise<ApiResponse<LoginRespo
   const response = await apiClient.post<ApiResponse<LoginResponseDto>>('/api/auth/login', data);
 
   if (response.success && response.data) {
-    const { email, token, username } = response.data;
+    const { email } = response.data;
     const user: User = {
       email: email,
-      username: username || email.split('@')[0], // Fallback if username is missing
+      username: email.split('@')[0], // Fallback until profile data is loaded from /me
     };
-    useAuthStore.getState().setAuth(user, token); //todo - change this! this doesn't belong here
+    useAuthStore.getState().setAuth(user, response.data); //todo - change this! this doesn't belong here
   }
 
   return response;
