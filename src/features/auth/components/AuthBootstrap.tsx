@@ -32,22 +32,13 @@ export function AuthBootstrap() {
       return;
     }
 
-    let cancelled = false;
     setAuthChecking();
 
     getCurrentUserApi()
       .then((user) => {
-        if (cancelled) {
-          return;
-        }
-
         useAuthStore.getState().confirmAuth(user);
       })
       .catch((error: ApiError) => {
-        if (cancelled) {
-          return;
-        }
-
         if (error.status === 401) {
           useAuthStore.getState().clearAuth();
           return;
@@ -55,10 +46,6 @@ export function AuthBootstrap() {
 
         useAuthStore.getState().confirmAuth();
       });
-
-    return () => {
-      cancelled = true;
-    };
   }, [authStatus, clearAuth, setAuthChecking, session]);
 
   return null;
