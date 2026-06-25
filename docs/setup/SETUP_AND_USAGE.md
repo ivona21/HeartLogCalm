@@ -39,7 +39,7 @@ Your HeartLog emotional wellness tracker frontend is complete! Here's what you h
 ## 🚀 Getting Started
 
 ### Prerequisites
-You mentioned you have your own backend deployed. Make sure it implements the API contract documented in `BACKEND_INTEGRATION.md`.
+You mentioned you have your own backend deployed. Make sure it implements the API contract documented in `../auth/BACKEND_INTEGRATION.md`.
 
 ### Configuration
 
@@ -169,7 +169,7 @@ Response (200):
 }
 ```
 
-See `BACKEND_INTEGRATION.md` for complete details.
+See `../auth/BACKEND_INTEGRATION.md` for complete details.
 
 ## 🎯 Next Steps
 
@@ -227,15 +227,15 @@ If you encounter errors:
 - The design is intentionally calm - avoid adding harsh colors or jarring animations
 - Keep the oasis aesthetic when adding new features
 - Follow the existing component patterns for consistency
-- Use the design guidelines in `design_guidelines.md`
+- Use the design guidelines in `../design/design_guidelines.md`
 - Maintain the feature-based structure as you scale
 
 ## 🆘 Need Help?
 
-- Architecture questions? Check `bulletproof-react-guide.md`
-- Design questions? See `design_guidelines.md`
-- Backend integration? Read `BACKEND_INTEGRATION.md`
-- Project overview? Review `replit.md`
+- Architecture questions? Check `../project/bulletproof-react-guide.md`
+- Design questions? See `../design/design_guidelines.md`
+- Backend integration? Read `../auth/BACKEND_INTEGRATION.md`
+- Project overview? Review `../platform/replit.md`
 
 ---
 
