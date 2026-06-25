@@ -1,150 +1,176 @@
 # Backend Integration Guide
 
 ## Overview
-HeartLog frontend is designed to connect to your external backend API. This document outlines the expected API contract.
+
+HeartLog frontend connects to an external HeartLog backend API. The backend owns identity-provider integration and refresh-token cookies. The frontend must not call Supabase directly.
 
 ## Configuration
 
-1. Create a `.env` file based on `.env.example`:
-   ```bash
-   cp .env.example .env
-   ```
+Create a `.env` file based on `.env.example` and set:
 
-2. Update `VITE_API_URL` with your backend URL:
-   ```
-   VITE_API_URL=https://your-backend-api.com
-   ```
+```bash
+VITE_API_URL=https://your-backend-api.com
+```
 
-## Required API Endpoints
+## Authentication Model
 
-### Authentication
+- The frontend stores only `accessToken`, `expiresAt`, and `email`.
+- The refresh token is stored by the backend as an HttpOnly cookie named `heartlog_refresh_token`.
+- The frontend must not read, store, send, or expect `refreshToken`.
+- The frontend uses `GET /api/auth/me` to load the local HeartLog user.
+- Authenticated user-owned requests must not send `userId`; the backend resolves ownership from the access token.
 
-#### POST /api/auth/register
-Register a new user.
+## Required Auth Endpoints
 
-**Request Body:**
+### POST /api/auth/register
+
+Register a new user. This request must use `credentials: include` because the backend sets the refresh cookie.
+
+Request:
+
 ```json
 {
   "email": "user@example.com",
-  "username": "johndoe",
-  "password": "securepassword123"
+  "password": "StrongPass123!"
 }
 ```
 
-**Response (201 Created):**
-```json
-{
-  "user": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "username": "johndoe"
-  },
-  "token": "jwt-token-here"
-}
-```
+Success response:
 
-**Error Response (400/409):**
 ```json
 {
-  "message": "Email already exists",
-  "errors": {
-    "email": ["Email is already registered"]
+  "success": true,
+  "message": "Registration successful",
+  "data": {
+    "accessToken": "access-token",
+    "expiresAt": "2026-06-20T10:00:00Z",
+    "email": "user@example.com"
   }
 }
 ```
 
-#### POST /api/auth/login
-Authenticate a user.
+### POST /api/auth/login
 
-**Request Body:**
+Authenticate a user. This request must use `credentials: include` because the backend sets the refresh cookie.
+
+Request:
+
 ```json
 {
   "email": "user@example.com",
-  "password": "securepassword123"
+  "password": "StrongPass123!"
 }
 ```
 
-**Response (200 OK):**
+Success response:
+
 ```json
 {
-  "user": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "username": "johndoe"
-  },
-  "token": "jwt-token-here"
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "accessToken": "access-token",
+    "expiresAt": "2026-06-20T10:00:00Z",
+    "email": "user@example.com"
+  }
 }
 ```
 
-**Error Response (401):**
+### POST /api/auth/refresh
+
+Refresh the access token. This request must use `credentials: include`.
+
+- No request body.
+- No `Authorization` header.
+- Browser sends `heartlog_refresh_token` automatically.
+- Backend may rotate the refresh cookie.
+
+Success response:
+
 ```json
 {
-  "message": "Invalid credentials"
+  "success": true,
+  "message": "Session refreshed successfully",
+  "data": {
+    "accessToken": "new-access-token",
+    "expiresAt": "2026-06-20T11:00:00Z",
+    "email": "user@example.com"
+  }
 }
 ```
 
-#### GET /api/auth/me
-Get current authenticated user.
+### POST /api/auth/logout
 
-**Headers:**
-```
-Authorization: Bearer {token}
-```
+Logout and clear the refresh cookie. This request must use `credentials: include`.
 
-**Response (200 OK):**
+Success response:
+
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "username": "johndoe"
+  "success": true,
+  "message": "Logout successful"
 }
 ```
 
-**Error Response (401):**
+The frontend clears local auth state after calling this endpoint. It must not manually delete the refresh cookie.
+
+### GET /api/auth/me
+
+Load the current local HeartLog user.
+
+Headers:
+
+```http
+Authorization: Bearer ACCESS_TOKEN
+```
+
+Success response:
+
 ```json
 {
-  "message": "Unauthorized"
+  "success": true,
+  "message": "Current user retrieved successfully",
+  "data": {
+    "id": "local-heartlog-user-id",
+    "username": null,
+    "email": "user@example.com"
+  }
 }
 ```
 
-## CORS Configuration
+## Startup And Retry Behavior
 
-Your backend must allow requests from the frontend origin. Example CORS headers:
+On app startup:
 
-```
-Access-Control-Allow-Origin: https://your-frontend.replit.app
-Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
-Access-Control-Allow-Headers: Content-Type, Authorization
+1. Restore local `accessToken` and `expiresAt`.
+2. Call `GET /api/auth/me`.
+3. If `/me` returns `200`, user is authenticated.
+4. If `/me` returns `401`, call `POST /api/auth/refresh` with `credentials: include`.
+5. If refresh succeeds, retry `/me` with the new access token.
+6. If refresh fails, clear local auth state.
+
+For protected API calls:
+
+1. Send `Authorization: Bearer ACCESS_TOKEN`.
+2. If the request returns `401` and local auth state exists, call `POST /api/auth/refresh`.
+3. If refresh succeeds, retry the original request once.
+4. If refresh fails, clear local auth state and show login.
+
+## CORS Requirements
+
+Cookie auth endpoints require credentialed requests. Backend CORS must use:
+
+```http
 Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: https://exact-frontend-origin.example
 ```
 
-## Token Management
+Do not use `Access-Control-Allow-Origin: *` for credentialed cookie requests.
 
-- The frontend stores JWT tokens in `localStorage` under the key `auth_token`
-- All authenticated requests include the header: `Authorization: Bearer {token}`
-- Tokens should be long-lived or implement refresh token mechanism
-- On logout, the frontend removes the token from localStorage
+## Expected Errors
 
-## Validation
-
-The frontend validates:
-- Email format
-- Username minimum 3 characters
-- Password minimum 8 characters
-
-Your backend should also validate and return appropriate error messages.
-
-## Error Handling
-
-All error responses should follow this format:
-
-```json
-{
-  "message": "Human-readable error message",
-  "errors": {
-    "fieldName": ["Error message for this field"]
-  }
-}
-```
-
-The `errors` object is optional but recommended for field-specific validation errors.
+- Missing, invalid, or expired access token on protected endpoint: `401 Unauthorized`.
+- Missing, invalid, or expired refresh cookie on `/api/auth/refresh`: `401 Unauthorized`.
+- Bad login credentials: `401 Unauthorized`.
+- Valid identity-provider token but no linked HeartLog user: `401 Unauthorized`.
+- Validation failures: `400 Bad Request` with optional `errors`.

@@ -33,7 +33,17 @@ function shouldSkipAuthRefresh(endpoint: string) {
   return (
     endpoint === '/api/auth/login' ||
     endpoint === '/api/auth/register' ||
-    endpoint === '/api/auth/refresh'
+    endpoint === '/api/auth/refresh' ||
+    endpoint === '/api/auth/logout'
+  );
+}
+
+function shouldIncludeCredentials(endpoint: string) {
+  return (
+    endpoint === '/api/auth/login' ||
+    endpoint === '/api/auth/register' ||
+    endpoint === '/api/auth/refresh' ||
+    endpoint === '/api/auth/logout'
   );
 }
 
@@ -76,11 +86,9 @@ export class ApiClient {
       return this.refreshPromise;
     }
 
-    const session = useAuthStore.getState().session;
-
-    if (!session?.refreshToken) {
+    if (!useAuthStore.getState().session) {
       handleUnauthorizedResponse();
-      throw buildApiError('Missing refresh token.', 401);
+      throw buildApiError('Missing auth session.', 401);
     }
 
     this.refreshPromise = (async () => {
@@ -89,10 +97,7 @@ export class ApiClient {
       try {
         response = await fetch(`${this.baseURL}/api/auth/refresh`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ refreshToken: session.refreshToken }),
+          credentials: 'include',
         });
       } catch (_) {
         throw buildApiError(
@@ -156,9 +161,11 @@ export class ApiClient {
     options: RequestInit = {},
     token: string | null,
   ): Promise<Response> {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+    const headers: Record<string, string> = {};
+
+    if (options.body) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (options.headers) {
       Object.assign(headers, options.headers);
@@ -173,6 +180,7 @@ export class ApiClient {
       response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         headers,
+        credentials: shouldIncludeCredentials(endpoint) ? 'include' : options.credentials,
       });
     } catch (error) {
       // Network error (backend unreachable)
