@@ -16,6 +16,18 @@ interface AuthState {
   isAuthenticated: () => boolean;
 }
 
+function sanitizeSession(session: AuthSession | null | undefined): AuthSession | null {
+  if (!session?.accessToken || !session.expiresAt || !session.email) {
+    return null;
+  }
+
+  return {
+    accessToken: session.accessToken,
+    expiresAt: session.expiresAt,
+    email: session.email,
+  };
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -23,10 +35,10 @@ export const useAuthStore = create<AuthState>()(
       session: null,
       authStatus: 'idle',
       setAuth: (user, session) => {
-        set({ user, session, authStatus: 'authenticated' });
+        set({ user, session: sanitizeSession(session), authStatus: 'authenticated' });
       },
       setSession: (session) => {
-        set({ session });
+        set({ session: sanitizeSession(session) });
       },
       setAuthChecking: () => {
         set((state) => ({
@@ -58,9 +70,22 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      version: 2,
+      migrate: (persistedState) => {
+        if (!persistedState || typeof persistedState !== 'object') {
+          return persistedState;
+        }
+
+        const state = persistedState as Partial<AuthState>;
+
+        return {
+          ...state,
+          session: sanitizeSession(state.session),
+        };
+      },
       partialize: (state) => ({
         user: state.user,
-        session: state.session,
+        session: sanitizeSession(state.session),
       }),
     },
   ),

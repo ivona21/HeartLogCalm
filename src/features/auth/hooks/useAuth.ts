@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { loginApi as loginApi } from '@/features/auth/api/login.api.ts';
 import { registerApi as registerApi } from '@/features/auth/api/register.api.ts';
+import { logoutApi } from '@/features/auth/api/logout.api.ts';
 import { getCurrentUserApi } from '@/features/auth/api/get-current-user.api.ts';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useNavigate } from 'react-router-dom';
@@ -59,21 +60,27 @@ export function useAuth() {
   });
 
   const logout = () => {
-    clearAuth();
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
-    }
+    logoutApi()
+      .catch((error) => {
+        console.error('Logout failed:', error);
+      })
+      .finally(() => {
+        clearAuth();
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
+        }
 
-    const logoutToast = toast({
-      variant: 'info',
-      description: 'You can still explore your feelings — log in to remember them.',
-    });
+        const logoutToast = toast({
+          variant: 'info',
+          description: 'You can still explore your feelings — log in to remember them.',
+        });
 
-    window.setTimeout(() => {
-      logoutToast.dismiss();
-    }, 4500);
+        window.setTimeout(() => {
+          logoutToast.dismiss();
+        }, 4500);
 
-    navigate('/');
+        navigate('/');
+      });
   };
 
   return {
