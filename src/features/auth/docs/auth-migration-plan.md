@@ -17,7 +17,7 @@ Goal: prepare frontend state for the new session response without changing user-
 Changes:
 
 - Replace the current stored `token` with a persisted `session`.
-- Store `accessToken`, `refreshToken`, and `expiresAt`.
+- Store `accessToken`, `expiresAt`, and `email`.
 - Keep `user` and `authStatus` behavior unchanged.
 - Add helpers for reading the current access token and clearing the whole session.
 - Update DTOs so login/register responses use:
@@ -25,7 +25,6 @@ Changes:
 ```ts
 {
   accessToken: string;
-  refreshToken: string;
   expiresAt: string;
   email: string;
 }
@@ -85,20 +84,16 @@ Test this step:
 
 ## Step 4: Add Backend-Mediated Refresh And Retry
 
-Goal: handle expired access tokens while keeping Supabase hidden from the frontend.
+Goal: handle expired access tokens while keeping Supabase and refresh tokens hidden from the frontend.
 
 Backend refresh contract:
 
 ```http
 POST /api/auth/refresh
-Content-Type: application/json
-
-{
-  "refreshToken": "..."
-}
+credentials: include
 ```
 
-No `Authorization` header is required. The access token may already be expired.
+No `Authorization` header or request body is required. The browser sends the `heartlog_refresh_token` HttpOnly cookie automatically.
 
 Success response:
 
@@ -108,7 +103,6 @@ Success response:
   "message": "Session refreshed successfully",
   "data": {
     "accessToken": "...",
-    "refreshToken": "...",
     "expiresAt": "2026-06-20T10:00:00Z",
     "email": "user@example.com"
   }
@@ -117,15 +111,14 @@ Success response:
 
 Error responses:
 
-- `400 Bad Request`: validation failure, such as missing `refreshToken`.
-- `401 Unauthorized`: refresh token is invalid/expired, or the refreshed identity cannot be resolved to a local HeartLog user.
+- `401 Unauthorized`: refresh cookie is missing/invalid/expired, or the refreshed identity cannot be resolved to a local HeartLog user.
 
 Changes:
 
 - Before API requests, check whether `expiresAt` is expired or near expiry.
 - Refresh through `POST /api/auth/refresh` if needed.
 - If an API request returns `401`, call `POST /api/auth/refresh`.
-- If refresh succeeds, replace the stored `accessToken`, `refreshToken`, and `expiresAt`.
+- If refresh succeeds, replace the stored `accessToken`, `expiresAt`, and `email`.
 - Retry the original API request once with the new access token.
 - If refresh returns `401`, clear local auth state and emit the existing unauthorized event.
 - Do not use `/api/auth/me` for refresh.
@@ -133,8 +126,8 @@ Changes:
 
 Test this step:
 
-- With an expired access token and valid refresh token, the next API call refreshes and succeeds.
-- With an expired access token and invalid refresh token, auth is cleared.
+- With an expired access token and valid refresh cookie, the next API call refreshes and succeeds.
+- With an expired access token and invalid refresh cookie, auth is cleared.
 - Multiple simultaneous API calls do not trigger multiple refresh requests.
 - Emotion-entry save still works after automatic refresh.
 
