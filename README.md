@@ -20,7 +20,7 @@ HeartLog is a frontend-only React application that connects to your own deployed
 ### Prerequisites
 
 - Node.js 20+
-- Your own deployed backend API (see `docs/auth/BACKEND_INTEGRATION.md`)
+- Your own deployed backend API (see `docs/integrations/backend-api.md`)
 
 ### Installation
 
@@ -93,7 +93,7 @@ This frontend connects to your deployed backend API. Required endpoints:
 - `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user
 
-See `docs/auth/BACKEND_INTEGRATION.md` for complete API contract.
+See `docs/integrations/backend-api.md` for complete API contract.
 
 ## 📜 Scripts
 
@@ -114,10 +114,10 @@ VITE_API_URL=https://your-backend-api.com
 
 ## 📚 Documentation
 
-- **`docs/design/design_guidelines.md`** - Design system and UI guidelines
-- **`docs/auth/BACKEND_INTEGRATION.md`** - API contract and requirements
+- **`docs/design/design-guidelines.md`** - Design system and UI guidelines
+- **`docs/integrations/backend-api.md`** - API contract and requirements
 - **`docs/project/bulletproof-react-guide.md`** - Architecture reference
-- **`docs/platform/replit.md`** - Project overview and state
+- **`docs/project/platform-replit.md`** - Project overview and state
 
 ## 🧪 Technology Stack
 
