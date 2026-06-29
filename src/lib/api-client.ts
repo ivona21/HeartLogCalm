@@ -108,7 +108,7 @@ export class ApiClient {
       if (!response.ok) {
         const error = await parseErrorResponse(response);
 
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
           handleUnauthorizedResponse();
         }
 
@@ -213,6 +213,16 @@ export class ApiClient {
         handleUnauthorizedResponse();
       }
 
+      throw await parseErrorResponse(response);
+    }
+
+    return response.json();
+  }
+
+  async getWithAccessToken<T>(endpoint: string, accessToken: string): Promise<T> {
+    const response = await this.fetchWithToken(endpoint, { method: 'GET' }, accessToken);
+
+    if (!response.ok) {
       throw await parseErrorResponse(response);
     }
 

@@ -6,8 +6,10 @@ function isApiResponse(value: ApiResponse<User> | User): value is ApiResponse<Us
   return 'success' in value || 'message' in value;
 }
 
-export async function getCurrentUserApi(): Promise<User> {
-  const response = await apiClient.get<ApiResponse<User> | User>('/api/auth/me');
+export async function getCurrentUserApi(accessToken?: string): Promise<User> {
+  const response = accessToken
+    ? await apiClient.getWithAccessToken<ApiResponse<User> | User>('/api/auth/me', accessToken)
+    : await apiClient.get<ApiResponse<User> | User>('/api/auth/me');
 
   if (isApiResponse(response)) {
     if (!response.data) {

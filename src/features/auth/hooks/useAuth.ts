@@ -22,7 +22,7 @@ async function completeAuth(response: ApiResponse<AuthSession>) {
   setSession(response.data);
 
   try {
-    const user = await getCurrentUserApi();
+    const user = await getCurrentUserApi(response.data.accessToken);
     setAuth(user, response.data);
   } catch (error) {
     clearAuth();
