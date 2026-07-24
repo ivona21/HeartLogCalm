@@ -192,7 +192,7 @@ export class ApiClient {
     return response;
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     let response = await this.sendRequest(endpoint, options);
 
     if (
