@@ -59,8 +59,12 @@ export function mapUserDto(data: UserMeResponseDto): User {
   };
 }
 
-export function toUser(response: UserMeResponseDtoApiResponse): User {
-  return mapUserDto(unwrapApiData(response));
+export function toUser(response: UserMeResponseDtoApiResponse | UserMeResponseDto): User {
+  if ('success' in response || 'message' in response) {
+    return mapUserDto(unwrapApiData(response));
+  }
+
+  return mapUserDto(response);
 }
 
 export function toEmotionEntrySummary(
