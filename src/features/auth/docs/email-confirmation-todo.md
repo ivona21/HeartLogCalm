@@ -7,14 +7,15 @@ Remove this file after the feature is complete.
 
 - [ ] Not started
 - [x] Done
+- [ ] Waiting on regenerated backend contract
 
 ## Plan
 
 ### 1. Contract and data flow
 
-- [ ] Confirm backend auth error shape for unconfirmed accounts
-- [ ] Confirm resend confirmation request payload and response
-- [ ] Update local auth assumptions if needed
+- [x] Confirm backend auth error shape for unconfirmed accounts
+- [x] Confirm resend confirmation request payload and response
+- [x] Update local auth assumptions if needed
 
 ### 2. Registration flow
 
@@ -71,3 +72,6 @@ Remove this file after the feature is complete.
 - Keep this list updated as work lands.
 - Mark items done immediately after the related change is complete.
 - If the backend contract changes, update the contract tasks first.
+- Implementation steps 2 through 7 are waiting on the regenerated OpenAPI / Orval output so we can wire the final contract without guessing.
+- Unconfirmed-account login failures still surface as generic `ErrorResponse` on `401`; frontend will key off the response message during implementation.
+- Resend confirmation uses `{ email }` and returns a generic `ApiResponse`.

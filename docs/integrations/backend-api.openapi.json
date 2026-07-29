@@ -65,6 +65,7 @@
     "/api/auth/confirm-email": {
       "get": {
         "tags": ["Auth"],
+        "description": "Confirms the email token and redirects to the configured frontend email-confirmation route with status success, expired, or invalid.",
         "operationId": "Auth_ConfirmEmail",
         "parameters": [
           {
@@ -83,25 +84,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+          "302": {
+            "description": "Found"
           },
           "500": {
             "description": "Internal Server Error",

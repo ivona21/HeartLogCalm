@@ -50,8 +50,8 @@ Changes:
 - Navigate to `/` after the user is loaded.
 - Update register to call `POST /api/auth/register`.
 - Remove `username` from the register form schema and UI.
-- Do not auto-login after register, because register now returns a session.
-- After register, follow the same session store + `/me` load flow as login.
+- Do not auto-login after register.
+- After register, show the inbox-check flow and keep the user anonymous until email confirmation.
 - Move auth-store mutation out of `login.api.ts`; API functions should return data only.
 
 Test this step:
