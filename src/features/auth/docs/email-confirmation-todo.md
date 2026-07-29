@@ -32,11 +32,11 @@ Remove this file after the feature is complete.
 
 ### 4. Confirmation route
 
-- [ ] Add `/email-confirmation` route
-- [ ] Render `success` state
-- [ ] Render `expired` state
-- [ ] Render `invalid` state
-- [ ] Add clear actions for each state
+- [x] Add `/email-confirmation` route
+- [x] Render `success` state
+- [x] Render `expired` state
+- [x] Render `invalid` state
+- [x] Add clear actions for each state
 
 ### 5. Resend confirmation
 
@@ -47,10 +47,10 @@ Remove this file after the feature is complete.
 
 ### 6. Routing and UX polish
 
-- [ ] Decide whether confirmation page links to login, register, or both
-- [ ] Keep auth bootstrap unchanged for confirmed sessions
-- [ ] Verify no authenticated redirect happens after register
-- [ ] Make sure public routes still work as before
+- [x] Decide whether confirmation page links to login, register, or both
+- [x] Keep auth bootstrap unchanged for confirmed sessions
+- [x] Verify no authenticated redirect happens after register
+- [x] Make sure public routes still work as before
 
 ### 7. Tests
 

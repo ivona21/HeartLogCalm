@@ -42,9 +42,9 @@ export function LoginForm() {
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
-    onSuccess: () => {
+    onSuccess: (_data, email) => {
       setResendError(null);
-      setResendMessage(`We sent another confirmation email to ${resendEmail}.`);
+      setResendMessage(`We sent another confirmation email to ${email}.`);
     },
     onError: (error: unknown) => {
       const apiError = error as ApiError;

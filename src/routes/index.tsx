@@ -3,6 +3,7 @@ import { ProtectedRoute } from '@/shared/routing/ProtectedRoute.tsx';
 import { HomeRoute } from '@/shared/routing/HomeRoute.tsx';
 import LoginPage from '@/pages/login';
 import RegisterPage from '@/pages/register';
+import EmailConfirmationPage from '@/pages/email-confirmation';
 import DashboardPage from '@/pages/dashboard';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
@@ -25,6 +26,10 @@ const routes = [
   {
     path: '/register',
     element: <RegisterPage />,
+  },
+  {
+    path: '/email-confirmation',
+    element: <EmailConfirmationPage />,
   },
   {
     path: '/dashboard',
