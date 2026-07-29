@@ -25,10 +25,10 @@ Remove this file after the feature is complete.
 
 ### 3. Login flow
 
-- [ ] Detect unconfirmed-account login error
-- [ ] Show targeted message explaining email is not confirmed
-- [ ] Add resend confirmation action with manual email entry
-- [ ] Keep normal login behavior for confirmed users
+- [x] Detect unconfirmed-account login error
+- [x] Show targeted message explaining email is not confirmed
+- [x] Add resend confirmation action with manual email entry
+- [x] Keep normal login behavior for confirmed users
 
 ### 4. Confirmation route
 
@@ -40,10 +40,10 @@ Remove this file after the feature is complete.
 
 ### 5. Resend confirmation
 
-- [ ] Wire resend to `POST /api/auth/resend-confirmation`
-- [ ] Reuse email entered by the user
-- [ ] Handle validation and backend errors
-- [ ] Add loading and success/error UI states
+- [x] Wire resend to `POST /api/auth/resend-confirmation`
+- [x] Reuse email entered by the user
+- [x] Handle validation and backend errors
+- [x] Add loading and success/error UI states
 
 ### 6. Routing and UX polish
 
@@ -71,5 +71,5 @@ Remove this file after the feature is complete.
 - Keep this list updated as work lands.
 - Mark items done immediately after the related change is complete.
 - If the backend contract changes, update the contract tasks first.
-- Unconfirmed-account login failures still surface as generic `ErrorResponse` on `401`; frontend will key off the response message during implementation.
+- Unconfirmed-account login failures still surface as generic `ErrorResponse` on `401`; frontend keys off the returned message during implementation.
 - Resend confirmation uses `{ email }` and returns a generic `ApiResponse`.
