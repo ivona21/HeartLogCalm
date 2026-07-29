@@ -42,13 +42,7 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterInput) => {
       await registerApi(data);
-      return completeAuth(await loginApi(data));
-    },
-    onSuccess: () => {
-      navigate('/');
-    },
-    onError: (error) => {
-      console.log('error: ', error);
+      return data.email;
     },
   });
 
@@ -85,6 +79,7 @@ export function useAuth() {
     logout,
     loginError: loginMutation.error,
     registerError: registerMutation.error,
+    registerSuccessEmail: registerMutation.data,
     isLoggingIn: loginMutation.isPending,
     isRegistering: registerMutation.isPending,
   };

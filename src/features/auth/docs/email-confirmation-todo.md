@@ -7,7 +7,6 @@ Remove this file after the feature is complete.
 
 - [ ] Not started
 - [x] Done
-- [ ] Waiting on regenerated backend contract
 
 ## Plan
 
@@ -19,10 +18,10 @@ Remove this file after the feature is complete.
 
 ### 2. Registration flow
 
-- [ ] Remove auto-login after successful registration
-- [ ] Show persistent post-registration inbox message
-- [ ] Keep user on auth side after register success
-- [ ] Add resend entry point from registration success state
+- [x] Remove auto-login after successful registration
+- [x] Show persistent post-registration inbox message
+- [x] Keep user on auth side after register success
+- [x] Add resend entry point from registration success state
 
 ### 3. Login flow
 
@@ -72,6 +71,5 @@ Remove this file after the feature is complete.
 - Keep this list updated as work lands.
 - Mark items done immediately after the related change is complete.
 - If the backend contract changes, update the contract tasks first.
-- Implementation steps 2 through 7 are waiting on the regenerated OpenAPI / Orval output so we can wire the final contract without guessing.
 - Unconfirmed-account login failures still surface as generic `ErrorResponse` on `401`; frontend will key off the response message during implementation.
 - Resend confirmation uses `{ email }` and returns a generic `ApiResponse`.

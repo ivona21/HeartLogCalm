@@ -12,14 +12,15 @@ import {
 import { Input } from '@/components/ui/Input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
+import { AlertCircleIcon, CheckCircle2Icon, Loader2Icon } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert.tsx';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
+import { AppLink } from '@/components/ui/AppLink.tsx';
 
 export function RegisterForm() {
-  const { register, isRegistering, registerError } = useAuth();
+  const { register, isRegistering, registerError, registerSuccessEmail } = useAuth();
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -28,6 +29,33 @@ export function RegisterForm() {
       password: '',
     },
   });
+
+  if (registerSuccessEmail) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Oasis</h2>
+          <p className="text-sm text-muted-foreground">Start your emotional wellness journey</p>
+        </div>
+        <div className="flex justify-center mb-8">
+          <Logo variant="complexFull" className="h-40" />
+        </div>
+        <Alert className="border-primary/30 bg-primary/10">
+          <CheckCircle2Icon className="h-4 w-4 text-primary" />
+          <AlertTitle className="text-foreground">Check your inbox</AlertTitle>
+          <AlertDescription className="text-muted-foreground">
+            We created your account and sent a confirmation email to{' '}
+            <span className="font-medium text-foreground">{registerSuccessEmail}</span>. Confirm
+            your email before logging in. If you need another confirmation email, use the login
+            page to resend it.
+          </AlertDescription>
+        </Alert>
+        <Button asChild className="w-full text-primary-foreground font-medium">
+          <AppLink to="/login">Go to login</AppLink>
+        </Button>
+      </div>
+    );
+  }
 
   const onSubmit = (data: RegisterInput) => {
     register(data);
