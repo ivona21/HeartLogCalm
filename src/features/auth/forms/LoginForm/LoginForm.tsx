@@ -90,13 +90,13 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="text-center mb-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
           <p className="text-sm text-muted-foreground">Continue where you left off</p>
         </div>
 
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6">
           <Logo variant="complexFull" className="h-40" />
         </div>
 
@@ -110,7 +110,7 @@ export function LoginForm() {
         )}
 
         {isUnconfirmedAccountError && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Alert className="border-primary/30 bg-primary/10">
               <MailIcon className="h-4 w-4 text-primary" />
               <AlertDescription className="text-foreground">
@@ -176,11 +176,11 @@ export function LoginForm() {
           </div>
         )}
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+            <FormItem className="space-y-1">
               <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
               <FormControl>
                 <Input
@@ -192,7 +192,7 @@ export function LoginForm() {
                   data-testid="input-email"
                 />
               </FormControl>
-              <FormMessage className="text-destructive text-sm" />
+              <FormMessage className="text-destructive !text-xs" />
             </FormItem>
           )}
         />
@@ -201,7 +201,7 @@ export function LoginForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1">
               <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
               <FormControl>
                 <PasswordInput
@@ -212,7 +212,7 @@ export function LoginForm() {
                   data-testid="input-password"
                 />
               </FormControl>
-              <FormMessage className="text-destructive text-sm" />
+              <FormMessage className="text-destructive !text-xs" />
               <div className="text-right mt-2">
                 <button
                   type="button"

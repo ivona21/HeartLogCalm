@@ -37,14 +37,14 @@ export function RegisterForm() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="text-center mb-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <div className="text-center mb-6">
             <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
             <p className="text-sm text-muted-foreground">
               Your private space for emotions and reflection
             </p>
           </div>
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6">
             <Logo variant="complexFull" className="h-40" />
           </div>
           {registerError && (
@@ -60,7 +60,7 @@ export function RegisterForm() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-1">
                 <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
                 <FormControl>
                   <Input
@@ -81,7 +81,7 @@ export function RegisterForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-1">
                 <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
                 <FormControl>
                   <PasswordInput
@@ -101,7 +101,7 @@ export function RegisterForm() {
             control={form.control}
             name="confirmPassword"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-1">
                 <FormLabel className="text-sm font-medium text-foreground">Confirm password</FormLabel>
                 <FormControl>
                   <PasswordInput
@@ -117,24 +117,26 @@ export function RegisterForm() {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full text-primary-foreground font-medium transition-all duration-200"
-            disabled={isRegistering}
-            data-testid="button-submit"
-          >
-            {isRegistering ? (
-              <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Creating your account...
-              </>
-            ) : (
-              'Sign Up'
-            )}
-          </Button>
+          <div className="pt-3">
+            <Button
+              type="submit"
+              className="w-full text-primary-foreground font-medium transition-all duration-200"
+              disabled={isRegistering}
+              data-testid="button-submit"
+            >
+              {isRegistering ? (
+                <>
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                  Creating your account...
+                </>
+              ) : (
+                'Sign Up'
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <p className="text-sm text-muted-foreground">
           Already have an account?{' '}
           <AppLink to="/login" data-testid="link-login" className="font-medium">
