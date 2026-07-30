@@ -26,6 +26,7 @@ export function RegisterForm() {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
 
@@ -82,6 +83,9 @@ export function RegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
+                <p className="text-xs text-muted-foreground">
+                  Use 8 or more characters with a mix of letters, numbers and symbols
+                </p>
                 <FormControl>
                   <PasswordInput
                     {...field}
@@ -96,9 +100,25 @@ export function RegisterForm() {
             )}
           />
 
-          <p className="text-xs text-muted-foreground">
-            Use 8 or more characters with a mix of letters, numbers and symbols
-          </p>
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-foreground">Confirm password</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    {...field}
+                    placeholder="Confirm your password"
+                    disabled={isRegistering}
+                    className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                    data-testid="input-confirm-password"
+                  />
+                </FormControl>
+                <FormMessage className="text-destructive !text-xs" />
+              </FormItem>
+            )}
+          />
 
           <Button
             type="submit"
