@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button.tsx';
@@ -14,30 +13,18 @@ import {
 import { Input } from '@/components/ui/Input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { AlertCircleIcon, CheckCircle2Icon, Loader2Icon, RotateCcwIcon } from 'lucide-react';
+import { AlertCircleIcon, CheckCircle2Icon, Loader2Icon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert.tsx';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
-import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
 import { AppLink } from '@/components/ui/AppLink.tsx';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError, registerSuccessEmail } = useAuth();
-  const [resendMessage, setResendMessage] = useState<string | null>(null);
-  const [resendError, setResendError] = useState<string | null>(null);
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
-    onSuccess: (_data, email) => {
-      setResendError(null);
-      setResendMessage(`We sent another confirmation email to ${email}.`);
-    },
-    onError: (error: unknown) => {
-      const apiError = error as ApiError;
-      setResendMessage(null);
-      setResendError(apiError.message || 'Unable to resend the confirmation email.');
-    },
   });
 
   const form = useForm<RegisterInput>({
@@ -50,9 +37,9 @@ export function RegisterForm() {
 
   if (registerSuccessEmail) {
     const handleResendConfirmation = () => {
-      setResendError(null);
-      setResendMessage(null);
-      resendMutation.mutate(registerSuccessEmail);
+      if (!resendMutation.isPending) {
+        resendMutation.mutate(registerSuccessEmail);
+      }
     };
 
     return (
@@ -60,23 +47,34 @@ export function RegisterForm() {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
           <p className="text-sm text-muted-foreground">
-            Your private space for emotions and reflection</p>
+            Your private space for emotions and reflection
+          </p>
         </div>
         <div className="flex justify-center mb-8">
           <Logo variant="complexFull" className="h-40" />
         </div>
         <Alert className="border-primary/30 bg-green-100">
           <CheckCircle2Icon className="h-4 w-4 text-primary" />
-          <AlertTitle className="text-foreground">Email has been sent</AlertTitle>
+          <AlertTitle className="text-foreground">Check your inbox</AlertTitle>
           <AlertDescription className="text-muted-foreground">
-            Please confirm your email and go to login to enter the app.
+            We sent a confirmation email to{' '}
+            <span className="font-medium text-foreground">{registerSuccessEmail}</span>.
           </AlertDescription>
         </Alert>
-        <div>
-          Didn't get an email?
-          <span onClick={handleResendConfirmation} className="accent-link cursor-pointer">
-            Send again
-          </span>
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-muted-foreground">No email yet?</p>
+          <p className="text-sm text-muted-foreground">
+            Check your spam folder or{' '}
+            <button
+              type="button"
+              onClick={handleResendConfirmation}
+              disabled={resendMutation.isPending}
+              className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50"
+              data-testid="button-register-resend-confirmation"
+            >
+              {resendMutation.isPending ? 'Sending...' : 'Resend email'}
+            </button>
+          </p>
         </div>
       </div>
     );
@@ -145,12 +143,13 @@ export function RegisterForm() {
                   />
                 </FormControl>
                 <FormMessage className="text-destructive text-sm" />
-                <p className="text-xs text-muted-foreground">
-                  Use 8 or more characters with a mix of letters, numbers and symbols
-                </p>
               </FormItem>
             )}
           />
+
+          <p className="text-xs text-muted-foreground">
+            Use 8 or more characters with a mix of letters, numbers and symbols
+          </p>
 
           <Button
             type="submit"
