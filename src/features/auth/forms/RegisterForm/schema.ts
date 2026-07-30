@@ -6,7 +6,7 @@ export const registerSchema = z
     email: z.string().email('Please enter a valid email address'),
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
+      .min(8, 'Please use some more secure password. Try using 8 or more characters with a mix of letters, numbers and symbols')
       .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
       .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
       .regex(/[0-9]/, 'Password must contain at least one number')

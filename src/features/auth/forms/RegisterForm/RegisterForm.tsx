@@ -83,9 +83,6 @@ export function RegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
-                <p className="text-xs text-muted-foreground">
-                  Use 8 or more characters with a mix of letters, numbers and symbols
-                </p>
                 <FormControl>
                   <PasswordInput
                     {...field}
