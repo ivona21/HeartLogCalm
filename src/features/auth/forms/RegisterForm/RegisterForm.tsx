@@ -64,13 +64,15 @@ export function RegisterForm() {
         <div className="flex justify-center mb-8">
           <Logo variant="complexFull" className="h-40" />
         </div>
-        <Alert className="border-primary/30 bg-primary/10">
+        <Alert className="border-primary/30 bg-green-100">
           <CheckCircle2Icon className="h-4 w-4 text-primary" />
-          <AlertTitle className="text-foreground">Check your inbox</AlertTitle>
+          <AlertTitle className="text-foreground">Email has been sent</AlertTitle>
           <AlertDescription className="text-muted-foreground">
-            We created your account and sent a confirmation email to{' '}
-            <span className="font-medium text-foreground">{registerSuccessEmail}</span>. Confirm
-            your email before logging in.
+            Please check your inbox and confirm your email address.
+            <br />
+            Didn't get an email?
+            <span onClick={handleResendConfirmation} className="accent-link cursor-pointer">
+          Send again</span>
           </AlertDescription>
         </Alert>
         <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
