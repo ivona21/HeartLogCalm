@@ -176,10 +176,10 @@ export function LoginForm() {
           </div>
         )}
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
             <FormItem className="space-y-1">
               <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
               <FormControl>
@@ -192,7 +192,7 @@ export function LoginForm() {
                   data-testid="input-email"
                 />
               </FormControl>
-              <FormMessage className="text-destructive !text-xs" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -212,7 +212,7 @@ export function LoginForm() {
                   data-testid="input-password"
                 />
               </FormControl>
-              <FormMessage className="text-destructive !text-xs" />
+              <FormMessage />
               <div className="text-right mt-2">
                 <button
                   type="button"

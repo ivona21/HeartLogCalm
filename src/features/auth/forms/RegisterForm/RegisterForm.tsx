@@ -72,7 +72,7 @@ export function RegisterForm() {
                     data-testid="input-email"
                   />
                 </FormControl>
-                <FormMessage className="text-destructive !text-xs" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -92,7 +92,7 @@ export function RegisterForm() {
                     data-testid="input-password"
                   />
                 </FormControl>
-                <FormMessage className="text-destructive !text-xs" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -112,7 +112,7 @@ export function RegisterForm() {
                     data-testid="input-confirm-password"
                   />
                 </FormControl>
-                <FormMessage className="text-destructive !text-xs" />
+                <FormMessage />
               </FormItem>
             )}
           />
