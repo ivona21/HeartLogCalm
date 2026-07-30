@@ -9,6 +9,7 @@ import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
 import type { LoginInput } from '@/features/auth/forms/LoginForm/schema.ts';
 import type { RegisterInput } from '@/features/auth/forms/RegisterForm/schema.ts';
+import { clearPendingConfirmationEmail, setPendingConfirmationEmail } from '@/features/auth/utils/pending-confirmation-email.ts';
 
 async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
   const { setAuth, setSession, clearAuth } = useAuthStore.getState();
@@ -18,6 +19,7 @@ async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
   try {
     const user = await getCurrentUserApi(session.accessToken);
     setAuth(user, session);
+    clearPendingConfirmationEmail();
   } catch (error) {
     clearAuth();
     throw error;
@@ -44,6 +46,10 @@ export function useAuth() {
       await registerApi(data);
       return data.email;
     },
+    onSuccess: (email) => {
+      setPendingConfirmationEmail(email);
+      navigate('/email-sent');
+    },
   });
 
   const logout = () => {
@@ -53,6 +59,7 @@ export function useAuth() {
       })
       .finally(() => {
         clearAuth();
+        clearPendingConfirmationEmail();
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
         }
@@ -79,7 +86,6 @@ export function useAuth() {
     logout,
     loginError: loginMutation.error,
     registerError: registerMutation.error,
-    registerSuccessEmail: registerMutation.data,
     isLoggingIn: loginMutation.isPending,
     isRegistering: registerMutation.isPending,
   };

@@ -22,6 +22,7 @@ Remove this file after the feature is complete.
 - [x] Show persistent post-registration inbox message
 - [x] Keep user on auth side after register success
 - [x] Add resend entry point from registration success state
+- [x] Navigate to dedicated `/email-sent` page after successful registration
 
 ### 3. Login flow
 
@@ -51,6 +52,7 @@ Remove this file after the feature is complete.
 - [x] Keep auth bootstrap unchanged for confirmed sessions
 - [x] Verify no authenticated redirect happens after register
 - [x] Make sure public routes still work as before
+- [x] Add dedicated `/email-sent` route for post-registration state
 
 ### 7. Tests
 
