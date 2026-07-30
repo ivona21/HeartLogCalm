@@ -93,7 +93,7 @@ export function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-          <p className="text-sm text-muted-foreground">Continue your journey to calm</p>
+          <p className="text-sm text-muted-foreground">Continue where you left off</p>
         </div>
 
         <div className="flex justify-center mb-8">
@@ -114,8 +114,8 @@ export function LoginForm() {
             <Alert className="border-primary/30 bg-primary/10">
               <MailIcon className="h-4 w-4 text-primary" />
               <AlertDescription className="text-foreground">
-                Your email address has not been confirmed yet. Enter the address below to send a
-                new confirmation link.
+                Your email address has not been confirmed yet. Enter the address below to send a new
+                confirmation link.
               </AlertDescription>
             </Alert>
 

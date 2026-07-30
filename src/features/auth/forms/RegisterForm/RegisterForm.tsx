@@ -58,8 +58,9 @@ export function RegisterForm() {
     return (
       <div className="space-y-6">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Oasis</h2>
-          <p className="text-sm text-muted-foreground">Start your emotional wellness journey</p>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
+          <p className="text-sm text-muted-foreground">
+            Your private space for emotions and reflection</p>
         </div>
         <div className="flex justify-center mb-8">
           <Logo variant="complexFull" className="h-40" />
@@ -68,42 +69,15 @@ export function RegisterForm() {
           <CheckCircle2Icon className="h-4 w-4 text-primary" />
           <AlertTitle className="text-foreground">Email has been sent</AlertTitle>
           <AlertDescription className="text-muted-foreground">
-            Please check your inbox and confirm your email address.
-            <br />
-            Didn't get an email?
-            <span onClick={handleResendConfirmation} className="accent-link cursor-pointer">
-          Send again</span>
+            Please confirm your email and go to login to enter the app.
           </AlertDescription>
         </Alert>
-        <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-          {resendError && <p className="text-sm text-destructive">{resendError}</p>}
-
-          {resendMessage && <p className="text-sm text-primary">{resendMessage}</p>}
-
-          <Button
-            type="button"
-            variant="secondary"
-            className="w-full font-medium"
-            disabled={resendMutation.isPending}
-            onClick={handleResendConfirmation}
-            data-testid="button-register-resend-confirmation"
-          >
-            {resendMutation.isPending ? (
-              <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Sending confirmation email...
-              </>
-            ) : (
-              <>
-                <RotateCcwIcon className="h-4 w-4" />
-                Resend confirmation email
-              </>
-            )}
-          </Button>
+        <div>
+          Didn't get an email?
+          <span onClick={handleResendConfirmation} className="accent-link cursor-pointer">
+            Send again
+          </span>
         </div>
-        <Button asChild className="w-full text-primary-foreground font-medium">
-          <AppLink to="/login">Go to login</AppLink>
-        </Button>
       </div>
     );
   }
@@ -113,81 +87,96 @@ export function RegisterForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Oasis</h2>
-          <p className="text-sm text-muted-foreground">Start your emotional wellness journey</p>
-        </div>
-        <div className="flex justify-center mb-8">
-          <Logo variant="complexFull" className="h-40" />
-        </div>
-        {registerError && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircleIcon className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive">
-              {(registerError as ApiError).message || 'Registration failed. Please try again.'}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="Your email"
-                  disabled={isRegistering}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-email"
-                />
-              </FormControl>
-              <FormMessage className="text-destructive text-sm" />
-            </FormItem>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
+            <p className="text-sm text-muted-foreground">
+              Your private space for emotions and reflection
+            </p>
+          </div>
+          <div className="flex justify-center mb-8">
+            <Logo variant="complexFull" className="h-40" />
+          </div>
+          {registerError && (
+            <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+              <AlertCircleIcon className="h-4 w-4 text-destructive" />
+              <AlertDescription className="text-destructive">
+                {(registerError as ApiError).message || 'Registration failed. Please try again.'}
+              </AlertDescription>
+            </Alert>
           )}
-        />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
-              <FormControl>
-                <PasswordInput
-                  {...field}
-                  placeholder="Create a secure password"
-                  disabled={isRegistering}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-password"
-                />
-              </FormControl>
-              <FormMessage className="text-destructive text-sm" />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="Your email"
+                    disabled={isRegistering}
+                    className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                    data-testid="input-email"
+                  />
+                </FormControl>
+                <FormMessage className="text-destructive text-sm" />
+              </FormItem>
+            )}
+          />
 
-        <Button
-          type="submit"
-          className="w-full text-primary-foreground font-medium transition-all duration-200"
-          disabled={isRegistering}
-          data-testid="button-submit"
-        >
-          {isRegistering ? (
-            <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-              Creating your account...
-            </>
-          ) : (
-            'Sign Up'
-          )}
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    {...field}
+                    placeholder="Create a secure password"
+                    disabled={isRegistering}
+                    className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                    data-testid="input-password"
+                  />
+                </FormControl>
+                <FormMessage className="text-destructive text-sm" />
+                <p className="text-xs text-muted-foreground">
+                  Use 8 or more characters with a mix of letters, numbers and symbols
+                </p>
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="w-full text-primary-foreground font-medium transition-all duration-200"
+            disabled={isRegistering}
+            data-testid="button-submit"
+          >
+            {isRegistering ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Creating your account...
+              </>
+            ) : (
+              'Sign Up'
+            )}
+          </Button>
+        </form>
+      </Form>
+      <div className="mt-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <AppLink to="/login" data-testid="link-login" className="font-medium">
+            Log in
+          </AppLink>
+        </p>
+      </div>
+    </>
   );
 }
