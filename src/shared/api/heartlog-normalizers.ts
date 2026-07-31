@@ -59,9 +59,15 @@ export function mapUserDto(data: UserMeResponseDto): User {
   };
 }
 
+function isUserMeResponseDtoApiResponse(
+  response: UserMeResponseDtoApiResponse | UserMeResponseDto,
+): response is UserMeResponseDtoApiResponse {
+  return 'success' in response || 'message' in response;
+}
+
 export function toUser(response: UserMeResponseDtoApiResponse | UserMeResponseDto): User {
-  if ('success' in response || 'message' in response) {
-    return mapUserDto(unwrapApiData(response));
+  if (isUserMeResponseDtoApiResponse(response)) {
+    return mapUserDto(unwrapApiData<UserMeResponseDto>(response));
   }
 
   return mapUserDto(response);

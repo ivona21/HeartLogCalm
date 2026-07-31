@@ -204,9 +204,12 @@ export const getAuthConfirmEmailUrl = (params?: AuthConfirmEmailParams,) => {
   return stringifiedParams.length > 0 ? `/api/auth/confirm-email?${stringifiedParams}` : `/api/auth/confirm-email`
 }
 
-export const authConfirmEmail = async (params?: AuthConfirmEmailParams, options?: RequestInit): Promise<ApiResponse> => {
+/**
+ * Confirms the email token and redirects to the configured frontend email-confirmation route with status success, expired, or invalid.
+ */
+export const authConfirmEmail = async (params?: AuthConfirmEmailParams, options?: RequestInit): Promise<unknown> => {
 
-  return heartlogFetch<ApiResponse>(getAuthConfirmEmailUrl(params),
+  return heartlogFetch<unknown>(getAuthConfirmEmailUrl(params),
   {
     ...options,
     method: 'GET'

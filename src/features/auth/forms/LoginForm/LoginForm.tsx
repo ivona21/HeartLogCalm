@@ -1,5 +1,7 @@
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button.tsx';
 import {
   Form,
@@ -12,14 +14,20 @@ import {
 import { Input } from '@/components/ui/Input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
+import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
+import { isUnconfirmedAccountLoginError } from '@/features/auth/utils/auth-errors.ts';
+import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
+  const [resendEmail, setResendEmail] = useState('');
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const [resendError, setResendError] = useState<string | null>(null);
+  const previousUnconfirmedRef = useRef(false);
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -29,36 +37,150 @@ export function LoginForm() {
     },
   });
 
+  const loginErrorMessage = (loginError as ApiError | null | undefined)?.message ?? '';
+  const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginErrorMessage);
+
+  const resendMutation = useMutation({
+    mutationFn: async (email: string) => resendConfirmationApi(email),
+    onSuccess: (_data, email) => {
+      setResendError(null);
+      setResendMessage(`We sent another confirmation email to ${email}.`);
+    },
+    onError: (error: unknown) => {
+      const apiError = error as ApiError;
+      setResendMessage(null);
+      setResendError(apiError.message || 'Unable to resend the confirmation email.');
+    },
+  });
+
+  useEffect(() => {
+    if (isUnconfirmedAccountError && !previousUnconfirmedRef.current) {
+      setResendEmail(form.getValues('email'));
+      setResendMessage(null);
+      setResendError(null);
+    }
+
+    if (!isUnconfirmedAccountError) {
+      setResendMessage(null);
+      setResendError(null);
+    }
+
+    previousUnconfirmedRef.current = isUnconfirmedAccountError;
+  }, [form, isUnconfirmedAccountError]);
+
+  const handleResendConfirmation = () => {
+    const trimmedEmail = resendEmail.trim();
+
+    if (!trimmedEmail) {
+      setResendError('Enter the email address you want to confirm.');
+      setResendMessage(null);
+      return;
+    }
+
+    setResendError(null);
+    setResendMessage(null);
+    resendMutation.mutate(trimmedEmail);
+  };
+
   const onSubmit = (data: LoginInput) => {
+    setResendMessage(null);
+    setResendError(null);
     login(data);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="text-center mb-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-          <p className="text-sm text-muted-foreground">Continue your journey to calm</p>
+          <p className="text-sm text-muted-foreground">Continue where you left off</p>
         </div>
 
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6">
           <Logo variant="complexFull" className="h-40" />
         </div>
 
-        {loginError && (
+        {loginError && !isUnconfirmedAccountError && (
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-destructive" />
             <AlertDescription className="text-destructive">
-              {(loginError as ApiError).message || 'Login failed. Please check your credentials.'}
+              {loginErrorMessage || 'Login failed. Please check your credentials.'}
             </AlertDescription>
           </Alert>
+        )}
+
+        {isUnconfirmedAccountError && (
+          <div className="space-y-3">
+            <Alert className="border-primary/30 bg-primary/10">
+              <MailIcon className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-foreground">
+                Your email address has not been confirmed yet. Enter the address below to send a new
+                confirmation link.
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
+              <div className="space-y-2">
+                <label htmlFor="resend-email" className="text-sm font-medium text-foreground">
+                  Confirmation email
+                </label>
+                <Input
+                  id="resend-email"
+                  type="email"
+                  value={resendEmail}
+                  onChange={(event) => {
+                    setResendEmail(event.target.value);
+                    setResendError(null);
+                    setResendMessage(null);
+                  }}
+                  placeholder="Your email"
+                  disabled={resendMutation.isPending}
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                  data-testid="input-resend-email"
+                />
+              </div>
+
+              {resendError && (
+                <p className="text-sm text-destructive" data-testid="text-resend-error">
+                  {resendError}
+                </p>
+              )}
+
+              {resendMessage && (
+                <p className="text-sm text-primary" data-testid="text-resend-success">
+                  {resendMessage}
+                </p>
+              )}
+
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full font-medium"
+                disabled={resendMutation.isPending}
+                onClick={handleResendConfirmation}
+                data-testid="button-resend-confirmation"
+              >
+                {resendMutation.isPending ? (
+                  <>
+                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                    Sending confirmation email...
+                  </>
+                ) : (
+                  <>
+                    <RotateCcwIcon className="h-4 w-4" />
+                    Resend confirmation email
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         )}
 
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1">
               <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
               <FormControl>
                 <Input
@@ -70,7 +192,7 @@ export function LoginForm() {
                   data-testid="input-email"
                 />
               </FormControl>
-              <FormMessage className="text-destructive text-sm" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -79,7 +201,7 @@ export function LoginForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-1">
               <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
               <FormControl>
                 <PasswordInput
@@ -90,7 +212,7 @@ export function LoginForm() {
                   data-testid="input-password"
                 />
               </FormControl>
-              <FormMessage className="text-destructive text-sm" />
+              <FormMessage />
               <div className="text-right mt-2">
                 <button
                   type="button"

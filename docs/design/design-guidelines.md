@@ -91,8 +91,8 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 ### Form Structure
 **Registration Page**:
 1. HeartLog branding (centered, mb-8)
-2. Page title: "Create Your Oasis" (h2, mb-2)
-3. Subtitle: "Start your emotional wellness journey" (text-sm, mb-8, muted)
+2. Page title: "Create Your Account" (h2, mb-2)
+3. Subtitle: "Your private space for emotions and reflection" (text-sm, mb-8, muted)
 4. Email input (mb-6)
 5. Username input (mb-6)
 6. Password input with strength indicator (mb-6)
@@ -104,7 +104,7 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 **Login Page**:
 1. HeartLog branding (centered, mb-8)
 2. Page title: "Welcome Back" (h2, mb-2)
-3. Subtitle: "Continue your journey to calm" (text-sm, mb-8, muted)
+3. Subtitle: "Continue where you left off" (text-sm, mb-8, muted)
 4. Email input (mb-6)
 5. Password input (mb-6)
 6. "Forgot password?" link (text-right, text-sm, mb-6)
