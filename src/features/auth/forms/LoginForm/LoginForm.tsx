@@ -100,15 +100,6 @@ export function LoginForm() {
           <Logo variant="complexFull" className="h-40" />
         </div>
 
-        {loginError && !isUnconfirmedAccountError && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircleIcon className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive">
-              {loginErrorMessage || 'Login failed. Please check your credentials.'}
-            </AlertDescription>
-          </Alert>
-        )}
-
         {isUnconfirmedAccountError && (
           <div className="space-y-3">
             <Alert className="border-primary/30 bg-primary/10">
@@ -213,7 +204,7 @@ export function LoginForm() {
                 />
               </FormControl>
               <FormMessage />
-              <div className="text-right mt-2">
+              <div className="hidden text-right mt-2">
                 <button
                   type="button"
                   className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
@@ -225,6 +216,15 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+
+        {loginError && !isUnconfirmedAccountError && (
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+            <AlertCircleIcon className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">
+              {loginErrorMessage || 'Login failed. Please check your credentials.'}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Button
           type="submit"

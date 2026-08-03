@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2Icon, AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert.tsx';
@@ -21,9 +21,9 @@ function getStatusCopy(status: ConfirmationStatus) {
   switch (status) {
     case 'success':
       return {
-        title: 'Email confirmed',
+        title: 'Email confirmed!',
         description:
-          'Your email address is confirmed. You can now log in and continue to your account.',
+          'Your account is now active. You can now log in and start tracking your emotions.',
         variant: 'success' as const,
       };
     case 'expired':
@@ -45,6 +45,7 @@ function getStatusCopy(status: ConfirmationStatus) {
 }
 
 export default function EmailConfirmationPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const statusParam = searchParams.get('status');
   const status: ConfirmationStatus = isConfirmationStatus(statusParam) ? statusParam : 'invalid';
@@ -84,37 +85,64 @@ export default function EmailConfirmationPage() {
   return (
     <AuthLayout>
       <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-semibold text-foreground">Email confirmation</h1>
-          <p className="text-sm text-muted-foreground">
-            Use the status below to finish setting up your account.
-          </p>
-        </div>
+        {status === 'success' ? (
+          <div className="space-y-6 text-center">
+            <div className="space-y-3">
+              <h1 className="text-3xl font-semibold text-foreground">{copy.title}</h1>
+              <div className="flex justify-center">
+                <CheckCircle2Icon className="h-24 w-24 text-green-600" />
+              </div>
+            </div>
 
-        <Alert
-          variant={copy.variant === 'error' ? 'destructive' : 'default'}
-          className={
-            copy.variant === 'success'
-              ? 'border-primary/30 bg-primary/10'
-              : copy.variant === 'warning'
-              ? 'border-border bg-muted/30'
-              : 'bg-destructive/10 border-destructive/30'
-          }
-        >
-          {copy.variant === 'success' ? (
-            <CheckCircle2Icon className="h-4 w-4 text-primary" />
-          ) : copy.variant === 'warning' ? (
-            <MailIcon className="h-4 w-4 text-foreground" />
-          ) : (
-            <AlertCircleIcon className="h-4 w-4 text-destructive" />
-          )}
-          <AlertTitle className={copy.variant === 'error' ? 'text-destructive' : 'text-foreground'}>
-            {copy.title}
-          </AlertTitle>
-          <AlertDescription className={copy.variant === 'error' ? 'text-destructive' : 'text-muted-foreground'}>
-            {copy.description}
-          </AlertDescription>
-        </Alert>
+            <div className="space-y-2">
+              <p className="text-xl font-semibold text-foreground">
+                Your account is now active.
+                <br />
+                <span className="text-base font-normal">
+                  You can now log in and start tracking your emotions.
+                </span>
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl font-semibold text-foreground">Email confirmation</h1>
+              <p className="text-sm text-muted-foreground">
+                Use the status below to finish setting up your account.
+              </p>
+            </div>
+
+            <Alert
+              variant={copy.variant === 'error' ? 'destructive' : 'default'}
+              className={
+                copy.variant === 'success'
+                  ? 'border-primary/30 bg-primary/10'
+                  : copy.variant === 'warning'
+                  ? 'border-border bg-muted/30'
+                  : 'bg-destructive/10 border-destructive/30'
+              }
+            >
+              {copy.variant === 'success' ? (
+                <CheckCircle2Icon className="h-4 w-4 text-primary" />
+              ) : copy.variant === 'warning' ? (
+                <MailIcon className="h-4 w-4 text-foreground" />
+              ) : (
+                <AlertCircleIcon className="h-4 w-4 text-destructive" />
+              )}
+              <AlertTitle
+                className={copy.variant === 'error' ? 'text-destructive' : 'text-foreground'}
+              >
+                {copy.title}
+              </AlertTitle>
+              <AlertDescription
+                className={copy.variant === 'error' ? 'text-destructive' : 'text-muted-foreground'}
+              >
+                {copy.description}
+              </AlertDescription>
+            </Alert>
+          </>
+        )}
 
         {status === 'expired' && (
           <div className="space-y-4 rounded-lg border border-border bg-muted/20 p-4">
@@ -170,14 +198,31 @@ export default function EmailConfirmationPage() {
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
-          <Button asChild className="w-full font-medium">
-            <AppLink to="/login">Go to login</AppLink>
-          </Button>
-          <Button asChild variant="secondary" className="w-full font-medium">
-            <AppLink to="/register">Back to register</AppLink>
-          </Button>
-        </div>
+        {status === 'success' ? (
+          <div className="flex flex-col gap-3">
+            <Button
+              type="button"
+              className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+              onClick={() => navigate('/login')}
+            >
+              Log In
+            </Button>
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              You&apos;ll use the same email address and password
+              <br />
+              you chose during registration.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <Button asChild className="w-full font-medium">
+              <AppLink to="/login">Go to login</AppLink>
+            </Button>
+            <Button asChild variant="secondary" className="w-full font-medium">
+              <AppLink to="/register">Back to register</AppLink>
+            </Button>
+          </div>
+        )}
       </div>
     </AuthLayout>
   );

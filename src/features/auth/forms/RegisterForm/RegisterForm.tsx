@@ -72,7 +72,9 @@ export function RegisterForm() {
     <>
       <div className="text-center mb-6">
         <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
-        <p className="text-sm text-muted-foreground">Your private space for emotions and reflection</p>
+        <p className="text-sm text-muted-foreground">
+          Your private space for emotions and reflection
+        </p>
       </div>
       <div className="flex justify-center mb-6">
         <Logo variant="complexFull" className="h-40" />
@@ -84,8 +86,9 @@ export function RegisterForm() {
             <MailIcon className="h-10 w-10 text-primary" />
             <h3 className="text-xl font-semibold text-foreground">Check your inbox</h3>
             <p className="text-sm text-muted-foreground">
-              We&apos;ve sent a confirmation email to {confirmationEmail}. Open it and click the
-              confirmation link to finish creating your account.
+              We&apos;ve sent a confirmation email to {confirmationEmail}
+              <br />
+              Open it and click the confirmation link to finish creating your account.
             </p>
           </div>
 
@@ -125,14 +128,6 @@ export function RegisterForm() {
         </div>
       ) : (
         <>
-          {registerError && (
-            <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-destructive">
-              <p className="m-0 text-xs leading-relaxed">
-                {(registerError as ApiError).message || 'Registration failed. Please try again.'}
-              </p>
-            </div>
-          )}
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
@@ -197,6 +192,14 @@ export function RegisterForm() {
                   </FormItem>
                 )}
               />
+
+              {registerError && (
+                <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-destructive">
+                  <p className="m-0 text-xs leading-relaxed">
+                    {(registerError as ApiError).message || 'Registration failed. Please try again.'}
+                  </p>
+                </div>
+              )}
 
               <div className="pt-3">
                 <Button
