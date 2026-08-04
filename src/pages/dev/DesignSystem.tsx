@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/Button.tsx';
-import { Input } from '@/components/ui/Input.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
 
 export default function DesignSystemPage() {
   const buttonVariants = ['default', 'destructive', 'outline', 'secondary', 'ghost'] as const;
@@ -87,7 +87,10 @@ export default function DesignSystemPage() {
             </div>
             <div>
               <label className="text-sm font-medium text-foreground block mb-2">Error State</label>
-              <Input placeholder="Placeholder text" className="border-destructive focus-visible:ring-destructive" />
+              <Input
+                placeholder="Placeholder text"
+                className="border-destructive focus-visible:ring-destructive"
+              />
               <p className="text-xs text-destructive mt-1">This field is required</p>
             </div>
           </div>

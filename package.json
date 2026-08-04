@@ -7,16 +7,12 @@
     "dev": "vite --port 5000 --host",
     "build": "vite build",
     "preview": "vite preview",
+    "prepare": "husky",
     "check": "tsc",
     "api:generate": "orval --config ./orval.config.ts",
     "api:watch": "orval --config ./orval.config.ts --watch",
     "api:check": "orval --config ./orval.config.ts --fail-on-warnings",
     "db:push": "drizzle-kit push"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

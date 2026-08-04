@@ -7,9 +7,9 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTitle,
-} from '@/components/ui/Dialog.tsx';
-import { Button } from '@/components/ui/Button.tsx';
-import { Textarea } from '@/components/ui/Textarea.tsx';
+} from '@/components/ui/dialog.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Textarea } from '@/components/ui/textarea.tsx';
 import {
   formatSaveEmotionSummary,
   type PrimaryGroupSummary,
@@ -21,7 +21,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/Form.tsx';
+} from '@/components/ui/form.tsx';
 
 interface SaveEmotionModalProps {
   open: boolean;
@@ -76,7 +76,7 @@ export function SaveEmotionModal({
                 name="comment"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
-                  <FormLabel className="sr-only">Reflection</FormLabel>
+                    <FormLabel className="sr-only">Reflection</FormLabel>
                     <FormDescription className="pb-4 text-[13px] leading-6 text-transparent select-none">
                       placeholder
                     </FormDescription>

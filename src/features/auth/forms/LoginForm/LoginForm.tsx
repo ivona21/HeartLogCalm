@@ -2,25 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Button } from '@/components/ui/Button.tsx';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/Form.tsx';
-import { Input } from '@/components/ui/Input.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Form } from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
 import { isUnconfirmedAccountLoginError } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
+import { FormInputField } from '@/components/form/FormInputField.tsx';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
@@ -100,15 +94,6 @@ export function LoginForm() {
           <Logo variant="complexFull" className="h-40" />
         </div>
 
-        {loginError && !isUnconfirmedAccountError && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircleIcon className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive">
-              {loginErrorMessage || 'Login failed. Please check your credentials.'}
-            </AlertDescription>
-          </Alert>
-        )}
-
         {isUnconfirmedAccountError && (
           <div className="space-y-3">
             <Alert className="border-primary/30 bg-primary/10">
@@ -176,55 +161,54 @@ export function LoginForm() {
           </div>
         )}
 
-        <FormField
+        <FormInputField
           control={form.control}
           name="email"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="Your email"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-email"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          label="Email"
+          renderInput={(field) => (
+            <Input
+              {...field}
+              type="email"
+              placeholder="Your email"
+              disabled={isLoggingIn}
+              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+              data-testid="input-email"
+            />
           )}
         />
 
-        <FormField
+        <FormInputField
           control={form.control}
           name="password"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
-              <FormControl>
-                <PasswordInput
-                  {...field}
-                  placeholder="Your password"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-password"
-                />
-              </FormControl>
-              <FormMessage />
-              <div className="text-right mt-2">
-                <button
-                  type="button"
-                  className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-                  data-testid="link-forgot-password"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            </FormItem>
+          label="Password"
+          renderInput={(field) => (
+            <PasswordInput
+              {...field}
+              placeholder="Your password"
+              disabled={isLoggingIn}
+              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+              data-testid="input-password"
+            />
           )}
         />
+        <div className="hidden text-right mt-2">
+          <button
+            type="button"
+            className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
+            data-testid="link-forgot-password"
+          >
+            Forgot password?
+          </button>
+        </div>
+
+        {loginError && !isUnconfirmedAccountError && (
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+            <AlertCircleIcon className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">
+              {loginErrorMessage || 'Login failed. Please check your credentials.'}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Button
           type="submit"

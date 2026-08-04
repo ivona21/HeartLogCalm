@@ -1,25 +1,23 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/Button.tsx';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/Form.tsx';
-import { Input } from '@/components/ui/Input.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Form } from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
+import { Loader2Icon } from 'lucide-react';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
-import { AppLink } from '@/components/ui/AppLink.tsx';
+import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
+import { AlreadyHaveAccountLink } from '@/features/auth/components/AlreadyHaveAccountLink.tsx';
+import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
+import { FormInputField } from '@/components/form/FormInputField.tsx';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -30,39 +28,56 @@ export function RegisterForm() {
     },
   });
 
+  const handleRegisterSuccess = (email: string) => {
+    setConfirmationEmail(email);
+    form.reset({
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!confirmationEmail) {
+      return;
+    }
+
+    await resendConfirmationApi(confirmationEmail);
+  };
+
   const onSubmit = (data: RegisterInput) => {
-    register(data);
+    register(data, {
+      onSuccess: () => handleRegisterSuccess(data.email),
+    });
   };
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
-            <p className="text-sm text-muted-foreground">
-              Your private space for emotions and reflection
-            </p>
-          </div>
-          <div className="flex justify-center mb-6">
-            <Logo variant="complexFull" className="h-40" />
-          </div>
-          {registerError && (
-            <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-destructive">
-              <AlertCircleIcon className="h-4 w-4 text-destructive" />
-              <p className="m-0 text-xs leading-relaxed">
-                {(registerError as ApiError).message || 'Registration failed. Please try again.'}
-              </p>
-            </div>
-          )}
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
+        <p className="text-sm text-muted-foreground">
+          Your private space for emotions and reflection
+        </p>
+      </div>
+      <div className="flex justify-center mb-6">
+        <Logo variant="complexFull" className="h-40" />
+      </div>
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
-                <FormControl>
+      {confirmationEmail ? (
+        <CheckYourInboxSection
+          email={confirmationEmail}
+          onResend={handleResendConfirmation}
+          className="text-center"
+        />
+      ) : (
+        <>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <FormInputField
+                control={form.control}
+                name="email"
+                label="Email"
+                renderInput={(field) => (
                   <Input
                     {...field}
                     type="email"
@@ -71,19 +86,14 @@ export function RegisterForm() {
                     className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                     data-testid="input-email"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
-                <FormControl>
+              <FormInputField
+                control={form.control}
+                name="password"
+                label="Password"
+                renderInput={(field) => (
                   <PasswordInput
                     {...field}
                     placeholder="Create a secure password"
@@ -91,19 +101,14 @@ export function RegisterForm() {
                     className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                     data-testid="input-password"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel className="text-sm font-medium text-foreground">Confirm password</FormLabel>
-                <FormControl>
+              <FormInputField
+                control={form.control}
+                name="confirmPassword"
+                label="Confirm password"
+                renderInput={(field) => (
                   <PasswordInput
                     {...field}
                     placeholder="Confirm your password"
@@ -111,39 +116,40 @@ export function RegisterForm() {
                     className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                     data-testid="input-confirm-password"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                )}
+              />
 
-          <div className="pt-3">
-            <Button
-              type="submit"
-              className="w-full text-primary-foreground font-medium transition-all duration-200"
-              disabled={isRegistering}
-              data-testid="button-submit"
-            >
-              {isRegistering ? (
-                <>
-                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                  Creating your account...
-                </>
-              ) : (
-                'Sign Up'
+              {registerError && (
+                <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-destructive">
+                  <p className="m-0 text-xs leading-relaxed">
+                    {(registerError as ApiError).message ||
+                      'Registration failed. Please try again.'}
+                  </p>
+                </div>
               )}
-            </Button>
-          </div>
-        </form>
-      </Form>
-      <div className="mt-4 text-center">
-        <p className="text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <AppLink to="/login" data-testid="link-login" className="font-medium">
-            Log in
-          </AppLink>
-        </p>
-      </div>
+
+              <div className="pt-3">
+                <Button
+                  type="submit"
+                  className="w-full text-primary-foreground font-medium transition-all duration-200"
+                  disabled={isRegistering}
+                  data-testid="button-submit"
+                >
+                  {isRegistering ? (
+                    <>
+                      <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                      Creating your account...
+                    </>
+                  ) : (
+                    'Sign Up'
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+          <AlreadyHaveAccountLink className="mt-4 text-center" />
+        </>
+      )}
     </>
   );
 }
