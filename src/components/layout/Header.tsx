@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LogOutIcon, LogInIcon } from 'lucide-react';
-import { Button } from '@/components/ui/Button.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { useAuth } from '@/features/auth';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo.tsx';
@@ -30,7 +30,11 @@ export function Header() {
         {isAuthenticated ? (
           <AlertDialog open={logoutModalOpen} onOpenChange={setLogoutModalOpen}>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2" data-testid="button-logout">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2"
+                data-testid="button-logout"
+              >
                 <LogOutIcon className="w-4 h-4" />
                 Log out
               </Button>
@@ -41,7 +45,8 @@ export function Header() {
                   Are you sure you want to log out?
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-sm leading-6 text-muted-foreground">
-                  You will still be able to explore the wheel, but you will need to log in again to save emotions.
+                  You will still be able to explore the wheel, but you will need to log in again to
+                  save emotions.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

@@ -1,7 +1,7 @@
 import { FormProvider, useFormContext, FieldPath, FieldValues, Controller } from 'react-hook-form';
 import React from 'react';
-import { Label } from '@/components/ui/Label.tsx';
-import { Input } from '@/components/ui/Input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Input } from '@/components/ui/input.tsx';
 
 type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues> = {
   name: FieldPath<TFieldValues>;
