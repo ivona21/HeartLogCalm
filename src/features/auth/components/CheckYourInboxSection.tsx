@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Loader2Icon, MailIcon } from 'lucide-react';
-import { Button } from '@/components/ui/Button.tsx';
+import { Button } from '@/components/ui/button.tsx';
 
 interface CheckYourInboxSectionProps {
   email: string;
@@ -51,8 +51,7 @@ export function CheckYourInboxSection({
           <MailIcon className="h-10 w-10 text-primary" />
           <h3 className="text-xl font-semibold text-foreground">Check your inbox</h3>
           <p className="text-sm text-muted-foreground">
-            We&apos;ve sent a confirmation email to{' '}
-            <span className="font-semibold">{email}</span>
+            We&apos;ve sent a confirmation email to <span className="font-semibold">{email}</span>
             <br />
             Open it and click the confirmation link to finish creating your account.
           </p>

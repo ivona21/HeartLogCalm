@@ -12,7 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/Form.tsx';
+} from '@/components/ui/form.tsx';
 import { cn } from '@/shared/utils/cn.ts';
 
 type FormInputFieldProps<

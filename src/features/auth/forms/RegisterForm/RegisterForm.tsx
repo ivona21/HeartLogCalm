@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/Button.tsx';
-import { Form } from '@/components/ui/Form.tsx';
-import { Input } from '@/components/ui/Input.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Form } from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Loader2Icon } from 'lucide-react';
