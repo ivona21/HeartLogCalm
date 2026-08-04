@@ -68,8 +68,10 @@ export function CheckYourInboxSection({
           <Button
             type="button"
             variant="ghost"
-            className={`h-auto min-h-0 px-0 py-0 text-sm font-medium underline underline-offset-4 hover:bg-transparent hover:text-primary ${
-              isSent ? 'cursor-default !text-primary !opacity-100 no-underline font-semibold' : 'text-accent-foreground'
+            className={`h-auto min-h-0 px-0 py-0 text-sm font-medium underline underline-offset-4 hover:bg-transparent ${
+              isSent
+                ? 'cursor-default !text-primary !opacity-100 no-underline font-semibold pointer-events-none'
+                : 'text-accent-foreground hover:text-primary'
             }`}
             disabled={isSending}
             onClick={isSent ? undefined : handleResend}

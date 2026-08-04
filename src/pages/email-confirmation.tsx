@@ -1,15 +1,19 @@
 import { type Dispatch, type ReactNode, type SetStateAction, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2Icon, Loader2Icon, RotateCcwIcon } from 'lucide-react';
+import { z } from 'zod';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { Alert, AlertDescription } from '@/components/ui/Alert.tsx';
 import { Button } from '@/components/ui/Button.tsx';
 import { Input } from '@/components/ui/Input.tsx';
-import { Label } from '@/components/ui/Label.tsx';
+import { Form } from '@/components/ui/Form.tsx';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { AlreadyHaveAccountLink } from '@/features/auth/components/AlreadyHaveAccountLink.tsx';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
+import { FormInputField } from '@/components/form/FormInputField.tsx';
 import type { ApiError } from '@/shared/types/api-types.ts';
 
 type ConfirmationStatus = 'success' | 'expired' | 'invalid';
@@ -17,18 +21,13 @@ type ConfirmationStatus = 'success' | 'expired' | 'invalid';
 type ConfirmationPageActions = {
   goToLogin: () => void;
   goToRegister: () => void;
-  handleResend: () => void;
 };
 
 type ConfirmationPageContext = ConfirmationPageActions & {
   email: string;
   setEmail: Dispatch<SetStateAction<string>>;
   showInboxSection: boolean;
-  resendError: string | null;
-  setResendError: Dispatch<SetStateAction<string | null>>;
-  resendMutation: {
-    isPending: boolean;
-  };
+  setShowInboxSection: Dispatch<SetStateAction<boolean>>;
 };
 
 type ConfirmationStatusContent = {
@@ -36,6 +35,97 @@ type ConfirmationStatusContent = {
   panel?: (context: ConfirmationPageContext) => ReactNode;
   footer: (context: ConfirmationPageContext) => ReactNode;
 };
+
+const confirmationEmailSchema = z.string().trim().email('Please enter a valid email address.');
+const confirmationEmailFormSchema = z.object({
+  email: confirmationEmailSchema,
+});
+
+type ConfirmationEmailFormInput = z.infer<typeof confirmationEmailFormSchema>;
+
+type ExpiredConfirmationResendPanelProps = {
+  initialEmail: string;
+  onSuccess: (email: string) => void;
+};
+
+function ExpiredConfirmationResendPanel({
+  initialEmail,
+  onSuccess,
+}: ExpiredConfirmationResendPanelProps) {
+  const form = useForm<ConfirmationEmailFormInput>({
+    resolver: zodResolver(confirmationEmailFormSchema),
+    defaultValues: {
+      email: initialEmail,
+    },
+  });
+
+  const resendMutation = useMutation({
+    mutationFn: async (targetEmail: string) => resendConfirmationApi(targetEmail),
+    onSuccess: (_data, targetEmail) => {
+      form.reset({ email: targetEmail });
+      onSuccess(targetEmail);
+    },
+    onError: (error: unknown) => {
+      const apiError = error as ApiError;
+      form.setError('email', {
+        type: 'manual',
+        message: apiError.message || 'Unable to resend the confirmation email.',
+      });
+    },
+  });
+
+  const handleSubmit = (data: ConfirmationEmailFormInput) => {
+    resendMutation.mutate(data.email.trim());
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-4 rounded-lg border border-border bg-muted/20 p-4"
+      >
+        <FormInputField
+          control={form.control}
+          name="email"
+          label="Email address"
+          renderInput={(field) => (
+            <Input
+              {...field}
+              type="email"
+              placeholder="Your email"
+              disabled={resendMutation.isPending}
+              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+              data-testid="input-confirmation-email"
+              onChange={(event) => {
+                field.onChange(event);
+                form.clearErrors('email');
+              }}
+            />
+          )}
+        />
+
+        <Button
+          type="submit"
+          className="w-full font-medium"
+          disabled={resendMutation.isPending}
+          data-testid="button-confirmation-resend"
+        >
+          {resendMutation.isPending ? (
+            <>
+              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+              Sending confirmation email...
+            </>
+          ) : (
+            <>
+              <RotateCcwIcon className="h-4 w-4" />
+              Resend confirmation email
+            </>
+          )}
+        </Button>
+      </form>
+    </Form>
+  );
+}
 
 const confirmationStatusContent: Record<ConfirmationStatus, ConfirmationStatusContent> = {
   success: {
@@ -88,15 +178,7 @@ const confirmationStatusContent: Record<ConfirmationStatus, ConfirmationStatusCo
         </Alert>
       </div>
     ),
-    panel: ({
-      email,
-      handleResend,
-      setEmail,
-      showInboxSection,
-      resendError,
-      setResendError,
-      resendMutation,
-    }) =>
+    panel: ({ email, showInboxSection, setEmail, setShowInboxSection }) =>
       showInboxSection ? (
         <CheckYourInboxSection
           email={email}
@@ -104,50 +186,13 @@ const confirmationStatusContent: Record<ConfirmationStatus, ConfirmationStatusCo
           className="text-center"
         />
       ) : (
-        <div className="space-y-4 rounded-lg border border-border bg-muted/20 p-4">
-          <div className="space-y-2">
-            <Label htmlFor="confirmation-email">Email address</Label>
-            <Input
-              id="confirmation-email"
-              type="email"
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-                setResendError(null);
-              }}
-              placeholder="Your email"
-              disabled={resendMutation.isPending}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-confirmation-email"
-            />
-          </div>
-
-          {resendError && (
-            <p className="text-sm text-destructive" data-testid="text-confirmation-error">
-              {resendError}
-            </p>
-          )}
-
-          <Button
-            type="button"
-            className="w-full font-medium"
-            disabled={resendMutation.isPending}
-            onClick={handleResend}
-            data-testid="button-confirmation-resend"
-          >
-            {resendMutation.isPending ? (
-              <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Sending confirmation email...
-              </>
-            ) : (
-              <>
-                <RotateCcwIcon className="h-4 w-4" />
-                Resend confirmation email
-              </>
-            )}
-          </Button>
-        </div>
+        <ExpiredConfirmationResendPanel
+          initialEmail={email}
+          onSuccess={(targetEmail) => {
+            setEmail(targetEmail);
+            setShowInboxSection(true);
+          }}
+        />
       ),
     footer: () => (
       <div className="flex flex-col gap-3">
@@ -192,50 +237,19 @@ export default function EmailConfirmationPage() {
   const status: ConfirmationStatus = isConfirmationStatus(statusParam) ? statusParam : 'invalid';
   const [email, setEmail] = useState('');
   const [showInboxSection, setShowInboxSection] = useState(false);
-  const [resendError, setResendError] = useState<string | null>(null);
 
   const content = confirmationStatusContent[status];
-
-  const resendMutation = useMutation({
-    mutationFn: async (targetEmail: string) => resendConfirmationApi(targetEmail),
-    onSuccess: (_data, targetEmail) => {
-      setResendError(null);
-      setEmail(targetEmail);
-      setShowInboxSection(true);
-    },
-    onError: (error: unknown) => {
-      const apiError = error as ApiError;
-      setResendError(apiError.message || 'Unable to resend the confirmation email.');
-    },
-  });
-
-  const handleResend = () => {
-    const trimmedEmail = email.trim();
-
-    if (!trimmedEmail) {
-      setResendError('Enter the email address you want to confirm.');
-      return;
-    }
-
-    setResendError(null);
-    resendMutation.mutate(trimmedEmail);
-  };
 
   const actions: ConfirmationPageActions = {
     goToLogin: () => navigate('/login'),
     goToRegister: () => navigate('/register'),
-    handleResend,
   };
   const context: ConfirmationPageContext = {
     ...actions,
     email,
     setEmail,
     showInboxSection,
-    resendError,
-    setResendError,
-    resendMutation: {
-      isPending: resendMutation.isPending,
-    },
+    setShowInboxSection,
   };
 
   return (

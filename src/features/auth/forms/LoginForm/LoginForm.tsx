@@ -3,14 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button.tsx';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/Form.tsx';
+import { Form } from '@/components/ui/Form.tsx';
 import { Input } from '@/components/ui/Input.tsx';
 import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
@@ -21,6 +14,7 @@ import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
 import { isUnconfirmedAccountLoginError } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
+import { FormInputField } from '@/components/form/FormInputField.tsx';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
@@ -167,55 +161,45 @@ export function LoginForm() {
           </div>
         )}
 
-        <FormField
+        <FormInputField
           control={form.control}
           name="email"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-sm font-medium text-foreground">Email</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="Your email"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-email"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          label="Email"
+          renderInput={(field) => (
+            <Input
+              {...field}
+              type="email"
+              placeholder="Your email"
+              disabled={isLoggingIn}
+              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+              data-testid="input-email"
+            />
           )}
         />
 
-        <FormField
+        <FormInputField
           control={form.control}
           name="password"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-sm font-medium text-foreground">Password</FormLabel>
-              <FormControl>
-                <PasswordInput
-                  {...field}
-                  placeholder="Your password"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-password"
-                />
-              </FormControl>
-              <FormMessage />
-              <div className="hidden text-right mt-2">
-                <button
-                  type="button"
-                  className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-                  data-testid="link-forgot-password"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            </FormItem>
+          label="Password"
+          renderInput={(field) => (
+            <PasswordInput
+              {...field}
+              placeholder="Your password"
+              disabled={isLoggingIn}
+              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+              data-testid="input-password"
+            />
           )}
         />
+        <div className="hidden text-right mt-2">
+          <button
+            type="button"
+            className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
+            data-testid="link-forgot-password"
+          >
+            Forgot password?
+          </button>
+        </div>
 
         {loginError && !isUnconfirmedAccountError && (
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
