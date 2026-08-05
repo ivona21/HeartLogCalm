@@ -15,3 +15,13 @@ export function isUnconfirmedAccountLoginError(message?: string | null): boolean
     normalizedMessage.includes('unconfirmed')
   );
 }
+
+export function isInvalidCredentialsLoginError(message?: string | null): boolean {
+  if (!message) {
+    return false;
+  }
+
+  const normalizedMessage = message.toLowerCase();
+
+  return normalizedMessage.includes('invalid') && normalizedMessage.includes('credential');
+}

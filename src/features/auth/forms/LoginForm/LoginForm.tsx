@@ -12,7 +12,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
-import { isUnconfirmedAccountLoginError } from '@/features/auth/utils/auth-errors.ts';
+import {
+  isInvalidCredentialsLoginError,
+  isUnconfirmedAccountLoginError,
+} from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
 
@@ -32,7 +35,20 @@ export function LoginForm() {
   });
 
   const loginErrorMessage = (loginError as ApiError | null | undefined)?.message ?? '';
+  const isInvalidCredentialsError = isInvalidCredentialsLoginError(loginErrorMessage);
   const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginErrorMessage);
+
+  useEffect(() => {
+    if (isInvalidCredentialsError) {
+      form.setError('password', {
+        type: 'manual',
+        message: 'Invalid email or password.',
+      });
+      return;
+    }
+
+    form.clearErrors('password');
+  }, [form, isInvalidCredentialsError, loginErrorMessage]);
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
@@ -79,6 +95,7 @@ export function LoginForm() {
   const onSubmit = (data: LoginInput) => {
     setResendMessage(null);
     setResendError(null);
+    form.clearErrors('password');
     login(data);
   };
 
@@ -201,7 +218,7 @@ export function LoginForm() {
           </button>
         </div>
 
-        {loginError && !isUnconfirmedAccountError && (
+        {loginError && !isUnconfirmedAccountError && !isInvalidCredentialsError && (
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-destructive" />
             <AlertDescription className="text-destructive">
