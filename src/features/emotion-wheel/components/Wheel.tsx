@@ -32,8 +32,9 @@ import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import { EmotionWheelCenter } from '@/features/emotion-wheel/components/EmotionWheelCenter.tsx';
 import { SaveEmotionModal } from '@/features/emotion-wheel/components/SaveEmotionModal.tsx';
 import { toast } from '@/shared/hooks/use-toast.ts';
-import type { ApiError } from '@/shared/types/api-types.ts';
 import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
+import { isUnauthorizedError } from '@/features/auth/utils/auth-errors.ts';
+import { normalizeApiError } from '@/shared/api/api-errors.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -88,7 +89,6 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     directParentOf,
     ancestorFillMap,
     selectedHeartColors,
-    selectedEmotionLabels,
     selectedPrimaryGroups,
   } = useWheelSelectionDecorations({
     wheelLayout,
@@ -142,7 +142,9 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
         comment,
       });
     } catch (error) {
-      if ((error as ApiError).status === 401) {
+      const apiError = normalizeApiError(error);
+
+      if (isUnauthorizedError(apiError)) {
         setSaveModalOpen(false);
         setAuthModalOpen(true);
         return;

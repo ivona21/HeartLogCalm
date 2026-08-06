@@ -87,13 +87,14 @@ Built following **Bulletproof React** principles:
 
 ## 🔌 Backend Integration
 
-This frontend connects to your deployed backend API. Required endpoints:
+This frontend connects to your deployed backend API through an OpenAPI snapshot and Orval-generated client.
 
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
+- OpenAPI snapshot: `docs/integrations/backend-api.openapi.json`
+- Generated client: `src/shared/api/heartlog.generated.ts`
+- Custom mutator: `src/shared/api/heartlog-mutator.ts`
+- Auth transport: `src/lib/api-client.ts`
 
-See `docs/integrations/backend-api.md` for complete API contract.
+See `docs/integrations/backend-api.md` for the sync workflow and contract notes.
 
 ## 📜 Scripts
 
@@ -102,6 +103,9 @@ npm run dev      # Start development server (port 5000)
 npm run build    # Build for production
 npm run preview  # Preview production build
 npm run check    # TypeScript type checking
+npm run api:generate # Regenerate the API client from the OpenAPI snapshot
+npm run api:watch    # Watch the snapshot and regenerate on change
+npm run api:check    # Fail CI on Orval warnings
 ```
 
 ## 🔒 Environment Variables
@@ -116,6 +120,7 @@ VITE_API_URL=https://your-backend-api.com
 
 - **`docs/design/design-guidelines.md`** - Design system and UI guidelines
 - **`docs/integrations/backend-api.md`** - API contract and requirements
+- **`docs/integrations/backend-api.openapi.json`** - OpenAPI snapshot consumed by Orval
 - **`docs/project/bulletproof-react-guide.md`** - Architecture reference
 - **`docs/project/platform-replit.md`** - Project overview and state
 

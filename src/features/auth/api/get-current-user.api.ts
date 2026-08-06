@@ -1,23 +1,18 @@
 import { apiClient } from '@/lib/api-client.ts';
-import type { ApiResponse } from '@/shared/types/api-types.ts';
+import { authGetCurrentUser } from '@/shared/api/heartlog.generated.ts';
+import { toUser } from '@/shared/api/heartlog-normalizers.ts';
 import type { User } from '@/features/auth/types/user.ts';
-
-function isApiResponse(value: ApiResponse<User> | User): value is ApiResponse<User> {
-  return 'success' in value || 'message' in value;
-}
+import type { UserMeResponseDto, UserMeResponseDtoApiResponse } from '@/shared/api/heartlog.generated.ts';
 
 export async function getCurrentUserApi(accessToken?: string): Promise<User> {
-  const response = accessToken
-    ? await apiClient.getWithAccessToken<ApiResponse<User> | User>('/api/auth/me', accessToken)
-    : await apiClient.get<ApiResponse<User> | User>('/api/auth/me');
+  if (accessToken) {
+    const response = await apiClient.getWithAccessToken<UserMeResponseDtoApiResponse | UserMeResponseDto>(
+      '/api/auth/me',
+      accessToken,
+    );
 
-  if (isApiResponse(response)) {
-    if (!response.data) {
-      throw new Error('Missing user payload');
-    }
-
-    return response.data;
+    return toUser(response);
   }
 
-  return response;
+  return toUser(await authGetCurrentUser());
 }

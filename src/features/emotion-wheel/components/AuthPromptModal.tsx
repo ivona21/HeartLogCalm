@@ -5,8 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/Dialog.tsx';
-import { Button } from '@/components/ui/Button.tsx';
+} from '@/components/ui/dialog.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Logo } from '@/components/Logo.tsx';
 
 interface AuthPromptModalProps {

@@ -1,11 +1,9 @@
+import type { NormalizedApiError } from '@/shared/api/api-errors.ts';
+
 export interface ApiResponse<T = void> {
   success: boolean;
   message: string;
   data?: T;
 }
 
-export interface ApiError {
-  message: string;
-  errors?: Record<string, string[]> | null;
-  status?: number;
-}
+export type ApiError = NormalizedApiError;

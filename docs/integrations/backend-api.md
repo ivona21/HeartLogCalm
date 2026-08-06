@@ -2,141 +2,43 @@
 
 ## Overview
 
-HeartLog frontend connects to an external HeartLog backend API. The backend owns identity-provider integration and refresh-token cookies. The frontend must not call Supabase directly.
+HeartLog frontend consumes a checked-in OpenAPI snapshot and generates the API client with Orval.
 
-## Configuration
+## Source Of Truth
 
-Create a `.env` file based on `.env.example` and set:
+- OpenAPI snapshot: `docs/integrations/backend-api.openapi.json`
+- Orval config: `orval.config.ts`
+- Generated client: `src/shared/api/heartlog.generated.ts`
+- Orval mutator: `src/shared/api/heartlog-mutator.ts`
+- Auth-aware transport: `src/lib/api-client.ts`
 
-```bash
-VITE_API_URL=https://your-backend-api.com
-```
+Only the OpenAPI snapshot should be edited when the backend contract changes. The generated client stays untouched.
+
+## Workflow
+
+1. Export the updated backend OpenAPI JSON into `docs/integrations/backend-api.openapi.json`.
+2. Run `npm run api:generate`.
+3. Commit the spec snapshot and generated client together.
 
 ## Authentication Model
 
 - The frontend stores only `accessToken`, `expiresAt`, and `email`.
-- The refresh token is stored by the backend as an HttpOnly cookie named `heartlog_refresh_token`.
+- The refresh token stays in an HttpOnly cookie named `heartlog_refresh_token`.
 - The frontend must not read, store, send, or expect `refreshToken`.
 - The frontend uses `GET /api/auth/me` to load the local HeartLog user.
 - Authenticated user-owned requests must not send `userId`; the backend resolves ownership from the access token.
 
 ## Required Auth Endpoints
 
-### POST /api/auth/register
+The current auth flow is still the same:
 
-Register a new user. This request must use `credentials: include` because the backend sets the refresh cookie.
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+- `GET /api/auth/me`
 
-Request:
-
-```json
-{
-  "email": "user@example.com",
-  "password": "StrongPass123!"
-}
-```
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Registration successful",
-  "data": {
-    "accessToken": "access-token",
-    "expiresAt": "2026-06-20T10:00:00Z",
-    "email": "user@example.com"
-  }
-}
-```
-
-### POST /api/auth/login
-
-Authenticate a user. This request must use `credentials: include` because the backend sets the refresh cookie.
-
-Request:
-
-```json
-{
-  "email": "user@example.com",
-  "password": "StrongPass123!"
-}
-```
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "accessToken": "access-token",
-    "expiresAt": "2026-06-20T10:00:00Z",
-    "email": "user@example.com"
-  }
-}
-```
-
-### POST /api/auth/refresh
-
-Refresh the access token. This request must use `credentials: include`.
-
-- No request body.
-- No `Authorization` header.
-- Browser sends `heartlog_refresh_token` automatically.
-- Backend may rotate the refresh cookie.
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Session refreshed successfully",
-  "data": {
-    "accessToken": "new-access-token",
-    "expiresAt": "2026-06-20T11:00:00Z",
-    "email": "user@example.com"
-  }
-}
-```
-
-### POST /api/auth/logout
-
-Logout and clear the refresh cookie. This request must use `credentials: include`.
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Logout successful"
-}
-```
-
-The frontend clears local auth state after calling this endpoint. It must not manually delete the refresh cookie.
-
-### GET /api/auth/me
-
-Load the current local HeartLog user.
-
-Headers:
-
-```http
-Authorization: Bearer ACCESS_TOKEN
-```
-
-Success response:
-
-```json
-{
-  "success": true,
-  "message": "Current user retrieved successfully",
-  "data": {
-    "id": "local-heartlog-user-id",
-    "username": null,
-    "email": "user@example.com"
-  }
-}
-```
+See the OpenAPI snapshot for the exact schemas and examples.
 
 ## Startup And Retry Behavior
 

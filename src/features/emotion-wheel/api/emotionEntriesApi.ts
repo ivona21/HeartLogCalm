@@ -1,15 +1,17 @@
-import { apiClient } from '@/lib/api-client';
-import type { ApiResponse } from '@/shared/types/api-types.ts';
+import { emotionEntriesCreate, emotionEntriesGetSummary } from '@/shared/api/heartlog.generated.ts';
+import { toEmotionEntrySummary } from '@/shared/api/heartlog-normalizers.ts';
 import type { EmotionEntrySummary } from '@/features/emotion-wheel/types/emotion-entry-summary.ts';
 import type { CreateEmotionEntryInput } from '@/features/emotion-wheel/types/create-emotion-entry.ts';
 
 export async function fetchEmotionEntrySummary(): Promise<EmotionEntrySummary | null> {
-  const response = await apiClient.get<ApiResponse<EmotionEntrySummary>>(
-    '/api/emotion-entries/summary',
-  );
-  return response.data ?? null;
+  return toEmotionEntrySummary(await emotionEntriesGetSummary());
 }
 
 export async function createEmotionEntry(input: CreateEmotionEntryInput): Promise<void> {
-  await apiClient.post<ApiResponse>('/api/emotion-entries', input);
+  await emotionEntriesCreate({
+    emotionKeys: input.emotionKeys,
+    primaryEmotionKey: input.primaryEmotionKey,
+    comment: input.comment || null,
+    occurredAt: null,
+  });
 }

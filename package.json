@@ -7,13 +7,12 @@
     "dev": "vite --port 5000 --host",
     "build": "vite build",
     "preview": "vite preview",
+    "prepare": "husky",
     "check": "tsc",
+    "api:generate": "orval --config ./orval.config.ts",
+    "api:watch": "orval --config ./orval.config.ts --watch",
+    "api:check": "orval --config ./orval.config.ts --fail-on-warnings",
     "db:push": "drizzle-kit push"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -119,6 +118,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "orval": "^8.22.0",
     "postcss": "^8.4.47",
     "prettier": "^3.8.0",
     "tailwindcss": "^3.4.17",

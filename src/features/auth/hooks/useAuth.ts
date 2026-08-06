@@ -7,29 +7,23 @@ import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
-import type { AuthSession } from '@/features/auth/types/auth-session.ts';
-import type { ApiResponse } from '@/shared/types/api-types.ts';
 import type { LoginInput } from '@/features/auth/forms/LoginForm/schema.ts';
 import type { RegisterInput } from '@/features/auth/forms/RegisterForm/schema.ts';
 
-async function completeAuth(response: ApiResponse<AuthSession>) {
-  if (!response.success || !response.data) {
-    throw new Error(response.message || 'Authentication failed.');
-  }
-
+async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
   const { setAuth, setSession, clearAuth } = useAuthStore.getState();
 
-  setSession(response.data);
+  setSession(session);
 
   try {
-    const user = await getCurrentUserApi(response.data.accessToken);
-    setAuth(user, response.data);
+    const user = await getCurrentUserApi(session.accessToken);
+    setAuth(user, session);
   } catch (error) {
     clearAuth();
     throw error;
   }
 
-  return response;
+  return session;
 }
 
 export function useAuth() {
@@ -38,8 +32,7 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginInput) => {
-      const response = await loginApi(data);
-      return completeAuth(response);
+      return completeAuth(await loginApi(data));
     },
     onSuccess: () => {
       navigate('/');
@@ -48,14 +41,7 @@ export function useAuth() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterInput) => {
-      const response = await registerApi(data);
-      return completeAuth(response);
-    },
-    onSuccess: () => {
-      navigate('/');
-    },
-    onError: (error) => {
-      console.log('error: ', error);
+      await registerApi(data);
     },
   });
 
