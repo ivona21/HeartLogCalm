@@ -10,14 +10,16 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
-import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
 import {
+  isValidationFailedError,
   isInvalidCredentialsLoginError,
   isUnconfirmedAccountLoginError,
 } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
+import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
+import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
@@ -34,21 +36,43 @@ export function LoginForm() {
     },
   });
 
-  const loginErrorMessage = (loginError as ApiError | null | undefined)?.message ?? '';
-  const isInvalidCredentialsError = isInvalidCredentialsLoginError(loginErrorMessage);
-  const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginErrorMessage);
+  const loginErrorMessage = loginError?.message ?? '';
+  const isInvalidCredentialsError = isInvalidCredentialsLoginError(loginError);
+  const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginError);
+  const isValidationFailedLoginError = isValidationFailedError(loginError);
 
   useEffect(() => {
     if (isInvalidCredentialsError) {
+      form.clearErrors('email');
       form.setError('password', {
         type: 'manual',
-        message: 'Invalid email or password.',
+        message: loginErrorMessage || 'Invalid email or password.',
       });
       return;
     }
 
-    form.clearErrors('password');
-  }, [form, isInvalidCredentialsError, loginErrorMessage]);
+    if (isValidationFailedLoginError) {
+      form.clearErrors(['email', 'password']);
+      const applied = applyApiValidationErrors(loginError, form.setError, {
+        fieldMap: {
+          email: 'email',
+          password: 'password',
+        },
+      });
+
+      if (applied) {
+        return;
+      }
+    }
+
+    form.clearErrors(['email', 'password']);
+  }, [
+    form,
+    isInvalidCredentialsError,
+    isValidationFailedLoginError,
+    loginError,
+    loginErrorMessage,
+  ]);
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
@@ -57,9 +81,14 @@ export function LoginForm() {
       setResendMessage(`We sent another confirmation email to ${email}.`);
     },
     onError: (error: unknown) => {
-      const apiError = error as ApiError;
+      const apiError = normalizeApiError(error);
+      const validationErrors = getApiValidationErrors(error);
       setResendMessage(null);
-      setResendError(apiError.message || 'Unable to resend the confirmation email.');
+      setResendError(
+        validationErrors?.email?.[0] ||
+          apiError.message ||
+          'Unable to resend the confirmation email.',
+      );
     },
   });
 

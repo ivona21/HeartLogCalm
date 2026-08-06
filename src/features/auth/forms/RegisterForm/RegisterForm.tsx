@@ -8,12 +8,14 @@ import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Loader2Icon } from 'lucide-react';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
-import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { AlreadyHaveAccountLink } from '@/features/auth/components/AlreadyHaveAccountLink.tsx';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
+import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
+import { normalizeApiError } from '@/shared/api/api-errors.ts';
+import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
@@ -46,10 +48,40 @@ export function RegisterForm() {
   };
 
   const onSubmit = (data: RegisterInput) => {
+    form.clearErrors(['email', 'password', 'confirmPassword']);
+
     register(data, {
       onSuccess: () => handleRegisterSuccess(data.email),
+      onError: (error: unknown) => {
+        if (
+          applyApiValidationErrors(error, form.setError, {
+            fieldMap: {
+              email: 'email',
+              password: 'password',
+              confirmPassword: 'confirmPassword',
+            },
+          })
+        ) {
+          return;
+        }
+
+        const apiError = normalizeApiError(error);
+
+        if (apiError.code === ApiErrorCode.emailAlreadyExists) {
+          form.setError('email', {
+            type: 'manual',
+            message: apiError.message || 'An account with this email already exists.',
+          });
+        }
+      },
     });
   };
+
+  const normalizedRegisterError = normalizeApiError(registerError);
+  const registerErrorCode = normalizedRegisterError.code;
+  const isRegisterFieldError =
+    registerErrorCode === ApiErrorCode.validationFailed ||
+    registerErrorCode === ApiErrorCode.emailAlreadyExists;
 
   return (
     <>
@@ -119,11 +151,10 @@ export function RegisterForm() {
                 )}
               />
 
-              {registerError && (
+              {registerError && !isRegisterFieldError && (
                 <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-destructive">
                   <p className="m-0 text-xs leading-relaxed">
-                    {(registerError as ApiError).message ||
-                      'Registration failed. Please try again.'}
+                    {normalizedRegisterError.message || 'Registration failed. Please try again.'}
                   </p>
                 </div>
               )}

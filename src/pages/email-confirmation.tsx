@@ -14,7 +14,8 @@ import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.a
 import { AlreadyHaveAccountLink } from '@/features/auth/components/AlreadyHaveAccountLink.tsx';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
-import type { ApiError } from '@/shared/types/api-types.ts';
+import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
+import { normalizeApiError } from '@/shared/api/api-errors.ts';
 
 type ConfirmationStatus = 'success' | 'expired' | 'invalid';
 
@@ -66,7 +67,19 @@ function ExpiredConfirmationResendPanel({
       onSuccess(targetEmail);
     },
     onError: (error: unknown) => {
-      const apiError = error as ApiError;
+      const handled = applyApiValidationErrors(error, form.setError, {
+        fieldMap: {
+          email: 'email',
+        },
+        fallbackField: 'email',
+        fallbackMessage: 'Unable to resend the confirmation email.',
+      });
+
+      if (handled) {
+        return;
+      }
+
+      const apiError = normalizeApiError(error);
       form.setError('email', {
         type: 'manual',
         message: apiError.message || 'Unable to resend the confirmation email.',

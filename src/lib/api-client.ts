@@ -1,19 +1,17 @@
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import type { AuthSession } from '@/features/auth/types/auth-session.ts';
 import type { ApiError, ApiResponse } from '@/shared/types/api-types.ts';
+import {
+  createApiError,
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  normalizeApiError,
+} from '@/shared/api/api-errors.ts';
+import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 export const AUTH_UNAUTHORIZED_EVENT = 'auth:unauthorized';
 export const AUTH_LOGOUT_EVENT = 'auth:logout';
 const ACCESS_TOKEN_REFRESH_BUFFER_MS = 60_000;
-
-function buildApiError(message: string, status?: number, errors?: Record<string, string[]> | null) {
-  return {
-    message,
-    status,
-    errors: errors ?? null,
-  } satisfies ApiError;
-}
 
 function handleUnauthorizedResponse() {
   const authStore = useAuthStore.getState();
@@ -63,13 +61,15 @@ async function parseErrorResponse(response: Response): Promise<ApiError> {
   try {
     const errorBody = responseText ? JSON.parse(responseText) : null;
 
-    return buildApiError(
-      errorBody?.message || errorBody?.Message || 'Unexpected error',
-      response.status,
-      errorBody?.errors || errorBody?.Errors || null,
-    );
-  } catch (_) {
-    return buildApiError(responseText || 'Unexpected error', response.status);
+    return normalizeApiError(errorBody, {
+      status: response.status,
+      fallbackMessage: responseText || undefined,
+    });
+  } catch {
+    return normalizeApiError(responseText || null, {
+      status: response.status,
+      fallbackMessage: responseText || undefined,
+    });
   }
 }
 
@@ -88,7 +88,12 @@ export class ApiClient {
 
     if (!useAuthStore.getState().session) {
       handleUnauthorizedResponse();
-      throw buildApiError('Missing auth session.', 401);
+      throw createApiError({
+        message: 'Missing auth session.',
+        code: ApiErrorCode.unauthorized,
+        status: 401,
+        kind: 'unexpected',
+      });
     }
 
     this.refreshPromise = (async () => {
@@ -99,10 +104,11 @@ export class ApiClient {
           method: 'POST',
           credentials: 'include',
         });
-      } catch (_) {
-        throw buildApiError(
-          "Something went wrong on our end. We're working on fixing it. Please try again in a few minutes.",
-        );
+      } catch {
+        throw createApiError({
+          message: DEFAULT_NETWORK_ERROR_MESSAGE,
+          kind: 'network',
+        });
       }
 
       if (!response.ok) {
@@ -115,10 +121,13 @@ export class ApiClient {
         throw error;
       }
 
-      const refreshResponse = await response.json() as ApiResponse<AuthSession>;
+      const refreshResponse = (await response.json()) as ApiResponse<AuthSession>;
 
       if (!refreshResponse.success || !refreshResponse.data) {
-        throw buildApiError(refreshResponse.message || 'Session refresh failed.');
+        throw createApiError({
+          message: refreshResponse.message || 'Session refresh failed.',
+          kind: 'unexpected',
+        });
       }
 
       useAuthStore.getState().setSession(refreshResponse.data);
@@ -184,9 +193,11 @@ export class ApiClient {
       });
     } catch (error) {
       // Network error (backend unreachable)
-      throw buildApiError(
-        "Something went wrong on our end. We're working on fixing it. Please try again in a few minutes.",
-      );
+      throw createApiError({
+        message: DEFAULT_NETWORK_ERROR_MESSAGE,
+        kind: 'network',
+        raw: error,
+      });
     }
 
     return response;
@@ -200,12 +211,8 @@ export class ApiClient {
       !shouldSkipAuthRefresh(endpoint) &&
       useAuthStore.getState().session
     ) {
-      try {
-        const refreshedSession = await this.refreshSession();
-        response = await this.fetchWithToken(endpoint, options, refreshedSession.accessToken);
-      } catch (error) {
-        throw error;
-      }
+      const refreshedSession = await this.refreshSession();
+      response = await this.fetchWithToken(endpoint, options, refreshedSession.accessToken);
     }
 
     if (!response.ok) {

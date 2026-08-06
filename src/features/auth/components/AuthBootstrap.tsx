@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { getCurrentUserApi } from '@/features/auth/api/get-current-user.api.ts';
 import { useAuthStore } from '@/features/auth/stores/authStore.ts';
 import { AUTH_UNAUTHORIZED_EVENT } from '@/lib/api-client.ts';
+import { isUnauthorizedError } from '@/features/auth/utils/auth-errors.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
-import type { ApiError } from '@/shared/types/api-types.ts';
+import { normalizeApiError } from '@/shared/api/api-errors.ts';
 
 export function AuthBootstrap() {
   const { authStatus, clearAuth, setAuthChecking, session } = useAuthStore();
@@ -38,8 +39,10 @@ export function AuthBootstrap() {
       .then((user) => {
         useAuthStore.getState().confirmAuth(user);
       })
-      .catch((error: ApiError) => {
-        if (error.status === 401) {
+      .catch((error: unknown) => {
+        const apiError = normalizeApiError(error);
+
+        if (isUnauthorizedError(apiError)) {
           useAuthStore.getState().clearAuth();
           return;
         }
