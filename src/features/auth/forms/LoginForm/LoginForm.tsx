@@ -185,7 +185,7 @@ export function LoginForm() {
 
               <Button
                 type="button"
-                variant="secondary"
+                variant="default"
                 className="w-full font-medium"
                 disabled={resendMutation.isPending}
                 onClick={handleResendConfirmation}
@@ -207,70 +207,74 @@ export function LoginForm() {
           </div>
         )}
 
-        <FormInputField
-          control={form.control}
-          name="email"
-          label="Email"
-          renderInput={(field) => (
-            <Input
-              {...field}
-              type="email"
-              placeholder="Your email"
-              disabled={isLoggingIn}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-email"
+        {!isUnconfirmedAccountError && (
+          <>
+            <FormInputField
+              control={form.control}
+              name="email"
+              label="Email"
+              renderInput={(field) => (
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="Your email"
+                  disabled={isLoggingIn}
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                  data-testid="input-email"
+                />
+              )}
             />
-          )}
-        />
 
-        <FormInputField
-          control={form.control}
-          name="password"
-          label="Password"
-          renderInput={(field) => (
-            <PasswordInput
-              {...field}
-              placeholder="Your password"
-              disabled={isLoggingIn}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-password"
+            <FormInputField
+              control={form.control}
+              name="password"
+              label="Password"
+              renderInput={(field) => (
+                <PasswordInput
+                  {...field}
+                  placeholder="Your password"
+                  disabled={isLoggingIn}
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                  data-testid="input-password"
+                />
+              )}
             />
-          )}
-        />
-        <div className="hidden text-right mt-2">
-          <button
-            type="button"
-            className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-            data-testid="link-forgot-password"
-          >
-            Forgot password?
-          </button>
-        </div>
+            <div className="hidden text-right mt-2">
+              <button
+                type="button"
+                className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
+                data-testid="link-forgot-password"
+              >
+                Forgot password?
+              </button>
+            </div>
 
-        {loginError && !isUnconfirmedAccountError && !isInvalidCredentialsError && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircleIcon className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive">
-              {loginErrorMessage || 'Login failed. Please check your credentials.'}
-            </AlertDescription>
-          </Alert>
+            {loginError && !isInvalidCredentialsError && (
+              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+                <AlertCircleIcon className="h-4 w-4 text-destructive" />
+                <AlertDescription className="text-destructive">
+                  {loginErrorMessage || 'Login failed. Please check your credentials.'}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+              disabled={isLoggingIn}
+              data-testid="button-submit"
+            >
+              {isLoggingIn ? (
+                <>
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Log In'
+              )}
+            </Button>
+          </>
         )}
-
-        <Button
-          type="submit"
-          className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
-          disabled={isLoggingIn}
-          data-testid="button-submit"
-        >
-          {isLoggingIn ? (
-            <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            'Log In'
-          )}
-        </Button>
       </form>
     </Form>
   );
