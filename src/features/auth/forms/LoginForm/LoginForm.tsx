@@ -10,14 +10,16 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
-import { ApiError } from '@/shared/types/api-types.ts';
 import { Logo } from '@/components/Logo.tsx';
 import {
+  isValidationFailedError,
   isInvalidCredentialsLoginError,
   isUnconfirmedAccountLoginError,
 } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
+import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
+import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError } = useAuth();
@@ -34,21 +36,43 @@ export function LoginForm() {
     },
   });
 
-  const loginErrorMessage = (loginError as ApiError | null | undefined)?.message ?? '';
-  const isInvalidCredentialsError = isInvalidCredentialsLoginError(loginErrorMessage);
-  const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginErrorMessage);
+  const loginErrorMessage = loginError?.message ?? '';
+  const isInvalidCredentialsError = isInvalidCredentialsLoginError(loginError);
+  const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginError);
+  const isValidationFailedLoginError = isValidationFailedError(loginError);
 
   useEffect(() => {
     if (isInvalidCredentialsError) {
+      form.clearErrors('email');
       form.setError('password', {
         type: 'manual',
-        message: 'Invalid email or password.',
+        message: loginErrorMessage || 'Invalid email or password.',
       });
       return;
     }
 
-    form.clearErrors('password');
-  }, [form, isInvalidCredentialsError, loginErrorMessage]);
+    if (isValidationFailedLoginError) {
+      form.clearErrors(['email', 'password']);
+      const applied = applyApiValidationErrors(loginError, form.setError, {
+        fieldMap: {
+          email: 'email',
+          password: 'password',
+        },
+      });
+
+      if (applied) {
+        return;
+      }
+    }
+
+    form.clearErrors(['email', 'password']);
+  }, [
+    form,
+    isInvalidCredentialsError,
+    isValidationFailedLoginError,
+    loginError,
+    loginErrorMessage,
+  ]);
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
@@ -57,9 +81,14 @@ export function LoginForm() {
       setResendMessage(`We sent another confirmation email to ${email}.`);
     },
     onError: (error: unknown) => {
-      const apiError = error as ApiError;
+      const apiError = normalizeApiError(error);
+      const validationErrors = getApiValidationErrors(error);
       setResendMessage(null);
-      setResendError(apiError.message || 'Unable to resend the confirmation email.');
+      setResendError(
+        validationErrors?.email?.[0] ||
+          apiError.message ||
+          'Unable to resend the confirmation email.',
+      );
     },
   });
 
@@ -156,7 +185,7 @@ export function LoginForm() {
 
               <Button
                 type="button"
-                variant="secondary"
+                variant="default"
                 className="w-full font-medium"
                 disabled={resendMutation.isPending}
                 onClick={handleResendConfirmation}
@@ -178,70 +207,74 @@ export function LoginForm() {
           </div>
         )}
 
-        <FormInputField
-          control={form.control}
-          name="email"
-          label="Email"
-          renderInput={(field) => (
-            <Input
-              {...field}
-              type="email"
-              placeholder="Your email"
-              disabled={isLoggingIn}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-email"
+        {!isUnconfirmedAccountError && (
+          <>
+            <FormInputField
+              control={form.control}
+              name="email"
+              label="Email"
+              renderInput={(field) => (
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="Your email"
+                  disabled={isLoggingIn}
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                  data-testid="input-email"
+                />
+              )}
             />
-          )}
-        />
 
-        <FormInputField
-          control={form.control}
-          name="password"
-          label="Password"
-          renderInput={(field) => (
-            <PasswordInput
-              {...field}
-              placeholder="Your password"
-              disabled={isLoggingIn}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-password"
+            <FormInputField
+              control={form.control}
+              name="password"
+              label="Password"
+              renderInput={(field) => (
+                <PasswordInput
+                  {...field}
+                  placeholder="Your password"
+                  disabled={isLoggingIn}
+                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                  data-testid="input-password"
+                />
+              )}
             />
-          )}
-        />
-        <div className="hidden text-right mt-2">
-          <button
-            type="button"
-            className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-            data-testid="link-forgot-password"
-          >
-            Forgot password?
-          </button>
-        </div>
+            <div className="hidden text-right mt-2">
+              <button
+                type="button"
+                className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
+                data-testid="link-forgot-password"
+              >
+                Forgot password?
+              </button>
+            </div>
 
-        {loginError && !isUnconfirmedAccountError && !isInvalidCredentialsError && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircleIcon className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive">
-              {loginErrorMessage || 'Login failed. Please check your credentials.'}
-            </AlertDescription>
-          </Alert>
+            {loginError && !isInvalidCredentialsError && (
+              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+                <AlertCircleIcon className="h-4 w-4 text-destructive" />
+                <AlertDescription className="text-destructive">
+                  {loginErrorMessage || 'Login failed. Please check your credentials.'}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+              disabled={isLoggingIn}
+              data-testid="button-submit"
+            >
+              {isLoggingIn ? (
+                <>
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Log In'
+              )}
+            </Button>
+          </>
         )}
-
-        <Button
-          type="submit"
-          className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
-          disabled={isLoggingIn}
-          data-testid="button-submit"
-        >
-          {isLoggingIn ? (
-            <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            'Log In'
-          )}
-        </Button>
       </form>
     </Form>
   );

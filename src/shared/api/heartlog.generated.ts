@@ -5,6 +5,20 @@
  * OpenAPI spec version: v1
  */
 import { heartlogFetch } from './heartlog-mutator.ts';
+export type ApiErrorCode = (typeof ApiErrorCode)[keyof typeof ApiErrorCode];
+
+export const ApiErrorCode = {
+  invalidCredentials: 'invalidCredentials',
+  emailNotConfirmed: 'emailNotConfirmed',
+  authenticationUnavailable: 'authenticationUnavailable',
+  validationFailed: 'validationFailed',
+  unexpectedError: 'unexpectedError',
+  emailAlreadyExists: 'emailAlreadyExists',
+  usernameAlreadyExists: 'usernameAlreadyExists',
+  invalidRequest: 'invalidRequest',
+  unauthorized: 'unauthorized',
+} as const;
+
 export interface ApiResponse {
   success?: boolean;
   message?: string;
@@ -101,12 +115,15 @@ export interface EmotionTreeNodeDtoIEnumerableApiResponse {
 /**
  * @nullable
  */
-export type ErrorResponseErrors = {[key: string]: string[]} | null;
+export type ErrorResponseErrors = { [key: string]: string[] } | null;
 
 export interface ErrorResponse {
+  code: ApiErrorCode;
   message?: string;
   /** @nullable */
   errors?: ErrorResponseErrors;
+  /** @nullable */
+  traceId?: string | null;
 }
 
 export interface ItemDto {
@@ -160,307 +177,228 @@ export interface UserRegisterDto {
 }
 
 export type AuthConfirmEmailParams = {
-token_hash?: string;
-type?: string;
+  token_hash?: string;
+  type?: string;
 };
 
 export type EmotionsGetTreeParams = {
-locale?: string;
+  locale?: string;
 };
 
 export const getAuthRegisterUrl = () => {
+  return `/api/auth/register`;
+};
 
-
-
-
-  return `/api/auth/register`
-}
-
-export const authRegister = async (userRegisterDto?: UserRegisterDto, options?: RequestInit): Promise<AuthRegistrationResponseDtoApiResponse> => {
-
-  return heartlogFetch<AuthRegistrationResponseDtoApiResponse>(getAuthRegisterUrl(),
-  {
+export const authRegister = async (
+  userRegisterDto?: UserRegisterDto,
+  options?: RequestInit,
+): Promise<AuthRegistrationResponseDtoApiResponse> => {
+  return heartlogFetch<AuthRegistrationResponseDtoApiResponse>(getAuthRegisterUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(userRegisterDto)
-  }
-);}
+    body: JSON.stringify(userRegisterDto),
+  });
+};
 
-
-
-export const getAuthConfirmEmailUrl = (params?: AuthConfirmEmailParams,) => {
+export const getAuthConfirmEmailUrl = (params?: AuthConfirmEmailParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/auth/confirm-email?${stringifiedParams}` : `/api/auth/confirm-email`
-}
+  return stringifiedParams.length > 0
+    ? `/api/auth/confirm-email?${stringifiedParams}`
+    : `/api/auth/confirm-email`;
+};
 
 /**
  * Confirms the email token and redirects to the configured frontend email-confirmation route with status success, expired, or invalid.
  */
-export const authConfirmEmail = async (params?: AuthConfirmEmailParams, options?: RequestInit): Promise<unknown> => {
-
-  return heartlogFetch<unknown>(getAuthConfirmEmailUrl(params),
-  {
+export const authConfirmEmail = async (
+  params?: AuthConfirmEmailParams,
+  options?: RequestInit,
+): Promise<unknown> => {
+  return heartlogFetch<unknown>(getAuthConfirmEmailUrl(params), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 export const getAuthResendConfirmationUrl = () => {
+  return `/api/auth/resend-confirmation`;
+};
 
-
-
-
-  return `/api/auth/resend-confirmation`
-}
-
-export const authResendConfirmation = async (resendConfirmationRequestDto?: ResendConfirmationRequestDto, options?: RequestInit): Promise<ApiResponse> => {
-
-  return heartlogFetch<ApiResponse>(getAuthResendConfirmationUrl(),
-  {
+export const authResendConfirmation = async (
+  resendConfirmationRequestDto?: ResendConfirmationRequestDto,
+  options?: RequestInit,
+): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthResendConfirmationUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(resendConfirmationRequestDto)
-  }
-);}
-
-
+    body: JSON.stringify(resendConfirmationRequestDto),
+  });
+};
 
 export const getAuthLoginUrl = () => {
-
-
-
-
-  return `/api/auth/login`
-}
+  return `/api/auth/login`;
+};
 
 /**
  * Returns an access token in the response body and sets the HTTP-only heartlog_refresh_token cookie for session refresh.
  */
-export const authLogin = async (userLoginDto?: UserLoginDto, options?: RequestInit): Promise<AuthSessionResponseDtoApiResponse> => {
-
-  return heartlogFetch<AuthSessionResponseDtoApiResponse>(getAuthLoginUrl(),
-  {
+export const authLogin = async (
+  userLoginDto?: UserLoginDto,
+  options?: RequestInit,
+): Promise<AuthSessionResponseDtoApiResponse> => {
+  return heartlogFetch<AuthSessionResponseDtoApiResponse>(getAuthLoginUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(userLoginDto)
-  }
-);}
-
-
+    body: JSON.stringify(userLoginDto),
+  });
+};
 
 export const getAuthRefreshUrl = () => {
-
-
-
-
-  return `/api/auth/refresh`
-}
+  return `/api/auth/refresh`;
+};
 
 /**
  * Reads the HTTP-only heartlog_refresh_token cookie, returns a new access token in the response body, and renews the refresh cookie. Frontend requests must include credentials.
  */
-export const authRefresh = async ( options?: RequestInit): Promise<AuthSessionResponseDtoApiResponse> => {
-
-  return heartlogFetch<AuthSessionResponseDtoApiResponse>(getAuthRefreshUrl(),
-  {
+export const authRefresh = async (
+  options?: RequestInit,
+): Promise<AuthSessionResponseDtoApiResponse> => {
+  return heartlogFetch<AuthSessionResponseDtoApiResponse>(getAuthRefreshUrl(), {
     ...options,
-    method: 'POST'
-
-
-  }
-);}
-
-
+    method: 'POST',
+  });
+};
 
 export const getAuthLogoutUrl = () => {
-
-
-
-
-  return `/api/auth/logout`
-}
+  return `/api/auth/logout`;
+};
 
 /**
  * Clears the HTTP-only heartlog_refresh_token cookie. Frontend requests must include credentials.
  */
-export const authLogout = async ( options?: RequestInit): Promise<ApiResponse> => {
-
-  return heartlogFetch<ApiResponse>(getAuthLogoutUrl(),
-  {
+export const authLogout = async (options?: RequestInit): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthLogoutUrl(), {
     ...options,
-    method: 'POST'
-
-
-  }
-);}
-
-
+    method: 'POST',
+  });
+};
 
 export const getAuthGetCurrentUserUrl = () => {
+  return `/api/auth/me`;
+};
 
-
-
-
-  return `/api/auth/me`
-}
-
-export const authGetCurrentUser = async ( options?: RequestInit): Promise<UserMeResponseDtoApiResponse> => {
-
-  return heartlogFetch<UserMeResponseDtoApiResponse>(getAuthGetCurrentUserUrl(),
-  {
+export const authGetCurrentUser = async (
+  options?: RequestInit,
+): Promise<UserMeResponseDtoApiResponse> => {
+  return heartlogFetch<UserMeResponseDtoApiResponse>(getAuthGetCurrentUserUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 export const getEmotionEntriesGetAllUrl = () => {
+  return `/api/emotion-entries`;
+};
 
-
-
-
-  return `/api/emotion-entries`
-}
-
-export const emotionEntriesGetAll = async ( options?: RequestInit): Promise<EmotionEntryResponseIEnumerableApiResponse> => {
-
-  return heartlogFetch<EmotionEntryResponseIEnumerableApiResponse>(getEmotionEntriesGetAllUrl(),
-  {
+export const emotionEntriesGetAll = async (
+  options?: RequestInit,
+): Promise<EmotionEntryResponseIEnumerableApiResponse> => {
+  return heartlogFetch<EmotionEntryResponseIEnumerableApiResponse>(getEmotionEntriesGetAllUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 export const getEmotionEntriesCreateUrl = () => {
+  return `/api/emotion-entries`;
+};
 
-
-
-
-  return `/api/emotion-entries`
-}
-
-export const emotionEntriesCreate = async (createEmotionEntryRequest?: CreateEmotionEntryRequest, options?: RequestInit): Promise<EmotionEntryResponseApiResponse> => {
-
-  return heartlogFetch<EmotionEntryResponseApiResponse>(getEmotionEntriesCreateUrl(),
-  {
+export const emotionEntriesCreate = async (
+  createEmotionEntryRequest?: CreateEmotionEntryRequest,
+  options?: RequestInit,
+): Promise<EmotionEntryResponseApiResponse> => {
+  return heartlogFetch<EmotionEntryResponseApiResponse>(getEmotionEntriesCreateUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(createEmotionEntryRequest)
-  }
-);}
-
-
+    body: JSON.stringify(createEmotionEntryRequest),
+  });
+};
 
 export const getEmotionEntriesGetSummaryUrl = () => {
+  return `/api/emotion-entries/summary`;
+};
 
-
-
-
-  return `/api/emotion-entries/summary`
-}
-
-export const emotionEntriesGetSummary = async ( options?: RequestInit): Promise<EmotionEntriesSummaryResponseApiResponse> => {
-
-  return heartlogFetch<EmotionEntriesSummaryResponseApiResponse>(getEmotionEntriesGetSummaryUrl(),
-  {
+export const emotionEntriesGetSummary = async (
+  options?: RequestInit,
+): Promise<EmotionEntriesSummaryResponseApiResponse> => {
+  return heartlogFetch<EmotionEntriesSummaryResponseApiResponse>(getEmotionEntriesGetSummaryUrl(), {
     ...options,
-    method: 'GET'
+    method: 'GET',
+  });
+};
 
-
-  }
-);}
-
-
-
-export const getEmotionsGetTreeUrl = (params?: EmotionsGetTreeParams,) => {
+export const getEmotionsGetTreeUrl = (params?: EmotionsGetTreeParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/emotions?${stringifiedParams}` : `/api/emotions`
-}
+  return stringifiedParams.length > 0 ? `/api/emotions?${stringifiedParams}` : `/api/emotions`;
+};
 
-export const emotionsGetTree = async (params?: EmotionsGetTreeParams, options?: RequestInit): Promise<EmotionTreeNodeDtoIEnumerableApiResponse> => {
-
-  return heartlogFetch<EmotionTreeNodeDtoIEnumerableApiResponse>(getEmotionsGetTreeUrl(params),
-  {
+export const emotionsGetTree = async (
+  params?: EmotionsGetTreeParams,
+  options?: RequestInit,
+): Promise<EmotionTreeNodeDtoIEnumerableApiResponse> => {
+  return heartlogFetch<EmotionTreeNodeDtoIEnumerableApiResponse>(getEmotionsGetTreeUrl(params), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 export const getItemsGetAllUrl = () => {
+  return `/api/Items`;
+};
 
-
-
-
-  return `/api/Items`
-}
-
-export const itemsGetAll = async ( options?: RequestInit): Promise<ItemDtoIEnumerableApiResponse> => {
-
-  return heartlogFetch<ItemDtoIEnumerableApiResponse>(getItemsGetAllUrl(),
-  {
+export const itemsGetAll = async (
+  options?: RequestInit,
+): Promise<ItemDtoIEnumerableApiResponse> => {
+  return heartlogFetch<ItemDtoIEnumerableApiResponse>(getItemsGetAllUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 export const getItemsSaveUrl = () => {
+  return `/api/Items`;
+};
 
-
-
-
-  return `/api/Items`
-}
-
-export const itemsSave = async (itemDto?: ItemDto, options?: RequestInit): Promise<ItemDtoApiResponse> => {
-
-  return heartlogFetch<ItemDtoApiResponse>(getItemsSaveUrl(),
-  {
+export const itemsSave = async (
+  itemDto?: ItemDto,
+  options?: RequestInit,
+): Promise<ItemDtoApiResponse> => {
+  return heartlogFetch<ItemDtoApiResponse>(getItemsSaveUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(itemDto)
-  }
-);}
+    body: JSON.stringify(itemDto),
+  });
+};
