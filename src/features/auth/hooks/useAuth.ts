@@ -71,6 +71,7 @@ export function useAuth() {
 
   return {
     user,
+    session,
     isLoading: authStatus === 'checking' || (authStatus === 'idle' && !!session),
     isAuthenticated: authStatus === 'authenticated',
     login: loginMutation.mutate,
