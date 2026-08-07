@@ -12,7 +12,7 @@
 
     --background: 270 45% 98%;
     --foreground: 252 19% 24%;
-    --border: 262 28% 88%;
+    --border: 37 23% 86%;
 
     --card: 270 40% 99%;
     --card-foreground: 252 18% 24%;
@@ -56,9 +56,9 @@
     --success-active: 134 33% 45%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 39 67% 55%;
-    --warning-hover: 39 67% 50%;
-    --warning-active: 39 67% 45%;
+    --warning: 39 62% 53%;
+    --warning-hover: 39 62% 48%;
+    --warning-active: 39 62% 43%;
     --warning-foreground: 0 0% 100%;
 
     --destructive: 0 72% 58%;
@@ -144,7 +144,7 @@
 
     --background: 252 24% 12%;
     --foreground: 260 28% 94%;
-    --border: 255 18% 23%;
+    --border: 37 23% 86%;
 
     --card: 255 22% 15%;
     --card-foreground: 260 24% 93%;
@@ -188,9 +188,9 @@
     --success-active: 134 30% 46%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 39 65% 42%;
-    --warning-hover: 39 65% 47%;
-    --warning-active: 39 65% 52%;
+    --warning: 39 62% 53%;
+    --warning-hover: 39 62% 58%;
+    --warning-active: 39 62% 63%;
     --warning-foreground: 0 0% 100%;
 
     --destructive: 0 68% 52%;
