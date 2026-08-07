@@ -50,6 +50,14 @@ const routes = [
     ),
   },
   {
+    path: '/design-system',
+    element: (
+      <AppLayout>
+        <DesignSystemPage />
+      </AppLayout>
+    ),
+  },
+  {
     path: '*',
     element: <NotFound />,
   },
