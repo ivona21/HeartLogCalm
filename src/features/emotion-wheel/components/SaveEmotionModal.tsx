@@ -58,7 +58,7 @@ export function SaveEmotionModal({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-[760px] overflow-hidden border-border/60 bg-background/95 p-0 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-sm">
+      <DialogContent className="max-w-[760px] overflow-hidden border-border/60 bg-background/95 dark:bg-card/95 dark:border-card-border/70 dark:shadow-[0_24px_70px_rgba(5,4,12,0.34)] p-0 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-sm">
         <div className="px-8 pb-8 pt-10 md:px-10 md:pb-10 md:pt-11">
           <div className="space-y-3 pb-8">
             <DialogTitle className="max-w-[30ch] text-[26px] font-medium leading-[1.15] tracking-[-0.025em] text-foreground">
@@ -85,7 +85,7 @@ export function SaveEmotionModal({
                         {...field}
                         placeholder="Write here..."
                         disabled={isSaving}
-                        className="min-h-[280px] resize-y rounded-[22px] border-border/70 bg-muted/20 px-5 py-4 text-[15px] leading-7 text-foreground shadow-inner placeholder:text-muted-foreground/55 focus-visible:border-foreground/15 focus-visible:ring-0"
+                        className="min-h-[280px] resize-y rounded-[22px] border-border/70 bg-muted/20 px-5 py-4 text-[15px] leading-7 text-foreground shadow-inner placeholder:text-muted-foreground/55 focus-visible:border-foreground/15 focus-visible:ring-0 dark:bg-background/30"
                       />
                     </FormControl>
                   </FormItem>
@@ -97,7 +97,7 @@ export function SaveEmotionModal({
                   type="submit"
                   variant="outline"
                   size="lg"
-                  className="min-w-[120px] rounded-full border-border/70 bg-background/80 px-6 text-sm font-medium text-foreground shadow-sm hover:bg-muted/50"
+                  className="min-w-[120px] rounded-full border-border/70 bg-background/80 px-6 text-sm font-medium text-foreground shadow-sm hover:bg-muted/50 dark:bg-background/20 dark:hover:bg-accent/15 dark:border-card-border/70"
                   disabled={isSaving}
                 >
                   {isSaving ? (
