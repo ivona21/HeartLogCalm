@@ -61,9 +61,8 @@ export function Header() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
-                    className="rounded-full"
                     onClick={() => {
                       setLogoutModalOpen(false);
                       logout();
