@@ -23,9 +23,12 @@ import { useWheelGestures } from '@/features/emotion-wheel/hooks/useWheelGesture
 import {
   getMidAngle,
   radialTextTransform,
+  getReadableWheelTextColor,
+  getWheelDisplayColor,
   tintColor,
   toRad,
 } from '@/features/emotion-wheel/helpers/helpers.ts';
+import { useIsDarkTheme } from '@/shared/hooks/use-theme-mode.ts';
 import { useAuth } from '@/features/auth';
 import { AuthPromptModal } from '@/features/emotion-wheel/components/AuthPromptModal.tsx';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
@@ -78,6 +81,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const [interactionCount, setInteractionCount] = useState(0);
   const { isAuthenticated, user } = useAuth();
   const { data: emotions = [] } = useEmotions();
+  const isDarkTheme = useIsDarkTheme();
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
 
@@ -94,6 +98,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     wheelLayout,
     selected,
     selectionOrder,
+    isDarkTheme,
   });
 
   const handleWheelClick = (id: string) => {
@@ -202,34 +207,44 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
             aria-label={core.label}
             role="button"
           >
-            <path
-              d={fillPath(CORE_INNER, CORE_OUTER, core.startAngle, core.endAngle)}
-              fill={
-                selected.has(core.id) ? core.color : (ancestorFillMap.get(core.id) ?? core.color)
-              }
-              stroke="white"
-              strokeWidth="1.5"
-              style={{
-                opacity: segmentOpacity(core.id),
-                filter: segmentFilter(core.id),
-                transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
-              }}
-            />
-            <text
-              fontSize="18"
-              fontWeight="700"
-              fill="hsl(var(--wheel-foreground))"
-              pointerEvents="none"
-              transform={radialTextTransform(
-                getMidAngle(core.startAngle, core.endAngle),
-                CORE_TEXT_RADIUS,
-              )}
-              textAnchor="middle"
-              dominantBaseline="central"
-              style={{ userSelect: 'none' }}
-            >
-              {core.label}
-            </text>
+            {(() => {
+              const coreFillColor = getWheelDisplayColor(core.color, 'core', isDarkTheme);
+              const displayFill = selected.has(core.id)
+                ? coreFillColor
+                : (ancestorFillMap.get(core.id) ?? coreFillColor);
+              const coreTextColor = getReadableWheelTextColor(displayFill, isDarkTheme);
+
+              return (
+                <>
+                  <path
+                    d={fillPath(CORE_INNER, CORE_OUTER, core.startAngle, core.endAngle)}
+                    fill={displayFill}
+                    stroke="white"
+                    strokeWidth="1.5"
+                    style={{
+                      opacity: segmentOpacity(core.id),
+                      filter: segmentFilter(core.id),
+                      transition: 'opacity 180ms ease, filter 180ms ease, fill 180ms ease',
+                    }}
+                  />
+                  <text
+                    fontSize="18"
+                    fontWeight="700"
+                    fill={coreTextColor}
+                    pointerEvents="none"
+                    transform={radialTextTransform(
+                      getMidAngle(core.startAngle, core.endAngle),
+                      CORE_TEXT_RADIUS,
+                    )}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {core.label}
+                  </text>
+                </>
+              );
+            })()}
           </g>
         ))}
 
@@ -238,9 +253,18 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
           wheelLayout
             .filter((core) => mode === 'full' || core.id === activeCoreId)
             .map((core) => {
-              const secondaryFillColor = tintColor(core.color, 0.38);
+              const coreFillColor = getWheelDisplayColor(core.color, 'core', isDarkTheme);
+              const secondaryFillColor = getWheelDisplayColor(
+                tintColor(core.color, 0.38),
+                'secondary',
+                isDarkTheme,
+              );
               return core.children.map((secondary) => {
                 const midpointAngle = getMidAngle(secondary.startAngle, secondary.endAngle);
+                const displayFill = selected.has(secondary.id)
+                  ? coreFillColor
+                  : (ancestorFillMap.get(secondary.id) ?? secondaryFillColor);
+                const secondaryTextColor = getReadableWheelTextColor(displayFill, isDarkTheme);
                 return (
                   <g
                     key={secondary.id}
@@ -258,11 +282,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
                         secondary.startAngle,
                         secondary.endAngle,
                       )}
-                      fill={
-                        selected.has(secondary.id)
-                          ? core.color
-                          : (ancestorFillMap.get(secondary.id) ?? secondaryFillColor)
-                      }
+                      fill={displayFill}
                       stroke="white"
                       strokeWidth="1"
                       style={{
@@ -274,7 +294,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
                     <text
                       fontSize="16"
                       fontWeight="500"
-                      fill="hsl(var(--wheel-foreground))"
+                      fill={secondaryTextColor}
                       pointerEvents="none"
                       transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
                       textAnchor="middle"
@@ -291,12 +311,19 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
         {/* ── TERTIARY ring ── */}
         {showTertiary &&
           wheelLayout.map((core) => {
-            const tertiaryFillColor = tintColor(core.color, 0.63);
+            const coreFillColor = getWheelDisplayColor(core.color, 'core', isDarkTheme);
+            const tertiaryFillColor = getWheelDisplayColor(
+              tintColor(core.color, 0.63),
+              'tertiary',
+              isDarkTheme,
+            );
             return core.children
               .filter((secondary) => mode === 'full' || secondary.id === activeSecondaryId)
               .map((secondary) =>
                 secondary.children.map((tertiary) => {
                   const midpointAngle = getMidAngle(tertiary.startAngle, tertiary.endAngle);
+                  const displayFill = selected.has(tertiary.id) ? coreFillColor : tertiaryFillColor;
+                  const tertiaryTextColor = getReadableWheelTextColor(displayFill, isDarkTheme);
                   return (
                     <g
                       key={tertiary.id}
@@ -314,7 +341,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
                           tertiary.startAngle,
                           tertiary.endAngle,
                         )}
-                        fill={selected.has(tertiary.id) ? core.color : tertiaryFillColor}
+                        fill={displayFill}
                         stroke="white"
                         strokeWidth="0.7"
                         style={{
@@ -326,7 +353,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
                       <text
                         fontSize="17"
                         fontWeight="400"
-                        fill="hsl(var(--wheel-foreground))"
+                        fill={tertiaryTextColor}
                         pointerEvents="none"
                         transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
                         textAnchor="middle"

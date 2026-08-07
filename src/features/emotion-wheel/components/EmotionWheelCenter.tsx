@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import LogoIconImage from '@/assets/LogoSimpleNoText.png';
+import { useIsDarkTheme } from '@/shared/hooks/use-theme-mode.ts';
 
 interface EmotionWheelCenterProps {
   centerRadius: number;
@@ -18,6 +19,7 @@ export function EmotionWheelCenter({
 }: EmotionWheelCenterProps) {
   const isActive = isAuthenticated && selectionCount > 0;
   const [isBeating, setIsBeating] = useState(false);
+  const isDarkTheme = useIsDarkTheme();
   const colorMaskId = useId();
   const colorGradientId = useId();
   const heartScale = isBeating ? 1.28 : 1;
@@ -72,7 +74,12 @@ export function EmotionWheelCenter({
           })}
         </linearGradient>
       </defs>
-      <circle r={centerRadius} fill="white" stroke="hsl(var(--border))" strokeWidth="1.5" />
+      <circle
+        r={centerRadius}
+        fill={isDarkTheme ? 'hsl(var(--card))' : 'white'}
+        stroke={isDarkTheme ? 'hsl(var(--card-border))' : 'hsl(var(--border))'}
+        strokeWidth="1.5"
+      />
       <g>
         {!isActive ? (
           <image

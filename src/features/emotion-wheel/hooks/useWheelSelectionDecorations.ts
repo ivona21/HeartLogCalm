@@ -1,17 +1,19 @@
 import { useMemo } from 'react';
-import { tintColor } from '@/features/emotion-wheel/helpers/helpers.ts';
+import { getWheelDisplayColor, tintColor } from '@/features/emotion-wheel/helpers/helpers.ts';
 import type { CoreSegment } from '@/features/emotion-wheel/types/wheel-segment.ts';
 
 interface UseWheelSelectionDecorationsParams {
   wheelLayout: CoreSegment[];
   selected: Set<string>;
   selectionOrder?: string[];
+  isDarkTheme: boolean;
 }
 
 export function useWheelSelectionDecorations({
   wheelLayout,
   selected,
   selectionOrder = [],
+  isDarkTheme,
 }: UseWheelSelectionDecorationsParams) {
   const emotionLabelById = useMemo(() => {
     const labelMap = new Map<string, string>();
@@ -73,7 +75,7 @@ export function useWheelSelectionDecorations({
       const coreColor = coreColorByRootId.get(rootId);
       if (!coreColor) continue;
 
-      const shade = tintColor(coreColor, 0.22);
+      const shade = getWheelDisplayColor(tintColor(coreColor, 0.22), 'selection', isDarkTheme);
       if (!nextAncestorFillMap.has(rootId)) nextAncestorFillMap.set(rootId, shade);
       if (!nextAncestorFillMap.has(secondaryId)) nextAncestorFillMap.set(secondaryId, shade);
     }
@@ -87,7 +89,7 @@ export function useWheelSelectionDecorations({
       directParentOf: nextDirectParentOf,
       ancestorFillMap: nextAncestorFillMap,
     };
-  }, [coreColorByRootId, selected]);
+  }, [coreColorByRootId, isDarkTheme, selected]);
 
   const selectedHeartColors = useMemo(() => {
     const colorCounts = new Map<string, number>();
@@ -97,13 +99,14 @@ export function useWheelSelectionDecorations({
       const color = coreColorByRootId.get(rootId);
       if (!color) continue;
 
-      colorCounts.set(color, (colorCounts.get(color) ?? 0) + 1);
+      const displayColor = getWheelDisplayColor(color, 'core', isDarkTheme);
+      colorCounts.set(displayColor, (colorCounts.get(displayColor) ?? 0) + 1);
     }
 
     return [...colorCounts.entries()].flatMap(([color, count]) =>
       Array.from({ length: count }, () => color),
     );
-  }, [coreColorByRootId, selected]);
+  }, [coreColorByRootId, isDarkTheme, selected]);
 
   const selectedEmotionLabels = useMemo(
     () =>
