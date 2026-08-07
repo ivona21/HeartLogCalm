@@ -249,7 +249,7 @@ function DemoFrame({
 
 const buttonVariants = ['default', 'destructive', 'outline', 'secondary', 'ghost'] as const;
 const buttonSizes = ['sm', 'default', 'lg'] as const;
-const badgeVariants = ['default', 'secondary', 'destructive', 'outline'] as const;
+const badgeVariants = ['default', 'accent', 'secondary', 'destructive', 'outline'] as const;
 type PaletteSwatch = {
   name: string;
   className: string;
@@ -282,8 +282,8 @@ const paletteSwatches = [
     hex: '#8665d2',
     invert: true,
   },
-  { name: 'Secondary', className: 'bg-secondary', label: 'bg-secondary', hex: '#f6dff0' },
-  { name: 'Accent', className: 'bg-accent', label: 'bg-accent', hex: '#d8f0f8' },
+  { name: 'Secondary', className: 'bg-secondary', label: 'bg-secondary', hex: '#EFE4D6' },
+  { name: 'Accent', className: 'bg-accent', label: 'bg-accent', hex: '#A8C3A0' },
   { name: 'Muted', className: 'bg-muted', label: 'bg-muted', hex: '#f1eef7' },
   {
     name: 'Destructive',

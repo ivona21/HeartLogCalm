@@ -40,15 +40,15 @@
     --primary-active: 258 55% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 316 58% 92%;
+    --secondary: 34 44% 89%;
     --secondary-foreground: 272 22% 30%;
 
     --muted: 262 34% 95%;
     --muted-foreground: 252 13% 46%;
 
-    --accent: 195 70% 91%;
-    --accent-hover: 195 56% 86%;
-    --accent-active: 195 48% 81%;
+    --accent: 106 23% 70%;
+    --accent-hover: 106 23% 64%;
+    --accent-active: 106 23% 58%;
     --accent-foreground: 222 28% 28%;
 
     --destructive: 0 72% 58%;
