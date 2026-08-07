@@ -51,6 +51,16 @@
     --accent-active: 106 23% 58%;
     --accent-foreground: 222 28% 28%;
 
+    --success: 134 33% 53%;
+    --success-hover: 134 33% 49%;
+    --success-active: 134 33% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 39 67% 55%;
+    --warning-hover: 39 67% 50%;
+    --warning-active: 39 67% 45%;
+    --warning-foreground: 0 0% 100%;
+
     --destructive: 0 72% 58%;
     --destructive-hover: 0 72% 53%;
     --destructive-active: 0 72% 48%;
@@ -115,6 +125,12 @@
     --accent-border: hsl(var(--accent));
     --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
+    --success-border: hsl(var(--success));
+    --success-border: hsl(from hsl(var(--success)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+    --warning-border: hsl(var(--warning));
+    --warning-border: hsl(from hsl(var(--warning)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
@@ -166,6 +182,16 @@
     --accent-hover: 194 36% 28%;
     --accent-active: 194 38% 34%;
     --accent-foreground: 190 72% 88%;
+
+    --success: 134 30% 36%;
+    --success-hover: 134 30% 41%;
+    --success-active: 134 30% 46%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 39 65% 42%;
+    --warning-hover: 39 65% 47%;
+    --warning-active: 39 65% 52%;
+    --warning-foreground: 0 0% 100%;
 
     --destructive: 0 68% 52%;
     --destructive-hover: 0 68% 57%;
@@ -221,6 +247,12 @@
 
     --accent-border: hsl(var(--accent));
     --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+    --success-border: hsl(var(--success));
+    --success-border: hsl(from hsl(var(--success)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+    --warning-border: hsl(var(--warning));
+    --warning-border: hsl(from hsl(var(--warning)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);

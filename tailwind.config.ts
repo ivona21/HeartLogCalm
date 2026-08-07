@@ -1,4 +1,6 @@
 import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import typography from '@tailwindcss/typography';
 
 export default {
   darkMode: ['class'],
@@ -56,6 +58,22 @@ export default {
           active: 'hsl(var(--accent-active) / <alpha-value>)',
           foreground: 'hsl(var(--accent-foreground) / <alpha-value>)',
           border: 'var(--accent-border)',
+        },
+
+        success: {
+          DEFAULT: 'hsl(var(--success) / <alpha-value>)',
+          hover: 'hsl(var(--success-hover) / <alpha-value>)',
+          active: 'hsl(var(--success-active) / <alpha-value>)',
+          foreground: 'hsl(var(--success-foreground) / <alpha-value>)',
+          border: 'var(--success-border)',
+        },
+
+        warning: {
+          DEFAULT: 'hsl(var(--warning) / <alpha-value>)',
+          hover: 'hsl(var(--warning-hover) / <alpha-value>)',
+          active: 'hsl(var(--warning-active) / <alpha-value>)',
+          foreground: 'hsl(var(--warning-foreground) / <alpha-value>)',
+          border: 'var(--warning-border)',
         },
 
         destructive: {
@@ -143,5 +161,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [tailwindcssAnimate, typography],
 } satisfies Config;
