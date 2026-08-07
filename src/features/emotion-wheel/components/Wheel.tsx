@@ -218,7 +218,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
             <text
               fontSize="18"
               fontWeight="700"
-              fill="hsl(var(--foreground))"
+              fill="hsl(var(--wheel-foreground))"
               pointerEvents="none"
               transform={radialTextTransform(
                 getMidAngle(core.startAngle, core.endAngle),
@@ -274,7 +274,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
                     <text
                       fontSize="16"
                       fontWeight="500"
-                      fill="hsl(var(--foreground))"
+                      fill="hsl(var(--wheel-foreground))"
                       pointerEvents="none"
                       transform={radialTextTransform(midpointAngle, SECONDARY_TEXT_RADIUS)}
                       textAnchor="middle"
@@ -326,7 +326,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
                       <text
                         fontSize="17"
                         fontWeight="400"
-                        fill="hsl(var(--foreground))"
+                        fill="hsl(var(--wheel-foreground))"
                         pointerEvents="none"
                         transform={radialTextTransform(midpointAngle, TERTIARY_TEXT_RADIUS)}
                         textAnchor="middle"

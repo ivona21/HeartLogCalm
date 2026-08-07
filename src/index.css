@@ -66,6 +66,8 @@
     --destructive-active: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
+    --wheel-foreground: 252 19% 24%;
+
     --link: 258 55% 46%;
     --link-hover: 258 55% 40%;
     --link-active: 258 55% 35%;
@@ -193,10 +195,12 @@
     --warning-active: 39 62% 63%;
     --warning-foreground: 0 0% 100%;
 
-    --destructive: 0 68% 52%;
-    --destructive-hover: 0 68% 57%;
-    --destructive-active: 0 68% 62%;
+    --destructive: 0 78% 62%;
+    --destructive-hover: 0 78% 66%;
+    --destructive-active: 0 78% 70%;
     --destructive-foreground: 0 0% 100%;
+
+    --wheel-foreground: 252 19% 24%;
 
     --link: 258 88% 80%;
     --link-hover: 258 92% 85%;

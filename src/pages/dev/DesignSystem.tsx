@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   type LucideIcon,
   AlertTriangleIcon,
@@ -304,6 +304,17 @@ function cssVarToHex(token: string): string {
   return hslToHex(Number(h), Number(s), Number(l));
 }
 
+const DESIGN_SYSTEM_THEME_KEY = 'design-system-theme';
+type DesignSystemTheme = 'light' | 'dark';
+
+function readStoredTheme(): DesignSystemTheme {
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
+
+  return window.localStorage.getItem(DESIGN_SYSTEM_THEME_KEY) === 'dark' ? 'dark' : 'light';
+}
+
 const exampleSidebarItems = [
   { label: 'Overview', icon: LayoutGridIcon, active: true },
   { label: 'Calendar', icon: CalendarDaysIcon },
@@ -337,15 +348,8 @@ const exampleCards = [
 ] as const;
 
 function ExamplePagePreview() {
-  const [darkPreview, setDarkPreview] = useState(false);
-
   return (
-    <div
-      className={cn(
-        'relative isolate overflow-hidden rounded-2xl border border-border bg-background shadow-sm transform-gpu',
-        darkPreview && 'dark',
-      )}
-    >
+    <div className="relative isolate overflow-hidden rounded-2xl border border-border bg-background shadow-sm transform-gpu">
       <SidebarProvider defaultOpen>
         <div className="flex min-h-[900px] w-full">
           <Sidebar side="left" variant="inset" collapsible="icon">
@@ -422,27 +426,12 @@ function ExamplePagePreview() {
                     alerts, form controls, and dialog surface.
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="design-theme-preview" className="text-xs font-medium">
-                        Dark preview
-                      </Label>
-                      <p className="text-[11px] text-muted-foreground">Toggle the preview shell</p>
-                    </div>
-                    <Switch
-                      id="design-theme-preview"
-                      checked={darkPreview}
-                      onCheckedChange={setDarkPreview}
-                    />
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button>
-                      <SparklesIcon className="h-4 w-4" />
-                      Primary button
-                    </Button>
-                    <Button variant="secondary">Secondary button</Button>
-                  </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button>
+                    <SparklesIcon className="h-4 w-4" />
+                    Primary button
+                  </Button>
+                  <Button variant="secondary">Secondary button</Button>
                 </div>
               </div>
 
@@ -584,6 +573,13 @@ const badgeVariants = ['default', 'accent', 'secondary', 'destructive', 'outline
 
 export default function DesignSystemPage() {
   const [volume, setVolume] = useState([42]);
+  const [theme, setTheme] = useState<DesignSystemTheme>(() => readStoredTheme());
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', theme === 'dark');
+    window.localStorage.setItem(DESIGN_SYSTEM_THEME_KEY, theme);
+  }, [theme]);
 
   return (
     <TooltipProvider>
@@ -609,6 +605,19 @@ export default function DesignSystemPage() {
                 <Badge variant="outline">ui primitives</Badge>
                 <Badge>components</Badge>
                 <Badge variant="secondary">variants</Badge>
+                <div className="ml-2 flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2 shadow-sm">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="design-theme-toggle" className="text-xs font-medium">
+                      Dark mode
+                    </Label>
+                    <p className="text-[11px] text-muted-foreground">Persists across navigation</p>
+                  </div>
+                  <Switch
+                    id="design-theme-toggle"
+                    checked={theme === 'dark'}
+                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                  />
+                </div>
               </div>
             </div>
           </div>

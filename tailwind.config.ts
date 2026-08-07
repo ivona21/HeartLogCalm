@@ -127,6 +127,7 @@ export default {
         'on-dark': 'hsl(var(--on-dark) / <alpha-value>)',
         'color-white': 'hsl(var(--color-white) / <alpha-value>)',
         'color-text-dark': 'hsl(var(--color-text-dark) / <alpha-value>)',
+        'wheel-foreground': 'hsl(var(--wheel-foreground) / <alpha-value>)',
         'color-border-light': 'hsl(var(--color-border-light) / <alpha-value>)',
         'color-border-subtle': 'hsl(var(--color-border-subtle) / <alpha-value>)',
 

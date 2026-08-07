@@ -34,6 +34,12 @@ export const paletteSwatches: readonly PaletteSwatch[] = [
     token: '--ring',
     invert: true,
   },
+  {
+    name: 'Wheel text',
+    className: 'bg-wheel-foreground',
+    label: 'var(--wheel-foreground)',
+    token: '--wheel-foreground',
+  },
   { name: 'Card', className: 'bg-card', label: 'var(--card)', token: '--card' },
   {
     name: 'Card border',
