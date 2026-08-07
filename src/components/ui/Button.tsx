@@ -19,7 +19,7 @@ const buttonVariants = cva(
           'border [border-color:var(--button-outline)] bg-transparent text-foreground shadow-xs active:shadow-none hover:bg-accent hover:text-accent-foreground active:bg-accent-active',
 
         secondary:
-          'bg-secondary text-secondary-foreground border border-secondary-border hover:bg-accent hover:text-accent-foreground active:bg-accent-active hover:border-accent-border active:border-accent-border',
+          'bg-secondary text-secondary-foreground border border-secondary-border hover:bg-accent hover:text-accent-foreground active:bg-accent-active hover:border-accent-border active:border-accent-border dark:bg-background/20 dark:text-foreground dark:border-border/70 dark:hover:bg-accent/15 dark:hover:text-foreground dark:hover:border-accent-border dark:active:bg-accent/20 dark:active:border-accent-border',
 
         ghost:
           'border border-transparent bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent-active',
