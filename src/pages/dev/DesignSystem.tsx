@@ -337,8 +337,15 @@ const exampleCards = [
 ] as const;
 
 function ExamplePagePreview() {
+  const [darkPreview, setDarkPreview] = useState(false);
+
   return (
-    <div className="relative isolate overflow-hidden rounded-2xl border border-border bg-background shadow-sm transform-gpu">
+    <div
+      className={cn(
+        'relative isolate overflow-hidden rounded-2xl border border-border bg-background shadow-sm transform-gpu',
+        darkPreview && 'dark',
+      )}
+    >
       <SidebarProvider defaultOpen>
         <div className="flex min-h-[900px] w-full">
           <Sidebar side="left" variant="inset" collapsible="icon">
@@ -415,12 +422,27 @@ function ExamplePagePreview() {
                     alerts, form controls, and dialog surface.
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button>
-                    <SparklesIcon className="h-4 w-4" />
-                    Primary button
-                  </Button>
-                  <Button variant="secondary">Secondary button</Button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="design-theme-preview" className="text-xs font-medium">
+                        Dark preview
+                      </Label>
+                      <p className="text-[11px] text-muted-foreground">Toggle the preview shell</p>
+                    </div>
+                    <Switch
+                      id="design-theme-preview"
+                      checked={darkPreview}
+                      onCheckedChange={setDarkPreview}
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button>
+                      <SparklesIcon className="h-4 w-4" />
+                      Primary button
+                    </Button>
+                    <Button variant="secondary">Secondary button</Button>
+                  </div>
                 </div>
               </div>
 
