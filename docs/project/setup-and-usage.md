@@ -62,11 +62,14 @@ You mentioned you have your own backend deployed. Make sure it implements the AP
 Your app follows a calm, oasis-inspired aesthetic:
 
 ### Colors
-- **Primary**: Sage Green (#A8BBA3) - for primary actions and branding
-- **Accent**: Sky Blue (#B8D8E8) - for secondary accents
-- **Background**: Soft gradient from Warm Sand to Sky Blue
-- **Surface**: Warm White (#FDFBF7) for cards
-- **Error**: Soft Coral (#E8A59C) instead of harsh red
+- **Primary**: `--primary` / `--primary-foreground`
+- **Secondary**: `--secondary` / `--secondary-foreground`
+- **Accent**: `--accent` / `--accent-foreground`
+- **Success**: `--success` / `--success-foreground`
+- **Warning**: `--warning` / `--warning-foreground`
+- **Background**: `--background`
+- **Surface**: `--card` / `--popover`
+- **Error**: `--destructive` / `--destructive-foreground`
 
 ### Typography
 - **Font**: Inter - clean, modern, highly readable

@@ -2,53 +2,58 @@ export type PaletteSwatch = {
   name: string;
   className: string;
   label: string;
-  hex: string;
+  token: string;
   invert?: boolean;
 };
 
 export const paletteSwatches: readonly PaletteSwatch[] = [
-  { name: 'Background', className: 'bg-background', label: 'bg-background', hex: '#faf8fc' },
+  {
+    name: 'Background',
+    className: 'bg-background',
+    label: 'var(--background)',
+    token: '--background',
+  },
   {
     name: 'Foreground',
     className: 'bg-foreground',
-    label: 'bg-foreground',
-    hex: '#363249',
+    label: 'var(--foreground)',
+    token: '--foreground',
     invert: true,
   },
-  { name: 'Border', className: 'bg-border', label: 'bg-border', hex: '#ded8e9' },
-  { name: 'Card', className: 'bg-card', label: 'bg-card', hex: '#fcfbfd' },
+  { name: 'Border', className: 'bg-border', label: 'var(--border)', token: '--border' },
+  { name: 'Card', className: 'bg-card', label: 'var(--card)', token: '--card' },
   {
     name: 'Primary',
     className: 'bg-primary',
-    label: 'bg-primary',
-    hex: '#9579d8',
+    label: 'var(--primary)',
+    token: '--primary',
     invert: true,
   },
   {
     name: 'Primary hover',
     className: 'bg-primary-hover',
-    label: 'bg-primary-hover',
-    hex: '#8665d2',
+    label: 'var(--primary-hover)',
+    token: '--primary-hover',
     invert: true,
   },
-  { name: 'Secondary', className: 'bg-secondary', label: 'bg-secondary', hex: '#EFE4D6' },
-  { name: 'Accent', className: 'bg-accent', label: 'bg-accent', hex: '#A8C3A0' },
+  { name: 'Secondary', className: 'bg-secondary', label: 'var(--secondary)', token: '--secondary' },
+  { name: 'Accent', className: 'bg-accent', label: 'var(--accent)', token: '--accent' },
   {
     name: 'Success',
     className: 'bg-success',
-    label: 'bg-success',
-    hex: '#5FAF72',
+    label: 'var(--success)',
+    token: '--success',
     invert: true,
   },
-  { name: 'Warning', className: 'bg-warning', label: 'bg-warning', hex: '#D9A441' },
-  { name: 'Muted', className: 'bg-muted', label: 'bg-muted', hex: '#f1eef7' },
+  { name: 'Warning', className: 'bg-warning', label: 'var(--warning)', token: '--warning' },
+  { name: 'Muted', className: 'bg-muted', label: 'var(--muted)', token: '--muted' },
   {
     name: 'Destructive',
     className: 'bg-destructive',
-    label: 'bg-destructive',
-    hex: '#e14747',
+    label: 'var(--destructive)',
+    token: '--destructive',
     invert: true,
   },
-  { name: 'Popover', className: 'bg-popover', label: 'bg-popover', hex: '#fcfbfd' },
-  { name: 'Sidebar', className: 'bg-sidebar', label: 'bg-sidebar', hex: '#f5f1f9' },
+  { name: 'Popover', className: 'bg-popover', label: 'var(--popover)', token: '--popover' },
+  { name: 'Sidebar', className: 'bg-sidebar', label: 'var(--sidebar)', token: '--sidebar' },
 ];

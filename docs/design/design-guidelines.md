@@ -4,12 +4,13 @@
 HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. The design prioritizes serenity, simplicity, and emotional safety through soft aesthetics and minimal cognitive load.
 
 ## Color Palette
-- **Sage Green** (#A8BBA3, #8FA888): Primary accent, represents growth and calm
-- **Sky Blue** (#B8D8E8, #87CEEB): Secondary accent, evokes tranquility
-- **Warm Sand** (#F5E6D3, #E8D5BE): Neutral backgrounds, grounding warmth
-- **Soft Lavender** (#D4C5E2, #C5B3D8): Tertiary accent, gentle emotional depth
-- **Neutral Tones**: Warm whites (#FDFBF7), soft grays (#E8E6E3) for text and borders
-- **Text**: Deep charcoal (#3A3A3A) for primary, muted gray (#6B6B6B) for secondary
+- **Primary**: `--primary`, `--primary-hover`, `--primary-active`
+- **Secondary**: `--secondary`, `--secondary-foreground`
+- **Accent**: `--accent`, `--accent-hover`, `--accent-active`
+- **Success**: `--success`, `--success-hover`, `--success-active`
+- **Warning**: `--warning`, `--warning-hover`, `--warning-active`
+- **Neutral surfaces**: `--background`, `--card`, `--popover`, `--muted`, `--border`
+- **Text**: `--foreground`, `--muted-foreground`, `--accent-foreground`
 
 ## Typography
 - **Primary Font**: Inter or DM Sans (clean, readable, modern sans-serif)
@@ -36,7 +37,7 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 - **Full-height centered layout**: min-h-screen with flex centering
 - **Subtle gradient background**: Diagonal soft gradient from warm sand to sky blue (very subtle, 5-10% opacity)
 - **Floating card design**: 
-  - White/warm white background (#FDFBF7)
+  - White/warm white background via `--card` / `--background`
   - Subtle shadow: shadow-lg with warm undertones
   - Rounded corners: rounded-2xl
   - Padding: p-8 to p-10
@@ -50,9 +51,9 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 
 ### Form Elements
 - **Input Fields**:
-  - Background: White with very subtle warm tint
-  - Border: 1.5px solid soft gray (#E8E6E3)
-  - Focus state: Border changes to sage green, subtle shadow
+  - Background: `--background`
+  - Border: `--input` / `--border`
+  - Focus state: Border changes to `--ring`, subtle shadow
   - Padding: py-3 px-4
   - Border radius: rounded-lg
   - Placeholder: Muted gray with gentle wording ("Your email", "Choose a username")
@@ -64,19 +65,19 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 
 - **Validation Messages**:
   - Below inputs, text-sm
-  - Error: Soft coral (#E8A59C) instead of harsh red
-  - Success: Sage green
+  - Error: `--destructive` / `--destructive-foreground`
+  - Success: `--success`
   - Icon + text combination
 
 ### Buttons
 - **Primary CTA**:
-  - Background: Sage green gradient (from lighter to darker shade)
-  - Text: White, font-weight 500
+  - Background: `--primary` with hover/active tokens
+  - Text: `--primary-foreground`
   - Padding: py-3 px-6
   - Border radius: rounded-lg
   - Full width: w-full
   - Hover: Slightly darker, smooth transition (200ms)
-  - Loading state: Sage green with opacity, spinner icon
+  - Loading state: token-based disabled opacity, spinner icon
 
 - **Secondary/Link Buttons**:
   - Text-only in sky blue
@@ -128,7 +129,7 @@ HeartLog embodies a calm, sanctuary-like digital oasis for emotional tracking. T
 
 ## Accessibility
 - All inputs have associated labels (for screen readers even if visually hidden)
-- Focus states clearly visible with sage green outline
+- Focus states clearly visible with `--ring`
 - Color contrast meets WCAG AA standards
 - Error messages announced to screen readers
 - Keyboard navigation fully supported
