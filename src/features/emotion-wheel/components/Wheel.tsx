@@ -161,7 +161,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     setSaveModalOpen(false);
     clearSelection();
     toast({
-      description: 'Saved',
+      description: 'Your emotions have been recorded.',
     });
   };
 

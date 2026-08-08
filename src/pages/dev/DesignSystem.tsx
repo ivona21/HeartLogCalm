@@ -222,6 +222,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar.tsx';
 import { paletteSwatches } from '@/pages/dev/design-system-palette.ts';
+import { toast } from '@/shared/hooks/use-toast.ts';
 
 type SectionProps = {
   title: string;
@@ -571,6 +572,38 @@ const buttonVariants = ['default', 'destructive', 'outline', 'secondary', 'ghost
 const buttonSizes = ['sm', 'default', 'lg'] as const;
 const badgeVariants = ['default', 'accent', 'secondary', 'destructive', 'outline'] as const;
 
+const toastDemoButtons = [
+  {
+    label: 'Show success',
+    variant: 'default' as const,
+    onClick: () =>
+      toast({
+        title: 'Saved',
+        description: 'The latest changes were stored in the shared toast system.',
+      }),
+  },
+  {
+    label: 'Show info',
+    variant: 'outline' as const,
+    onClick: () =>
+      toast({
+        variant: 'info',
+        title: 'Heads up',
+        description: 'This is the centralized notification surface used across the app.',
+      }),
+  },
+  {
+    label: 'Show error',
+    variant: 'destructive' as const,
+    onClick: () =>
+      toast({
+        variant: 'destructive',
+        title: 'Action failed',
+        description: 'This uses the same global toast queue and viewport.',
+      }),
+  },
+] as const;
+
 export default function DesignSystemPage() {
   const [volume, setVolume] = useState([42]);
   const [theme, setTheme] = useState<DesignSystemTheme>(() => readStoredTheme());
@@ -731,6 +764,19 @@ export default function DesignSystemPage() {
                     <ArrowRightIcon className="h-4 w-4" />
                     Saving
                   </Button>
+                </div>
+              </DemoFrame>
+
+              <DemoFrame
+                title="Notifications"
+                subtitle="Buttons that trigger the shared app-wide toast system."
+              >
+                <div className="flex flex-wrap gap-2">
+                  {toastDemoButtons.map((demo) => (
+                    <Button key={demo.label} variant={demo.variant} onClick={demo.onClick}>
+                      {demo.label}
+                    </Button>
+                  ))}
                 </div>
               </DemoFrame>
             </div>
