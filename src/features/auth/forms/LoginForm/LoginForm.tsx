@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
+import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';

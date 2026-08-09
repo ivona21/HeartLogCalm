@@ -63,13 +63,14 @@ heartlog/
 ## Design System
 
 ### Color Palette
-- **Primary (Sage Green)**: `#A8BBA3` - growth and calm
-- **Accent (Sky Blue)**: `#B8D8E8` - tranquility
-- **Background (Warm Sand)**: `#F5E6D3` - grounding warmth
-- **Tertiary (Soft Lavender)**: `#D4C5E2` - gentle depth
-- **Surface**: `#FDFBF7` - warm white for cards
-- **Text**: Deep charcoal for primary, muted gray for secondary
-- **Error**: Soft coral `#E8A59C` instead of harsh red
+- **Primary**: `--primary` - growth and calm
+- **Secondary**: `--secondary` - neutral support
+- **Accent**: `--accent` - gentle emphasis
+- **Success**: `--success` - positive feedback
+- **Warning**: `--warning` - caution and attention
+- **Surface**: `--background`, `--card`, `--popover`
+- **Text**: `--foreground`, `--muted-foreground`
+- **Error**: `--destructive` instead of harsh red
 
 ### Typography
 - **Font Family**: Inter (clean, modern sans-serif)
@@ -78,7 +79,7 @@ heartlog/
 
 ### Component Guidelines
 - **Spacing**: Generous padding (p-6 to p-8) for breathing room
-- **Borders**: Subtle borders (#E8E6E3), sage green on focus
+- **Borders**: `--border`, `--input`, `--ring`
 - **Shadows**: Soft, warm-toned shadows
 - **Transitions**: Smooth 200ms transitions
 - **Interactions**: Minimal, calm animations

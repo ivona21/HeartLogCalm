@@ -1,4 +1,6 @@
 import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import typography from '@tailwindcss/typography';
 
 export default {
   darkMode: ['class'],
@@ -58,6 +60,22 @@ export default {
           border: 'var(--accent-border)',
         },
 
+        success: {
+          DEFAULT: 'hsl(var(--success) / <alpha-value>)',
+          hover: 'hsl(var(--success-hover) / <alpha-value>)',
+          active: 'hsl(var(--success-active) / <alpha-value>)',
+          foreground: 'hsl(var(--success-foreground) / <alpha-value>)',
+          border: 'var(--success-border)',
+        },
+
+        warning: {
+          DEFAULT: 'hsl(var(--warning) / <alpha-value>)',
+          hover: 'hsl(var(--warning-hover) / <alpha-value>)',
+          active: 'hsl(var(--warning-active) / <alpha-value>)',
+          foreground: 'hsl(var(--warning-foreground) / <alpha-value>)',
+          border: 'var(--warning-border)',
+        },
+
         destructive: {
           DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
           hover: 'hsl(var(--destructive-hover) / <alpha-value>)',
@@ -109,6 +127,7 @@ export default {
         'on-dark': 'hsl(var(--on-dark) / <alpha-value>)',
         'color-white': 'hsl(var(--color-white) / <alpha-value>)',
         'color-text-dark': 'hsl(var(--color-text-dark) / <alpha-value>)',
+        'wheel-foreground': 'hsl(var(--wheel-foreground) / <alpha-value>)',
         'color-border-light': 'hsl(var(--color-border-light) / <alpha-value>)',
         'color-border-subtle': 'hsl(var(--color-border-subtle) / <alpha-value>)',
 
@@ -143,5 +162,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [tailwindcssAnimate, typography],
 } satisfies Config;

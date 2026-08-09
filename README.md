@@ -63,11 +63,13 @@ heartlog/
 
 ### Color Palette
 
-- **Primary (Sage Green)**: #A8BBA3 - Growth and calm
-- **Accent (Sky Blue)**: #B8D8E8 - Tranquility  
-- **Background (Warm Sand)**: #F5E6D3 - Grounding warmth
-- **Tertiary (Soft Lavender)**: #D4C5E2 - Gentle depth
-- **Surface**: #FDFBF7 - Warm white for cards
+- **Primary**: `--primary` - growth and calm
+- **Secondary**: `--secondary` - neutral support
+- **Accent**: `--accent` - gentle emphasis
+- **Success**: `--success` - positive feedback
+- **Warning**: `--warning` - caution and attention
+- **Background**: `--background` - grounding warmth
+- **Surface**: `--card` / `--popover` - warm white surfaces
 
 ### Typography
 
@@ -123,6 +125,7 @@ VITE_API_URL=https://your-backend-api.com
 - **`docs/integrations/backend-api.openapi.json`** - OpenAPI snapshot consumed by Orval
 - **`docs/project/bulletproof-react-guide.md`** - Architecture reference
 - **`docs/project/platform-replit.md`** - Project overview and state
+- **`docs/project/ui-file-naming.md`** - UI component filename convention
 
 ## 🧪 Technology Stack
 

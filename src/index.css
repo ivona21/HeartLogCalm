@@ -12,7 +12,7 @@
 
     --background: 270 45% 98%;
     --foreground: 252 19% 24%;
-    --border: 262 28% 88%;
+    --border: 37 23% 86%;
 
     --card: 270 40% 99%;
     --card-foreground: 252 18% 24%;
@@ -25,9 +25,9 @@
     --sidebar-primary-hover: 258 55% 61%;
     --sidebar-primary-active: 258 55% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 316 58% 92%;
-    --sidebar-accent-hover: 316 50% 88%;
-    --sidebar-accent-active: 316 42% 84%;
+    --sidebar-accent: 34 44% 89%;
+    --sidebar-accent-hover: 34 44% 84%;
+    --sidebar-accent-active: 34 44% 80%;
     --sidebar-accent-foreground: 272 22% 30%;
     --sidebar-ring: 258 55% 66%;
 
@@ -40,21 +40,33 @@
     --primary-active: 258 55% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 316 58% 92%;
+    --secondary: 34 44% 89%;
     --secondary-foreground: 272 22% 30%;
 
     --muted: 262 34% 95%;
     --muted-foreground: 252 13% 46%;
 
-    --accent: 195 70% 91%;
-    --accent-hover: 195 56% 86%;
-    --accent-active: 195 48% 81%;
+    --accent: 106 23% 70%;
+    --accent-hover: 106 23% 64%;
+    --accent-active: 106 23% 58%;
     --accent-foreground: 222 28% 28%;
+
+    --success: 134 33% 53%;
+    --success-hover: 134 33% 49%;
+    --success-active: 134 33% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 39 62% 53%;
+    --warning-hover: 39 62% 48%;
+    --warning-active: 39 62% 43%;
+    --warning-foreground: 0 0% 100%;
 
     --destructive: 0 72% 58%;
     --destructive-hover: 0 72% 53%;
     --destructive-active: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
+
+    --wheel-foreground: 252 19% 24%;
 
     --link: 258 55% 46%;
     --link-hover: 258 55% 40%;
@@ -115,70 +127,88 @@
     --accent-border: hsl(var(--accent));
     --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
+    --success-border: hsl(var(--success));
+    --success-border: hsl(from hsl(var(--success)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+    --warning-border: hsl(var(--warning));
+    --warning-border: hsl(from hsl(var(--warning)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
 .dark {
     --button-outline: rgba(255, 255, 255, 0.10);
-    --badge-outline: rgba(255, 255, 255, 0.05);
+    --badge-outline: rgba(255, 255, 255, 0.04);
     --opaque-button-border-intensity: 9;
     --elevate-1: rgba(255, 255, 255, 0.04);
     --elevate-2: rgba(255, 255, 255, 0.09);
 
-    --background: 252 24% 12%;
-    --foreground: 260 28% 94%;
-    --border: 255 18% 23%;
+    --background: 258 24% 11%;
+    --foreground: 260 26% 95%;
+    --border: 258 10% 22%;
 
-    --card: 255 22% 15%;
-    --card-foreground: 260 24% 93%;
-    --card-border: 255 18% 20%;
+    --card: 258 18% 17%;
+    --card-foreground: 260 24% 94%;
+    --card-border: 258 10% 22%;
 
-    --sidebar: 255 22% 14%;
-    --sidebar-foreground: 260 24% 92%;
-    --sidebar-border: 255 18% 20%;
-    --sidebar-primary: 258 70% 72%;
-    --sidebar-primary-hover: 258 70% 77%;
-    --sidebar-primary-active: 258 70% 82%;
+    --sidebar: 258 19% 14%;
+    --sidebar-foreground: 260 24% 93%;
+    --sidebar-border: 258 10% 21%;
+    --sidebar-primary: 258 76% 74%;
+    --sidebar-primary-hover: 258 78% 79%;
+    --sidebar-primary-active: 258 80% 83%;
     --sidebar-primary-foreground: 252 28% 12%;
-    --sidebar-accent: 304 26% 22%;
-    --sidebar-accent-hover: 304 28% 27%;
-    --sidebar-accent-active: 304 30% 32%;
-    --sidebar-accent-foreground: 320 62% 90%;
-    --sidebar-ring: 258 70% 72%;
+    --sidebar-accent: 258 16% 18%;
+    --sidebar-accent-hover: 258 16% 20%;
+    --sidebar-accent-active: 258 16% 21%;
+    --sidebar-accent-foreground: 260 24% 92%;
+    --sidebar-ring: 258 76% 74%;
 
-    --popover: 255 22% 16%;
-    --popover-foreground: 260 24% 92%;
-    --popover-border: 255 18% 22%;
+    --popover: 258 18% 17%;
+    --popover-foreground: 260 24% 94%;
+    --popover-border: 258 10% 22%;
 
-    --primary: 258 70% 72%;
-    --primary-hover: 258 70% 77%;
-    --primary-active: 258 70% 82%;
+    --primary: 258 76% 74%;
+    --primary-hover: 258 78% 79%;
+    --primary-active: 258 80% 83%;
     --primary-foreground: 252 28% 12%;
 
-    --secondary: 304 26% 22%;
-    --secondary-foreground: 320 62% 90%;
+    --secondary: 258 16% 17%;
+    --secondary-foreground: 260 24% 92%;
 
-    --muted: 255 16% 18%;
-    --muted-foreground: 255 14% 70%;
+    --muted: 258 14% 18%;
+    --muted-foreground: 258 12% 76%;
 
-    --accent: 194 34% 22%;
-    --accent-hover: 194 36% 28%;
-    --accent-active: 194 38% 34%;
+    --accent: 194 32% 20%;
+    --accent-hover: 194 34% 25%;
+    --accent-active: 194 36% 30%;
     --accent-foreground: 190 72% 88%;
 
-    --destructive: 0 68% 52%;
-    --destructive-hover: 0 68% 57%;
-    --destructive-active: 0 68% 62%;
+    --success: 134 30% 36%;
+    --success-hover: 134 30% 41%;
+    --success-active: 134 30% 46%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 39 62% 53%;
+    --warning-hover: 39 62% 58%;
+    --warning-active: 39 62% 63%;
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 78% 62%;
+    --destructive-hover: 0 78% 66%;
+    --destructive-active: 0 78% 70%;
     --destructive-foreground: 0 0% 100%;
+
+    --wheel-foreground: 260 26% 92%;
 
     --link: 258 88% 80%;
     --link-hover: 258 92% 85%;
     --link-active: 258 95% 90%;
     --link-visited: 285 60% 82%;
 
-    --input: 255 16% 28%;
-    --ring: 258 70% 72%;
+    --input: 258 16% 15%;
+    --ring: 258 76% 74%;
 
     --chart-1: 258 70% 72%;
     --chart-2: 317 72% 72%;
@@ -193,16 +223,16 @@
     --color-white: 0 0% 100%;
     --color-text-dark: 0 0% 10%;
     --color-border-light: 0 0% 90%;
-    --color-border-subtle: 255 18% 24%;
+    --color-border-subtle: 258 10% 24%;
 
-    --shadow-2xs: 0px 2px 0px 0px hsl(252 30% 4% / 0.15);
-    --shadow-xs: 0px 2px 0px 0px hsl(252 30% 4% / 0.20);
-    --shadow-sm: 0px 2px 0px 0px hsl(252 30% 4% / 0.18), 0px 1px 2px -1px hsl(252 30% 4% / 0.25);
-    --shadow: 0px 2px 0px 0px hsl(252 30% 4% / 0.22), 0px 1px 2px -1px hsl(252 30% 4% / 0.30);
-    --shadow-md: 0px 2px 0px 0px hsl(252 30% 4% / 0.25), 0px 2px 4px -1px hsl(252 30% 4% / 0.35);
-    --shadow-lg: 0px 2px 0px 0px hsl(252 30% 4% / 0.30), 0px 4px 6px -1px hsl(252 30% 4% / 0.40);
-    --shadow-xl: 0px 2px 0px 0px hsl(252 30% 4% / 0.35), 0px 8px 10px -1px hsl(252 30% 4% / 0.45);
-    --shadow-2xl: 0px 2px 0px 0px hsl(252 30% 4% / 0.45);
+    --shadow-2xs: 0px 2px 0px 0px hsl(258 24% 4% / 0.12);
+    --shadow-xs: 0px 2px 0px 0px hsl(258 24% 4% / 0.16);
+    --shadow-sm: 0px 2px 0px 0px hsl(258 24% 4% / 0.14), 0px 1px 2px -1px hsl(258 24% 4% / 0.22);
+    --shadow: 0px 2px 0px 0px hsl(258 24% 4% / 0.18), 0px 1px 2px -1px hsl(258 24% 4% / 0.26);
+    --shadow-md: 0px 2px 0px 0px hsl(258 24% 4% / 0.20), 0px 2px 4px -1px hsl(258 24% 4% / 0.30);
+    --shadow-lg: 0px 2px 0px 0px hsl(258 24% 4% / 0.24), 0px 4px 6px -1px hsl(258 24% 4% / 0.34);
+    --shadow-xl: 0px 2px 0px 0px hsl(258 24% 4% / 0.28), 0px 8px 10px -1px hsl(258 24% 4% / 0.38);
+    --shadow-2xl: 0px 2px 0px 0px hsl(258 24% 4% / 0.40);
 
     --sidebar-primary-border: hsl(var(--sidebar-primary));
     --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
@@ -221,6 +251,12 @@
 
     --accent-border: hsl(var(--accent));
     --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+    --success-border: hsl(var(--success));
+    --success-border: hsl(from hsl(var(--success)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+    --warning-border: hsl(var(--warning));
+    --warning-border: hsl(from hsl(var(--warning)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
