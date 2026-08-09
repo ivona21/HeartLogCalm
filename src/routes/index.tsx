@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedRoute } from '@/shared/routing/ProtectedRoute.tsx';
 import { HomeRoute } from '@/shared/routing/HomeRoute.tsx';
@@ -7,7 +8,6 @@ import EmailConfirmationPage from '@/pages/email-confirmation';
 import DashboardPage from '@/pages/dashboard';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
-import DesignSystemPage from '@/pages/dev/DesignSystem.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 
 const routes = [
@@ -50,25 +50,32 @@ const routes = [
     ),
   },
   {
-    path: '/design-system',
-    element: (
-      <AppLayout>
-        <DesignSystemPage />
-      </AppLayout>
-    ),
-  },
-  {
     path: '*',
     element: <NotFound />,
   },
 ];
 
 if (import.meta.env.DEV) {
+  const DesignSystemPage = lazy(() => import('@/pages/dev/DesignSystem.tsx'));
+
+  routes.push({
+    path: '/design-system',
+    element: (
+      <AppLayout>
+        <Suspense fallback={null}>
+          <DesignSystemPage />
+        </Suspense>
+      </AppLayout>
+    ),
+  });
+
   routes.push({
     path: '/dev/design-system',
     element: (
       <AppLayout>
-        <DesignSystemPage />
+        <Suspense fallback={null}>
+          <DesignSystemPage />
+        </Suspense>
       </AppLayout>
     ),
   });
