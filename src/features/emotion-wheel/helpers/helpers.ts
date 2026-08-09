@@ -106,24 +106,6 @@ function oklchToOklab(l: number, c: number, h: number): { l: number; a: number; 
   };
 }
 
-function relativeLuminance(hex: string): number {
-  const { r, g, b } = hexToRgb(hex);
-  const toChannel = (value: number) => {
-    const linear = srgbToLinear(value);
-    return linear;
-  };
-
-  return 0.2126 * toChannel(r) + 0.7152 * toChannel(g) + 0.0722 * toChannel(b);
-}
-
-function contrastRatio(foreground: string, background: string): number {
-  const l1 = relativeLuminance(foreground);
-  const l2 = relativeLuminance(background);
-  const lighter = Math.max(l1, l2);
-  const darker = Math.min(l1, l2);
-  return (lighter + 0.05) / (darker + 0.05);
-}
-
 export function getWheelDisplayColor(hex: string, ring: WheelRing, isDarkTheme: boolean): string {
   if (!isDarkTheme) {
     return normalizeHex(hex);
@@ -141,15 +123,7 @@ export function getWheelDisplayColor(hex: string, ring: WheelRing, isDarkTheme: 
 }
 
 export function getReadableWheelTextColor(backgroundHex: string, isDarkTheme: boolean): string {
-  if (!isDarkTheme) {
-    return 'hsl(var(--foreground))';
-  }
-
-  const lightText = '#f6f2fb';
-  const darkText = '#18131f';
-  return contrastRatio(lightText, backgroundHex) >= contrastRatio(darkText, backgroundHex)
-    ? lightText
-    : darkText;
+  return isDarkTheme ? 'hsl(var(--wheel-foreground))' : 'hsl(var(--foreground))';
 }
 
 export function buildTextArcPath(

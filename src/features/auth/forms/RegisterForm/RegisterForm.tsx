@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { PasswordInput } from '@/components/ui/PasswordInput.tsx';
+import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Loader2Icon } from 'lucide-react';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';

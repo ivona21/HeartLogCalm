@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/AlertDialog.tsx';
+} from '@/components/ui/alert-dialog.tsx';
 
 export function Header() {
   const { logout, isAuthenticated, session, user } = useAuth();
