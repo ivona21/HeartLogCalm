@@ -62,6 +62,15 @@ export function Header() {
                       </span>
                     ) : null}
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      navigate('/change-password');
+                    }}
+                    data-testid="button-change-password"
+                  >
+                    Change your password
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onSelect={(event) => {
