@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/AlertDialog.tsx';
+} from '@/components/ui/alert-dialog.tsx';
 
 export function Header() {
   const { logout, isAuthenticated, session, user } = useAuth();
@@ -50,7 +50,7 @@ export function Header() {
                   Log out
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="max-w-md border-border/70 bg-background/95 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-sm">
+              <AlertDialogContent className="max-w-md border-border/70 bg-background/95 dark:bg-card/95 dark:border-card-border/70 dark:shadow-[0_24px_70px_rgba(5,4,12,0.34)] shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-sm">
                 <AlertDialogHeader className="space-y-3 text-left">
                   <AlertDialogTitle className="text-xl font-medium tracking-[-0.02em] text-foreground">
                     Are you sure you want to log out?
@@ -61,9 +61,8 @@ export function Header() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
-                    className="rounded-full"
                     onClick={() => {
                       setLogoutModalOpen(false);
                       logout();

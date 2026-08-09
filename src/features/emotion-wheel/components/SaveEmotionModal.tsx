@@ -14,14 +14,7 @@ import {
   formatSaveEmotionSummary,
   type PrimaryGroupSummary,
 } from '@/features/emotion-wheel/helpers/format-save-emotion-summary.ts';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form.tsx';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form.tsx';
 
 interface SaveEmotionModalProps {
   open: boolean;
@@ -58,15 +51,15 @@ export function SaveEmotionModal({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-[760px] overflow-hidden border-border/60 bg-background/95 p-0 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-sm">
+      <DialogContent className="max-w-[760px] overflow-hidden p-0">
         <div className="px-8 pb-8 pt-10 md:px-10 md:pb-10 md:pt-11">
           <div className="space-y-3 pb-8">
-            <DialogTitle className="max-w-[30ch] text-[26px] font-medium leading-[1.15] tracking-[-0.025em] text-foreground">
-              {formatSaveEmotionSummary(primaryGroups)}
-            </DialogTitle>
-            <DialogDescription className="max-w-[42ch] text-[14px] leading-6 text-muted-foreground">
-              Write anything you want, or leave this quiet.
-            </DialogDescription>
+            <div className="max-w-[30ch]">
+              <DialogTitle>{formatSaveEmotionSummary(primaryGroups)}</DialogTitle>
+            </div>
+            <div className="max-w-[42ch]">
+              <DialogDescription>Write anything you want, or leave this quiet.</DialogDescription>
+            </div>
           </div>
 
           <Form {...form}>
@@ -77,15 +70,13 @@ export function SaveEmotionModal({
                 render={({ field }) => (
                   <FormItem className="space-y-0">
                     <FormLabel className="sr-only">Reflection</FormLabel>
-                    <FormDescription className="pb-4 text-[13px] leading-6 text-transparent select-none">
-                      placeholder
-                    </FormDescription>
+                    <div className="pb-4" aria-hidden="true" />
                     <FormControl>
                       <Textarea
                         {...field}
+                        rows={12}
                         placeholder="Write here..."
                         disabled={isSaving}
-                        className="min-h-[280px] resize-y rounded-[22px] border-border/70 bg-muted/20 px-5 py-4 text-[15px] leading-7 text-foreground shadow-inner placeholder:text-muted-foreground/55 focus-visible:border-foreground/15 focus-visible:ring-0"
                       />
                     </FormControl>
                   </FormItem>
@@ -93,13 +84,7 @@ export function SaveEmotionModal({
               />
 
               <DialogFooter className="pt-1 sm:justify-start">
-                <Button
-                  type="submit"
-                  variant="outline"
-                  size="lg"
-                  className="min-w-[120px] rounded-full border-border/70 bg-background/80 px-6 text-sm font-medium text-foreground shadow-sm hover:bg-muted/50"
-                  disabled={isSaving}
-                >
+                <Button type="submit" size="lg" disabled={isSaving}>
                   {isSaving ? (
                     <>
                       <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

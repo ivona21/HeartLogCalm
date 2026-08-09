@@ -1,4 +1,4 @@
-import { AppLink } from '@/components/ui/AppLink.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 
 interface AlreadyHaveAccountLinkProps {
   className?: string;

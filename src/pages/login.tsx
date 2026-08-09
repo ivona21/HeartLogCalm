@@ -1,6 +1,6 @@
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { LoginForm } from '@/features/auth/forms/LoginForm/LoginForm.tsx';
-import { AppLink } from '@/components/ui/AppLink.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 
 export default function LoginPage() {
   return (
