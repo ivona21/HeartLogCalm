@@ -162,6 +162,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     clearSelection();
     toast({
       description: 'Your emotions have been recorded.',
+      duration: 5000,
     });
   };
 
