@@ -229,6 +229,7 @@ export function LoginForm() {
               control={form.control}
               name="password"
               label="Password"
+              messageClassName={isInvalidCredentialsError ? 'hidden' : undefined}
               renderInput={(field) => (
                 <PasswordInput
                   {...field}
@@ -239,15 +240,20 @@ export function LoginForm() {
                 />
               )}
             />
-            <div className="hidden text-right mt-2">
-              <button
-                type="button"
-                className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-                data-testid="link-forgot-password"
-              >
-                Forgot password?
-              </button>
-            </div>
+            {isInvalidCredentialsError && (
+              <div className="mt-2 mb-6 flex items-center gap-3">
+                <p className="min-w-0 flex-1 pl-0.5 text-xs font-medium text-destructive">
+                  {loginErrorMessage || 'Invalid email or password.'}
+                </p>
+                <button
+                  type="button"
+                  className="shrink-0 whitespace-nowrap text-sm text-accent-foreground transition-colors duration-150 hover:text-primary"
+                  data-testid="link-forgot-password"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
             {loginError && !isInvalidCredentialsError && (
               <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
