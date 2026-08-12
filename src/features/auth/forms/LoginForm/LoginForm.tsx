@@ -11,6 +11,7 @@ import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-re
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { Logo } from '@/components/Logo.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 import {
   isValidationFailedError,
   isInvalidCredentialsLoginError,
@@ -22,11 +23,19 @@ import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-er
 import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
 
 export function LoginForm() {
-  const { login, isLoggingIn, loginError } = useAuth();
+  const { login, isLoggingIn, loginError, resetLoginError } = useAuth();
+  const [authMode, setAuthMode] = useState<'login' | 'forgot-password'>('login');
+  const [restartLinkMessage, setRestartLinkMessage] = useState<string | null>(null);
+  const [restartLinkError, setRestartLinkError] = useState<string | null>(null);
   const [resendEmail, setResendEmail] = useState('');
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
   const previousUnconfirmedRef = useRef(false);
+  const isForgotPasswordMode = authMode === 'forgot-password';
+  const loginTextButtonClassName =
+    'text-sm text-accent-foreground hover:text-primary transition-colors duration-150';
+  const linkStyleClassName =
+    'text-link hover:text-link-hover active:text-link-active underline-offset-4 hover:underline transition-colors duration-150';
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -41,8 +50,44 @@ export function LoginForm() {
   const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginError);
   const isValidationFailedLoginError = isValidationFailedError(loginError);
 
+  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
+
+  const switchToForgotPasswordMode = () => {
+    setAuthMode('forgot-password');
+    setRestartLinkMessage(null);
+    setRestartLinkError(null);
+    resetLoginError();
+    form.clearErrors(['email', 'password']);
+    form.resetField('password');
+  };
+
+  const returnToLoginMode = () => {
+    setAuthMode('login');
+    setRestartLinkMessage(null);
+    setRestartLinkError(null);
+    resetLoginError();
+    form.clearErrors(['email', 'password']);
+  };
+
+  const handleSendRestartLink = () => {
+    const email = form.getValues('email').trim();
+
+    if (!email) {
+      setRestartLinkError('Enter the email address for your restart link.');
+      setRestartLinkMessage(null);
+      return;
+    }
+
+    setRestartLinkError(null);
+    setRestartLinkMessage(`Restart link sent to ${email}.`);
+  };
+
   useEffect(() => {
     if (isInvalidCredentialsError) {
+      if (isForgotPasswordMode) {
+        return;
+      }
+
       form.clearErrors('email');
       form.setError('password', {
         type: 'manual',
@@ -65,11 +110,14 @@ export function LoginForm() {
       }
     }
 
-    form.clearErrors(['email', 'password']);
+    if (!isForgotPasswordMode) {
+      form.clearErrors(['email', 'password']);
+    }
   }, [
     form,
     isInvalidCredentialsError,
     isValidationFailedLoginError,
+    isForgotPasswordMode,
     loginError,
     loginErrorMessage,
   ]);
@@ -121,16 +169,17 @@ export function LoginForm() {
     resendMutation.mutate(trimmedEmail);
   };
 
-  const onSubmit = (data: LoginInput) => {
+  const onLoginSubmit = (data: LoginInput) => {
     setResendMessage(null);
     setResendError(null);
     form.clearErrors('password');
+    setAuthMode('login');
     login(data);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
           <p className="text-sm text-muted-foreground">Continue where you left off</p>
@@ -219,69 +268,123 @@ export function LoginForm() {
                   type="email"
                   placeholder="Your email"
                   disabled={isLoggingIn}
+                  onKeyDown={(event) => {
+                    if (isForgotPasswordMode && event.key === 'Enter') {
+                      event.preventDefault();
+                      handleSendRestartLink();
+                    }
+                  }}
                   className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
                   data-testid="input-email"
                 />
               )}
             />
 
-            <FormInputField
-              control={form.control}
-              name="password"
-              label="Password"
-              messageClassName={isInvalidCredentialsError ? 'hidden' : undefined}
-              renderInput={(field) => (
-                <PasswordInput
-                  {...field}
-                  placeholder="Your password"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-password"
-                />
-              )}
-            />
-            {isInvalidCredentialsError && (
-              <div className="mt-2 mb-6 flex items-center gap-3">
-                <p className="min-w-0 flex-1 pl-0.5 text-xs font-medium text-destructive">
-                  {loginErrorMessage || 'Invalid email or password.'}
-                </p>
-                <button
+            {isForgotPasswordMode ? (
+              <div className="space-y-3 pt-2">
+                {restartLinkError && (
+                  <p className="pl-0.5 text-xs font-medium text-destructive">{restartLinkError}</p>
+                )}
+
+                {restartLinkMessage && (
+                  <p className="pl-0.5 text-xs font-medium text-primary">{restartLinkMessage}</p>
+                )}
+
+                <Button
                   type="button"
-                  className="shrink-0 whitespace-nowrap text-sm text-accent-foreground transition-colors duration-150 hover:text-primary"
-                  data-testid="link-forgot-password"
+                  variant="default"
+                  className="w-full font-medium"
+                  onClick={handleSendRestartLink}
+                  data-testid="button-send-restart-link"
                 >
-                  Forgot password?
-                </button>
+                  Send restart link
+                </Button>
               </div>
-            )}
+            ) : (
+              <>
+                <FormInputField
+                  control={form.control}
+                  name="password"
+                  label="Password"
+                  renderInput={(field) => (
+                    <PasswordInput
+                      {...field}
+                      placeholder="Your password"
+                      disabled={isLoggingIn}
+                      className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                      data-testid="input-password"
+                    />
+                  )}
+                />
+                {showLoginPasswordError && (
+                  <div className="mb-4 flex justify-end text-right" style={{ marginTop: '-20px' }}>
+                    <button
+                      type="button"
+                      className={loginTextButtonClassName}
+                      onClick={switchToForgotPasswordMode}
+                      data-testid="link-forgot-password"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
 
-            {loginError && !isInvalidCredentialsError && (
-              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-                <AlertCircleIcon className="h-4 w-4 text-destructive" />
-                <AlertDescription className="text-destructive">
-                  {loginErrorMessage || 'Login failed. Please check your credentials.'}
-                </AlertDescription>
-              </Alert>
-            )}
+                {loginError && !isInvalidCredentialsError && (
+                  <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+                    <AlertCircleIcon className="h-4 w-4 text-destructive" />
+                    <AlertDescription className="text-destructive">
+                      {loginErrorMessage || 'Login failed. Please check your credentials.'}
+                    </AlertDescription>
+                  </Alert>
+                )}
 
-            <Button
-              type="submit"
-              className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
-              disabled={isLoggingIn}
-              data-testid="button-submit"
-            >
-              {isLoggingIn ? (
-                <>
-                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
-                </>
-              ) : (
-                'Log In'
-              )}
-            </Button>
+                <div className="pt-6">
+                  <Button
+                    type="submit"
+                    className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+                    disabled={isLoggingIn}
+                    data-testid="button-submit"
+                  >
+                    {isLoggingIn ? (
+                      <>
+                        <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                        Signing in...
+                      </>
+                    ) : (
+                      'Log In'
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
           </>
         )}
       </form>
+      <div className="mt-16 space-y-6 text-center">
+        {isForgotPasswordMode && (
+          <div>
+            <p className="text-sm text-muted-foreground">
+              <AppLink
+                to="/login"
+                className="font-medium"
+                onClick={returnToLoginMode}
+                data-testid="link-back-to-login"
+              >
+                Back to Login
+              </AppLink>
+            </p>
+          </div>
+        )}
+
+        <div>
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <AppLink to="/register" className="font-medium" data-testid="link-register">
+              Sign up
+            </AppLink>
+          </p>
+        </div>
+      </div>
     </Form>
   );
 }

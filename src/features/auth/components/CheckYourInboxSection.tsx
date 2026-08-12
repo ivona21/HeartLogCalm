@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Loader2Icon, MailIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 
 interface CheckYourInboxSectionProps {
   email: string;
@@ -91,6 +92,14 @@ export function CheckYourInboxSection({
 
           {resendError && <p className="text-sm text-destructive">{resendError}</p>}
         </div>
+      </div>
+
+      <div className="mt-16 text-center">
+        <p className="text-sm text-muted-foreground">
+          <AppLink to="/login" className="font-medium" data-testid="link-back-to-login">
+            Go to login
+          </AppLink>
+        </p>
       </div>
     </div>
   );
