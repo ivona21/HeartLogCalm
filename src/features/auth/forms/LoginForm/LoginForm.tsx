@@ -2,30 +2,33 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button.tsx';
 import { Form } from '@/components/ui/form.tsx';
-import { Input } from '@/components/ui/input.tsx';
-import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { Logo } from '@/components/Logo.tsx';
 import { AppLink } from '@/components/ui/app-link.tsx';
-import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
 import {
   isValidationFailedError,
   isInvalidCredentialsLoginError,
   isUnconfirmedAccountLoginError,
 } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
-import { FormInputField } from '@/components/form/FormInputField.tsx';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
+import { LoginConfirmationSection } from '@/features/auth/forms/LoginForm/LoginConfirmationSection.tsx';
+import { LoginCredentialsSection } from '@/features/auth/forms/LoginForm/LoginCredentialsSection.tsx';
+import { LoginUnconfirmedAccountSection } from '@/features/auth/forms/LoginForm/LoginUnconfirmedAccountSection.tsx';
+
+const AUTH_MODE = {
+  Login: 'login',
+  ForgotPassword: 'forgot-password',
+} as const;
+
+type AuthMode = (typeof AUTH_MODE)[keyof typeof AUTH_MODE];
 
 export function LoginForm() {
   const { login, isLoggingIn, loginError, resetLoginError } = useAuth();
-  const [authMode, setAuthMode] = useState<'login' | 'forgot-password'>('login');
+  const [authMode, setAuthMode] = useState<AuthMode>(AUTH_MODE.Login);
   const [restartLinkMessage, setRestartLinkMessage] = useState<string | null>(null);
   const [restartLinkError, setRestartLinkError] = useState<string | null>(null);
   const [resendEmail, setResendEmail] = useState('');
@@ -33,11 +36,7 @@ export function LoginForm() {
   const [resendError, setResendError] = useState<string | null>(null);
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
   const previousUnconfirmedRef = useRef(false);
-  const isForgotPasswordMode = authMode === 'forgot-password';
-  const loginTextButtonClassName =
-    'text-sm text-accent-foreground hover:text-primary transition-colors duration-150';
-  const linkStyleClassName =
-    'text-link hover:text-link-hover active:text-link-active underline-offset-4 hover:underline transition-colors duration-150';
+  const isForgotPasswordMode = authMode === AUTH_MODE.ForgotPassword;
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -55,24 +54,37 @@ export function LoginForm() {
   const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
   const confirmationEmailValue = confirmationEmail ?? '';
   const showConfirmationSection = confirmationEmailValue.length > 0;
+  const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
 
-  const switchToForgotPasswordMode = () => {
-    setAuthMode('forgot-password');
+  const clearTransientAuthState = () => {
     setRestartLinkMessage(null);
     setRestartLinkError(null);
+    setResendMessage(null);
+    setResendError(null);
     setConfirmationEmail(null);
-    resetLoginError();
+  };
+
+  const clearAuthFieldErrors = () => {
     form.clearErrors(['email', 'password']);
-    form.resetField('password');
+  };
+
+  const setMode = (mode: AuthMode, options?: { resetPassword?: boolean }) => {
+    setAuthMode(mode);
+    clearTransientAuthState();
+    resetLoginError();
+    clearAuthFieldErrors();
+
+    if (options?.resetPassword) {
+      form.resetField('password');
+    }
+  };
+
+  const switchToForgotPasswordMode = () => {
+    setMode(AUTH_MODE.ForgotPassword, { resetPassword: true });
   };
 
   const returnToLoginMode = () => {
-    setAuthMode('login');
-    setRestartLinkMessage(null);
-    setRestartLinkError(null);
-    setConfirmationEmail(null);
-    resetLoginError();
-    form.clearErrors(['email', 'password']);
+    setMode(AUTH_MODE.Login);
   };
 
   const handleSendRestartLink = () => {
@@ -179,131 +191,11 @@ export function LoginForm() {
   };
 
   const onLoginSubmit = (data: LoginInput) => {
-    setConfirmationEmail(null);
-    setResendMessage(null);
-    setResendError(null);
+    clearTransientAuthState();
     form.clearErrors('password');
-    setAuthMode('login');
+    setAuthMode(AUTH_MODE.Login);
     login(data);
   };
-
-  if (showConfirmationSection) {
-    return (
-      <Form {...form}>
-        <div className="space-y-5">
-          <div className="flex justify-center mb-6">
-            <Logo variant="complexFull" className="h-40" />
-          </div>
-
-          <CheckYourInboxSection
-            email={confirmationEmailValue}
-            onResend={async () => resendConfirmationApi(confirmationEmailValue)}
-            className="text-center"
-            showFooter={false}
-          />
-
-          <div className="mt-16 space-y-6 text-center">
-            <div>
-              <p className="text-sm text-muted-foreground">
-                Don&apos;t have an account?{' '}
-                <AppLink to="/register" className="font-medium" data-testid="link-register">
-                  Sign up
-                </AppLink>
-              </p>
-            </div>
-          </div>
-        </div>
-      </Form>
-    );
-  }
-
-  if (isUnconfirmedAccountError) {
-    return (
-      <Form {...form}>
-        <div className="space-y-5">
-          <div className="flex justify-center mb-6">
-            <Logo variant="complexFull" className="h-40" />
-          </div>
-
-          <div className="space-y-3">
-            <Alert className="border-primary/30 bg-primary/10">
-              <MailIcon className="h-4 w-4 text-primary" />
-              <AlertDescription className="text-foreground">
-                Your email address hasn’t been confirmed yet. Check your inbox, or use the email
-                address below to get a new confirmation link.
-              </AlertDescription>
-            </Alert>
-
-            <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-              <div className="space-y-2">
-                <label htmlFor="resend-email" className="text-sm font-medium text-foreground">
-                  Confirmation email
-                </label>
-                <Input
-                  id="resend-email"
-                  type="email"
-                  value={resendEmail}
-                  onChange={(event) => {
-                    setResendEmail(event.target.value);
-                    setResendError(null);
-                    setResendMessage(null);
-                  }}
-                  placeholder="Your email"
-                  disabled={resendMutation.isPending}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-resend-email"
-                />
-              </div>
-
-              {resendError && (
-                <p className="text-sm text-destructive" data-testid="text-resend-error">
-                  {resendError}
-                </p>
-              )}
-
-              {resendMessage && (
-                <p className="text-sm text-primary" data-testid="text-resend-success">
-                  {resendMessage}
-                </p>
-              )}
-
-              <Button
-                type="button"
-                variant="default"
-                className="w-full font-medium"
-                disabled={resendMutation.isPending}
-                onClick={handleResendConfirmation}
-                data-testid="button-resend-confirmation"
-              >
-                {resendMutation.isPending ? (
-                  <>
-                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                    Sending confirmation email...
-                  </>
-                ) : (
-                  <>
-                    <RotateCcwIcon className="h-4 w-4" />
-                    Resend confirmation email
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-16 space-y-6 text-center">
-            <div>
-              <p className="text-sm text-muted-foreground">
-                Don&apos;t have an account?{' '}
-                <AppLink to="/register" className="font-medium" data-testid="link-register">
-                  Sign up
-                </AppLink>
-              </p>
-            </div>
-          </div>
-        </div>
-      </Form>
-    );
-  }
 
   return (
     <Form {...form}>
@@ -317,104 +209,37 @@ export function LoginForm() {
           <p className="text-sm text-muted-foreground">Continue where you left off</p>
         </div>
 
-        <FormInputField
-          control={form.control}
-          name="email"
-          label="Email"
-          renderInput={(field) => (
-            <Input
-              {...field}
-              type="email"
-              placeholder="Your email"
-              disabled={isLoggingIn}
-              onKeyDown={(event) => {
-                if (isForgotPasswordMode && event.key === 'Enter') {
-                  event.preventDefault();
-                  handleSendRestartLink();
-                }
-              }}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-email"
-            />
-          )}
-        />
-
-        {isForgotPasswordMode ? (
-          <div className="space-y-3 pt-2">
-            {restartLinkError && (
-              <p className="pl-0.5 text-xs font-medium text-destructive">{restartLinkError}</p>
-            )}
-
-            {restartLinkMessage && (
-              <p className="pl-0.5 text-xs font-medium text-primary">{restartLinkMessage}</p>
-            )}
-
-            <Button
-              type="button"
-              variant="default"
-              className="w-full font-medium"
-              onClick={handleSendRestartLink}
-              data-testid="button-send-restart-link"
-            >
-              Send restart link
-            </Button>
-          </div>
+        {showConfirmationSection ? (
+          <LoginConfirmationSection
+            email={confirmationEmailValue}
+            onResend={async () => resendConfirmationApi(confirmationEmailValue)}
+          />
+        ) : isUnconfirmedAccountError ? (
+          <LoginUnconfirmedAccountSection
+            resendEmail={resendEmail}
+            isResendPending={resendMutation.isPending}
+            resendError={resendError}
+            resendMessage={resendMessage}
+            onResendEmailChange={(value) => {
+              setResendEmail(value);
+              setResendError(null);
+              setResendMessage(null);
+            }}
+            onResendConfirmation={handleResendConfirmation}
+          />
         ) : (
-          <>
-            <FormInputField
-              control={form.control}
-              name="password"
-              label="Password"
-              renderInput={(field) => (
-                <PasswordInput
-                  {...field}
-                  placeholder="Your password"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-password"
-                />
-              )}
-            />
-            {showLoginPasswordError && (
-              <div className="mb-4 flex justify-end text-right" style={{ marginTop: '-20px' }}>
-                <button
-                  type="button"
-                  className={loginTextButtonClassName}
-                  onClick={switchToForgotPasswordMode}
-                  data-testid="link-forgot-password"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            )}
-
-            {loginError && !isInvalidCredentialsError && (
-              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-                <AlertCircleIcon className="h-4 w-4 text-destructive" />
-                <AlertDescription className="text-destructive">
-                  {loginErrorMessage || 'Login failed. Please check your credentials.'}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <div className="pt-6">
-              <Button
-                type="submit"
-                className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
-                disabled={isLoggingIn}
-                data-testid="button-submit"
-              >
-                {isLoggingIn ? (
-                  <>
-                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  'Log In'
-                )}
-              </Button>
-            </div>
-          </>
+          <LoginCredentialsSection
+            control={form.control}
+            isLoggingIn={isLoggingIn}
+            isForgotPasswordMode={isForgotPasswordMode}
+            loginErrorMessage={loginErrorMessage}
+            showLoginPasswordError={showLoginPasswordError}
+            showLoginErrorAlert={showLoginErrorAlert}
+            restartLinkError={restartLinkError}
+            restartLinkMessage={restartLinkMessage}
+            onForgotPasswordClick={switchToForgotPasswordMode}
+            onSendRestartLink={handleSendRestartLink}
+          />
         )}
       </form>
       <div className="mt-16 space-y-6 text-center">
