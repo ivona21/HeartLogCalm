@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Loader2Icon, MailIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 
 interface CheckYourInboxSectionProps {
   email: string;
   onResend: () => Promise<void>;
   className?: string;
   buttonTestId?: string;
+  showFooter?: boolean;
 }
 
 export function CheckYourInboxSection({
@@ -14,6 +16,7 @@ export function CheckYourInboxSection({
   onResend,
   className,
   buttonTestId = 'button-resend-confirmation',
+  showFooter = true,
 }: CheckYourInboxSectionProps) {
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -92,6 +95,16 @@ export function CheckYourInboxSection({
           {resendError && <p className="text-sm text-destructive">{resendError}</p>}
         </div>
       </div>
+
+      {showFooter && (
+        <div className="mt-16 text-center">
+          <p className="text-sm text-muted-foreground">
+            <AppLink to="/login" className="font-medium" data-testid="link-back-to-login">
+              Go to login
+            </AppLink>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

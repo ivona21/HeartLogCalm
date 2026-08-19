@@ -2,31 +2,41 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button.tsx';
 import { Form } from '@/components/ui/form.tsx';
-import { Input } from '@/components/ui/input.tsx';
-import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { AlertCircleIcon, Loader2Icon, MailIcon, RotateCcwIcon } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { Logo } from '@/components/Logo.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 import {
   isValidationFailedError,
   isInvalidCredentialsLoginError,
   isUnconfirmedAccountLoginError,
 } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
-import { FormInputField } from '@/components/form/FormInputField.tsx';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
+import { LoginConfirmationSection } from '@/features/auth/forms/LoginForm/LoginConfirmationSection.tsx';
+import { LoginCredentialsSection } from '@/features/auth/forms/LoginForm/LoginCredentialsSection.tsx';
+import { LoginUnconfirmedAccountSection } from '@/features/auth/forms/LoginForm/LoginUnconfirmedAccountSection.tsx';
+
+const AUTH_MODE = {
+  Login: 'login',
+  ForgotPassword: 'forgot-password',
+} as const;
+
+type AuthMode = (typeof AUTH_MODE)[keyof typeof AUTH_MODE];
 
 export function LoginForm() {
-  const { login, isLoggingIn, loginError } = useAuth();
+  const { login, isLoggingIn, loginError, resetLoginError } = useAuth();
+  const [authMode, setAuthMode] = useState<AuthMode>(AUTH_MODE.Login);
+  const [restartLinkMessage, setRestartLinkMessage] = useState<string | null>(null);
+  const [restartLinkError, setRestartLinkError] = useState<string | null>(null);
   const [resendEmail, setResendEmail] = useState('');
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
   const previousUnconfirmedRef = useRef(false);
+  const isForgotPasswordMode = authMode === AUTH_MODE.ForgotPassword;
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -41,8 +51,70 @@ export function LoginForm() {
   const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginError);
   const isValidationFailedLoginError = isValidationFailedError(loginError);
 
+  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
+  const confirmationEmailValue = confirmationEmail ?? '';
+  const showConfirmationSection = confirmationEmailValue.length > 0;
+  const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
+  const credentialsState = {
+    isLoggingIn,
+    isForgotPasswordMode,
+    loginErrorMessage,
+    showLoginPasswordError,
+    showLoginErrorAlert,
+    restartLinkError,
+    restartLinkMessage,
+  };
+
+  const clearTransientAuthState = () => {
+    setRestartLinkMessage(null);
+    setRestartLinkError(null);
+    setResendMessage(null);
+    setResendError(null);
+    setConfirmationEmail(null);
+  };
+
+  const clearAuthFieldErrors = () => {
+    form.clearErrors(['email', 'password']);
+  };
+
+  const setMode = (mode: AuthMode, options?: { resetPassword?: boolean }) => {
+    setAuthMode(mode);
+    clearTransientAuthState();
+    resetLoginError();
+    clearAuthFieldErrors();
+
+    if (options?.resetPassword) {
+      form.resetField('password');
+    }
+  };
+
+  const switchToForgotPasswordMode = () => {
+    setMode(AUTH_MODE.ForgotPassword, { resetPassword: true });
+  };
+
+  const returnToLoginMode = () => {
+    setMode(AUTH_MODE.Login);
+  };
+
+  const handleSendRestartLink = () => {
+    const email = form.getValues('email').trim();
+
+    if (!email) {
+      setRestartLinkError('Enter the email address for your restart link.');
+      setRestartLinkMessage(null);
+      return;
+    }
+
+    setRestartLinkError(null);
+    setRestartLinkMessage(`Restart link sent to ${email}.`);
+  };
+
   useEffect(() => {
     if (isInvalidCredentialsError) {
+      if (isForgotPasswordMode) {
+        return;
+      }
+
       form.clearErrors('email');
       form.setError('password', {
         type: 'manual',
@@ -65,11 +137,14 @@ export function LoginForm() {
       }
     }
 
-    form.clearErrors(['email', 'password']);
+    if (!isForgotPasswordMode) {
+      form.clearErrors(['email', 'password']);
+    }
   }, [
     form,
     isInvalidCredentialsError,
     isValidationFailedLoginError,
+    isForgotPasswordMode,
     loginError,
     loginErrorMessage,
   ]);
@@ -78,11 +153,13 @@ export function LoginForm() {
     mutationFn: async (email: string) => resendConfirmationApi(email),
     onSuccess: (_data, email) => {
       setResendError(null);
-      setResendMessage(`We sent another confirmation email to ${email}.`);
+      setResendMessage(null);
+      setConfirmationEmail(email);
     },
     onError: (error: unknown) => {
       const apiError = normalizeApiError(error);
       const validationErrors = getApiValidationErrors(error);
+      setConfirmationEmail(null);
       setResendMessage(null);
       setResendError(
         validationErrors?.email?.[0] ||
@@ -97,6 +174,7 @@ export function LoginForm() {
       setResendEmail(form.getValues('email'));
       setResendMessage(null);
       setResendError(null);
+      setConfirmationEmail(null);
     }
 
     if (!isUnconfirmedAccountError) {
@@ -121,161 +199,77 @@ export function LoginForm() {
     resendMutation.mutate(trimmedEmail);
   };
 
-  const onSubmit = (data: LoginInput) => {
-    setResendMessage(null);
-    setResendError(null);
+  const onLoginSubmit = (data: LoginInput) => {
+    clearTransientAuthState();
     form.clearErrors('password');
+    setAuthMode(AUTH_MODE.Login);
     login(data);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
+        <div className="flex justify-center mb-6">
+          <Logo variant="complexFull" className="h-40" />
+        </div>
+
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
           <p className="text-sm text-muted-foreground">Continue where you left off</p>
         </div>
 
-        <div className="flex justify-center mb-6">
-          <Logo variant="complexFull" className="h-40" />
-        </div>
-
-        {isUnconfirmedAccountError && (
-          <div className="space-y-3">
-            <Alert className="border-primary/30 bg-primary/10">
-              <MailIcon className="h-4 w-4 text-primary" />
-              <AlertDescription className="text-foreground">
-                Your email address has not been confirmed yet. Enter the address below to send a new
-                confirmation link.
-              </AlertDescription>
-            </Alert>
-
-            <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-              <div className="space-y-2">
-                <label htmlFor="resend-email" className="text-sm font-medium text-foreground">
-                  Confirmation email
-                </label>
-                <Input
-                  id="resend-email"
-                  type="email"
-                  value={resendEmail}
-                  onChange={(event) => {
-                    setResendEmail(event.target.value);
-                    setResendError(null);
-                    setResendMessage(null);
-                  }}
-                  placeholder="Your email"
-                  disabled={resendMutation.isPending}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-resend-email"
-                />
-              </div>
-
-              {resendError && (
-                <p className="text-sm text-destructive" data-testid="text-resend-error">
-                  {resendError}
-                </p>
-              )}
-
-              {resendMessage && (
-                <p className="text-sm text-primary" data-testid="text-resend-success">
-                  {resendMessage}
-                </p>
-              )}
-
-              <Button
-                type="button"
-                variant="default"
-                className="w-full font-medium"
-                disabled={resendMutation.isPending}
-                onClick={handleResendConfirmation}
-                data-testid="button-resend-confirmation"
+        {showConfirmationSection ? (
+          <LoginConfirmationSection
+            email={confirmationEmailValue}
+            onResend={async () => resendConfirmationApi(confirmationEmailValue)}
+          />
+        ) : isUnconfirmedAccountError ? (
+          <LoginUnconfirmedAccountSection
+            resendEmail={resendEmail}
+            isResendPending={resendMutation.isPending}
+            resendError={resendError}
+            resendMessage={resendMessage}
+            onResendEmailChange={(value) => {
+              setResendEmail(value);
+              setResendError(null);
+              setResendMessage(null);
+            }}
+            onResendConfirmation={handleResendConfirmation}
+          />
+        ) : (
+          <LoginCredentialsSection
+            control={form.control}
+            state={credentialsState}
+            onForgotPasswordClick={switchToForgotPasswordMode}
+            onSendRestartLink={handleSendRestartLink}
+          />
+        )}
+      </form>
+      <div className="mt-16 space-y-6 text-center">
+        {isForgotPasswordMode && (
+          <div>
+            <p className="text-sm text-muted-foreground">
+              <AppLink
+                to="/login"
+                className="font-medium"
+                onClick={returnToLoginMode}
+                data-testid="link-back-to-login"
               >
-                {resendMutation.isPending ? (
-                  <>
-                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                    Sending confirmation email...
-                  </>
-                ) : (
-                  <>
-                    <RotateCcwIcon className="h-4 w-4" />
-                    Resend confirmation email
-                  </>
-                )}
-              </Button>
-            </div>
+                Back to Login
+              </AppLink>
+            </p>
           </div>
         )}
 
-        {!isUnconfirmedAccountError && (
-          <>
-            <FormInputField
-              control={form.control}
-              name="email"
-              label="Email"
-              renderInput={(field) => (
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="Your email"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-email"
-                />
-              )}
-            />
-
-            <FormInputField
-              control={form.control}
-              name="password"
-              label="Password"
-              renderInput={(field) => (
-                <PasswordInput
-                  {...field}
-                  placeholder="Your password"
-                  disabled={isLoggingIn}
-                  className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-password"
-                />
-              )}
-            />
-            <div className="hidden text-right mt-2">
-              <button
-                type="button"
-                className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-                data-testid="link-forgot-password"
-              >
-                Forgot password?
-              </button>
-            </div>
-
-            {loginError && !isInvalidCredentialsError && (
-              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-                <AlertCircleIcon className="h-4 w-4 text-destructive" />
-                <AlertDescription className="text-destructive">
-                  {loginErrorMessage || 'Login failed. Please check your credentials.'}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
-              disabled={isLoggingIn}
-              data-testid="button-submit"
-            >
-              {isLoggingIn ? (
-                <>
-                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
-                </>
-              ) : (
-                'Log In'
-              )}
-            </Button>
-          </>
-        )}
-      </form>
+        <div>
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <AppLink to="/register" className="font-medium" data-testid="link-register">
+              Sign up
+            </AppLink>
+          </p>
+        </div>
+      </div>
     </Form>
   );
 }
