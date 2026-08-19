@@ -8,6 +8,7 @@ interface CheckYourInboxSectionProps {
   onResend: () => Promise<void>;
   className?: string;
   buttonTestId?: string;
+  showFooter?: boolean;
 }
 
 export function CheckYourInboxSection({
@@ -15,6 +16,7 @@ export function CheckYourInboxSection({
   onResend,
   className,
   buttonTestId = 'button-resend-confirmation',
+  showFooter = true,
 }: CheckYourInboxSectionProps) {
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -94,13 +96,15 @@ export function CheckYourInboxSection({
         </div>
       </div>
 
-      <div className="mt-16 text-center">
-        <p className="text-sm text-muted-foreground">
-          <AppLink to="/login" className="font-medium" data-testid="link-back-to-login">
-            Go to login
-          </AppLink>
-        </p>
-      </div>
+      {showFooter && (
+        <div className="mt-16 text-center">
+          <p className="text-sm text-muted-foreground">
+            <AppLink to="/login" className="font-medium" data-testid="link-back-to-login">
+              Go to login
+            </AppLink>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

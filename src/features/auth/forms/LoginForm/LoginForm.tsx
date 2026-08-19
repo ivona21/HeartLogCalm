@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
 import { Logo } from '@/components/Logo.tsx';
 import { AppLink } from '@/components/ui/app-link.tsx';
+import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
 import {
   isValidationFailedError,
   isInvalidCredentialsLoginError,
@@ -30,6 +31,7 @@ export function LoginForm() {
   const [resendEmail, setResendEmail] = useState('');
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
   const previousUnconfirmedRef = useRef(false);
   const isForgotPasswordMode = authMode === 'forgot-password';
   const loginTextButtonClassName =
@@ -51,11 +53,14 @@ export function LoginForm() {
   const isValidationFailedLoginError = isValidationFailedError(loginError);
 
   const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
+  const confirmationEmailValue = confirmationEmail ?? '';
+  const showConfirmationSection = confirmationEmailValue.length > 0;
 
   const switchToForgotPasswordMode = () => {
     setAuthMode('forgot-password');
     setRestartLinkMessage(null);
     setRestartLinkError(null);
+    setConfirmationEmail(null);
     resetLoginError();
     form.clearErrors(['email', 'password']);
     form.resetField('password');
@@ -65,6 +70,7 @@ export function LoginForm() {
     setAuthMode('login');
     setRestartLinkMessage(null);
     setRestartLinkError(null);
+    setConfirmationEmail(null);
     resetLoginError();
     form.clearErrors(['email', 'password']);
   };
@@ -126,11 +132,13 @@ export function LoginForm() {
     mutationFn: async (email: string) => resendConfirmationApi(email),
     onSuccess: (_data, email) => {
       setResendError(null);
-      setResendMessage(`We sent another confirmation email to ${email}.`);
+      setResendMessage(null);
+      setConfirmationEmail(email);
     },
     onError: (error: unknown) => {
       const apiError = normalizeApiError(error);
       const validationErrors = getApiValidationErrors(error);
+      setConfirmationEmail(null);
       setResendMessage(null);
       setResendError(
         validationErrors?.email?.[0] ||
@@ -145,6 +153,7 @@ export function LoginForm() {
       setResendEmail(form.getValues('email'));
       setResendMessage(null);
       setResendError(null);
+      setConfirmationEmail(null);
     }
 
     if (!isUnconfirmedAccountError) {
@@ -170,6 +179,7 @@ export function LoginForm() {
   };
 
   const onLoginSubmit = (data: LoginInput) => {
+    setConfirmationEmail(null);
     setResendMessage(null);
     setResendError(null);
     form.clearErrors('password');
@@ -177,25 +187,50 @@ export function LoginForm() {
     login(data);
   };
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-          <p className="text-sm text-muted-foreground">Continue where you left off</p>
-        </div>
+  if (showConfirmationSection) {
+    return (
+      <Form {...form}>
+        <div className="space-y-5">
+          <div className="flex justify-center mb-6">
+            <Logo variant="complexFull" className="h-40" />
+          </div>
 
-        <div className="flex justify-center mb-6">
-          <Logo variant="complexFull" className="h-40" />
-        </div>
+          <CheckYourInboxSection
+            email={confirmationEmailValue}
+            onResend={async () => resendConfirmationApi(confirmationEmailValue)}
+            className="text-center"
+            showFooter={false}
+          />
 
-        {isUnconfirmedAccountError && (
+          <div className="mt-16 space-y-6 text-center">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Don&apos;t have an account?{' '}
+                <AppLink to="/register" className="font-medium" data-testid="link-register">
+                  Sign up
+                </AppLink>
+              </p>
+            </div>
+          </div>
+        </div>
+      </Form>
+    );
+  }
+
+  if (isUnconfirmedAccountError) {
+    return (
+      <Form {...form}>
+        <div className="space-y-5">
+          <div className="flex justify-center mb-6">
+            <Logo variant="complexFull" className="h-40" />
+          </div>
+
           <div className="space-y-3">
             <Alert className="border-primary/30 bg-primary/10">
               <MailIcon className="h-4 w-4 text-primary" />
               <AlertDescription className="text-foreground">
-                Your email address has not been confirmed yet. Enter the address below to send a new
-                confirmation link.
+                Your email address hasn’t been confirmed yet. Check your inbox, or use the email
+                address below to get a new confirmation link.
               </AlertDescription>
             </Alert>
 
@@ -254,109 +289,131 @@ export function LoginForm() {
               </Button>
             </div>
           </div>
-        )}
 
-        {!isUnconfirmedAccountError && (
+          <div className="mt-16 space-y-6 text-center">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Don&apos;t have an account?{' '}
+                <AppLink to="/register" className="font-medium" data-testid="link-register">
+                  Sign up
+                </AppLink>
+              </p>
+            </div>
+          </div>
+        </div>
+      </Form>
+    );
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
+        <div className="flex justify-center mb-6">
+          <Logo variant="complexFull" className="h-40" />
+        </div>
+
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
+          <p className="text-sm text-muted-foreground">Continue where you left off</p>
+        </div>
+
+        <FormInputField
+          control={form.control}
+          name="email"
+          label="Email"
+          renderInput={(field) => (
+            <Input
+              {...field}
+              type="email"
+              placeholder="Your email"
+              disabled={isLoggingIn}
+              onKeyDown={(event) => {
+                if (isForgotPasswordMode && event.key === 'Enter') {
+                  event.preventDefault();
+                  handleSendRestartLink();
+                }
+              }}
+              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+              data-testid="input-email"
+            />
+          )}
+        />
+
+        {isForgotPasswordMode ? (
+          <div className="space-y-3 pt-2">
+            {restartLinkError && (
+              <p className="pl-0.5 text-xs font-medium text-destructive">{restartLinkError}</p>
+            )}
+
+            {restartLinkMessage && (
+              <p className="pl-0.5 text-xs font-medium text-primary">{restartLinkMessage}</p>
+            )}
+
+            <Button
+              type="button"
+              variant="default"
+              className="w-full font-medium"
+              onClick={handleSendRestartLink}
+              data-testid="button-send-restart-link"
+            >
+              Send restart link
+            </Button>
+          </div>
+        ) : (
           <>
             <FormInputField
               control={form.control}
-              name="email"
-              label="Email"
+              name="password"
+              label="Password"
               renderInput={(field) => (
-                <Input
+                <PasswordInput
                   {...field}
-                  type="email"
-                  placeholder="Your email"
+                  placeholder="Your password"
                   disabled={isLoggingIn}
-                  onKeyDown={(event) => {
-                    if (isForgotPasswordMode && event.key === 'Enter') {
-                      event.preventDefault();
-                      handleSendRestartLink();
-                    }
-                  }}
                   className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                  data-testid="input-email"
+                  data-testid="input-password"
                 />
               )}
             />
-
-            {isForgotPasswordMode ? (
-              <div className="space-y-3 pt-2">
-                {restartLinkError && (
-                  <p className="pl-0.5 text-xs font-medium text-destructive">{restartLinkError}</p>
-                )}
-
-                {restartLinkMessage && (
-                  <p className="pl-0.5 text-xs font-medium text-primary">{restartLinkMessage}</p>
-                )}
-
-                <Button
+            {showLoginPasswordError && (
+              <div className="mb-4 flex justify-end text-right" style={{ marginTop: '-20px' }}>
+                <button
                   type="button"
-                  variant="default"
-                  className="w-full font-medium"
-                  onClick={handleSendRestartLink}
-                  data-testid="button-send-restart-link"
+                  className={loginTextButtonClassName}
+                  onClick={switchToForgotPasswordMode}
+                  data-testid="link-forgot-password"
                 >
-                  Send restart link
-                </Button>
+                  Forgot password?
+                </button>
               </div>
-            ) : (
-              <>
-                <FormInputField
-                  control={form.control}
-                  name="password"
-                  label="Password"
-                  renderInput={(field) => (
-                    <PasswordInput
-                      {...field}
-                      placeholder="Your password"
-                      disabled={isLoggingIn}
-                      className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-                      data-testid="input-password"
-                    />
-                  )}
-                />
-                {showLoginPasswordError && (
-                  <div className="mb-4 flex justify-end text-right" style={{ marginTop: '-20px' }}>
-                    <button
-                      type="button"
-                      className={loginTextButtonClassName}
-                      onClick={switchToForgotPasswordMode}
-                      data-testid="link-forgot-password"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-                )}
-
-                {loginError && !isInvalidCredentialsError && (
-                  <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-                    <AlertCircleIcon className="h-4 w-4 text-destructive" />
-                    <AlertDescription className="text-destructive">
-                      {loginErrorMessage || 'Login failed. Please check your credentials.'}
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <div className="pt-6">
-                  <Button
-                    type="submit"
-                    className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
-                    disabled={isLoggingIn}
-                    data-testid="button-submit"
-                  >
-                    {isLoggingIn ? (
-                      <>
-                        <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      'Log In'
-                    )}
-                  </Button>
-                </div>
-              </>
             )}
+
+            {loginError && !isInvalidCredentialsError && (
+              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+                <AlertCircleIcon className="h-4 w-4 text-destructive" />
+                <AlertDescription className="text-destructive">
+                  {loginErrorMessage || 'Login failed. Please check your credentials.'}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="pt-6">
+              <Button
+                type="submit"
+                className="w-full hover:to-primary text-primary-foreground font-medium transition-all duration-200"
+                disabled={isLoggingIn}
+                data-testid="button-submit"
+              >
+                {isLoggingIn ? (
+                  <>
+                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  'Log In'
+                )}
+              </Button>
+            </div>
           </>
         )}
       </form>
