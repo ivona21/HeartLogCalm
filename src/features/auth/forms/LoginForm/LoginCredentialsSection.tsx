@@ -7,8 +7,7 @@ import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
 import { LoginInput } from '@/features/auth/forms/LoginForm/schema.ts';
 
-interface LoginCredentialsSectionProps {
-  control: Control<LoginInput>;
+export interface CredentialsState {
   isLoggingIn: boolean;
   isForgotPasswordMode: boolean;
   loginErrorMessage: string;
@@ -16,22 +15,31 @@ interface LoginCredentialsSectionProps {
   showLoginErrorAlert: boolean;
   restartLinkError: string | null;
   restartLinkMessage: string | null;
+}
+
+interface LoginCredentialsSectionProps {
+  control: Control<LoginInput>;
+  state: CredentialsState;
   onForgotPasswordClick: () => void;
   onSendRestartLink: () => void;
 }
 
 export function LoginCredentialsSection({
   control,
-  isLoggingIn,
-  isForgotPasswordMode,
-  loginErrorMessage,
-  showLoginPasswordError,
-  showLoginErrorAlert,
-  restartLinkError,
-  restartLinkMessage,
+  state,
   onForgotPasswordClick,
   onSendRestartLink,
 }: LoginCredentialsSectionProps) {
+  const {
+    isLoggingIn,
+    isForgotPasswordMode,
+    loginErrorMessage,
+    showLoginPasswordError,
+    showLoginErrorAlert,
+    restartLinkError,
+    restartLinkMessage,
+  } = state;
+
   return (
     <>
       <FormInputField

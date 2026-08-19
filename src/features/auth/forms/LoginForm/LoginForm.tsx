@@ -55,6 +55,15 @@ export function LoginForm() {
   const confirmationEmailValue = confirmationEmail ?? '';
   const showConfirmationSection = confirmationEmailValue.length > 0;
   const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
+  const credentialsState = {
+    isLoggingIn,
+    isForgotPasswordMode,
+    loginErrorMessage,
+    showLoginPasswordError,
+    showLoginErrorAlert,
+    restartLinkError,
+    restartLinkMessage,
+  };
 
   const clearTransientAuthState = () => {
     setRestartLinkMessage(null);
@@ -230,13 +239,7 @@ export function LoginForm() {
         ) : (
           <LoginCredentialsSection
             control={form.control}
-            isLoggingIn={isLoggingIn}
-            isForgotPasswordMode={isForgotPasswordMode}
-            loginErrorMessage={loginErrorMessage}
-            showLoginPasswordError={showLoginPasswordError}
-            showLoginErrorAlert={showLoginErrorAlert}
-            restartLinkError={restartLinkError}
-            restartLinkMessage={restartLinkMessage}
+            state={credentialsState}
             onForgotPasswordClick={switchToForgotPasswordMode}
             onSendRestartLink={handleSendRestartLink}
           />
