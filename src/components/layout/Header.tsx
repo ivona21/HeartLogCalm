@@ -5,22 +5,13 @@ import { useAuth } from '@/features/auth';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo.tsx';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog.tsx';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
+import { LogoutConfirmationDialog } from '@/components/layout/LogoutConfirmationDialog.tsx';
 
 export function Header() {
   const { logout, isAuthenticated, session, user } = useAuth();
@@ -84,30 +75,14 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <AlertDialog open={logoutModalOpen} onOpenChange={setLogoutModalOpen}>
-                <AlertDialogContent className="max-w-md border-border/70 bg-background/95 dark:bg-card/95 dark:border-card-border/70 dark:shadow-[0_24px_70px_rgba(5,4,12,0.34)] shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-sm">
-                  <AlertDialogHeader className="space-y-3 text-left">
-                    <AlertDialogTitle className="text-xl font-medium tracking-[-0.02em] text-foreground">
-                      Are you sure you want to log out?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription className="text-sm leading-6 text-muted-foreground">
-                      You will still be able to explore the wheel, but you will need to log in again
-                      to save emotions.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => {
-                        setLogoutModalOpen(false);
-                        logout();
-                      }}
-                    >
-                      Log out
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <LogoutConfirmationDialog
+                open={logoutModalOpen}
+                onOpenChange={setLogoutModalOpen}
+                onConfirmLogout={() => {
+                  setLogoutModalOpen(false);
+                  logout();
+                }}
+              />
             </>
           ) : (
             <Button
