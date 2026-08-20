@@ -213,10 +213,12 @@ export function LoginForm() {
           <Logo variant="complexFull" className="h-40" />
         </div>
 
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-          <p className="text-sm text-muted-foreground">Continue where you left off</p>
-        </div>
+        {!isForgotPasswordMode && (
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
+            <p className="text-sm text-muted-foreground">Continue where you left off</p>
+          </div>
+        )}
 
         {showConfirmationSection ? (
           <LoginConfirmationSection

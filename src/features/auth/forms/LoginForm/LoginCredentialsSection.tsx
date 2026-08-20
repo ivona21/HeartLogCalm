@@ -42,6 +42,17 @@ export function LoginCredentialsSection({
 
   return (
     <>
+      {isForgotPasswordMode && (
+        <div className="space-y-1">
+          <div className="text-sm font-semibold leading-none text-foreground">
+            Forgot your password?
+          </div>
+          <p className="text-sm leading-6 text-foreground">
+            Enter your email and we'll send you a link to reset your password.
+          </p>
+        </div>
+      )}
+
       <FormInputField
         control={control}
         name="email"
@@ -65,7 +76,7 @@ export function LoginCredentialsSection({
       />
 
       {isForgotPasswordMode ? (
-        <div className="space-y-3 pt-2">
+        <div className="space-y-3 pt-3">
           {restartLinkError && (
             <p className="pl-0.5 text-xs font-medium text-destructive">{restartLinkError}</p>
           )}
@@ -81,7 +92,7 @@ export function LoginCredentialsSection({
             onClick={onSendRestartLink}
             data-testid="button-send-restart-link"
           >
-            Send restart link
+            Send reset link
           </Button>
         </div>
       ) : (
