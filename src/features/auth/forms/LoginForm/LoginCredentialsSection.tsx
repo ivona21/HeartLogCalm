@@ -10,6 +10,7 @@ import { LoginInput } from '@/features/auth/forms/LoginForm/schema.ts';
 export interface CredentialsState {
   isLoggingIn: boolean;
   isForgotPasswordMode: boolean;
+  isSendingRestartLink: boolean;
   loginErrorMessage: string;
   showLoginPasswordError: boolean;
   showLoginErrorAlert: boolean;
@@ -33,6 +34,7 @@ export function LoginCredentialsSection({
   const {
     isLoggingIn,
     isForgotPasswordMode,
+    isSendingRestartLink,
     loginErrorMessage,
     showLoginPasswordError,
     showLoginErrorAlert,
@@ -90,9 +92,17 @@ export function LoginCredentialsSection({
             variant="default"
             className="w-full font-medium"
             onClick={onSendRestartLink}
+            disabled={isSendingRestartLink}
             data-testid="button-send-restart-link"
           >
-            Send reset link
+            {isSendingRestartLink ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Sending reset link...
+              </>
+            ) : (
+              'Send reset link'
+            )}
           </Button>
         </div>
       ) : (

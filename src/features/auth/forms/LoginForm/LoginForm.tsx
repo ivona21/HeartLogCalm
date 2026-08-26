@@ -13,6 +13,7 @@ import {
   isUnconfirmedAccountLoginError,
 } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
+import { forgotPasswordApi } from '@/features/auth/api/forgot-password.api.ts';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
 import { LoginConfirmationSection } from '@/features/auth/forms/LoginForm/LoginConfirmationSection.tsx';
@@ -51,20 +52,6 @@ export function LoginForm() {
   const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginError);
   const isValidationFailedLoginError = isValidationFailedError(loginError);
 
-  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
-  const confirmationEmailValue = confirmationEmail ?? '';
-  const showConfirmationSection = confirmationEmailValue.length > 0;
-  const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
-  const credentialsState = {
-    isLoggingIn,
-    isForgotPasswordMode,
-    loginErrorMessage,
-    showLoginPasswordError,
-    showLoginErrorAlert,
-    restartLinkError,
-    restartLinkMessage,
-  };
-
   const clearTransientAuthState = () => {
     setRestartLinkMessage(null);
     setRestartLinkError(null);
@@ -94,19 +81,6 @@ export function LoginForm() {
 
   const returnToLoginMode = () => {
     setMode(AUTH_MODE.Login);
-  };
-
-  const handleSendRestartLink = () => {
-    const email = form.getValues('email').trim();
-
-    if (!email) {
-      setRestartLinkError('Enter the email address for your restart link.');
-      setRestartLinkMessage(null);
-      return;
-    }
-
-    setRestartLinkError(null);
-    setRestartLinkMessage(`Restart link sent to ${email}.`);
   };
 
   useEffect(() => {
@@ -148,6 +122,51 @@ export function LoginForm() {
     loginError,
     loginErrorMessage,
   ]);
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (email: string) => forgotPasswordApi(email),
+    onSuccess: () => {
+      setRestartLinkError(null);
+      setRestartLinkMessage('If an account exists, a reset link has been sent.');
+    },
+    onError: (error: unknown) => {
+      const validationErrors = getApiValidationErrors(error);
+      const apiError = normalizeApiError(error);
+
+      setRestartLinkMessage(null);
+
+      if (applyApiValidationErrors(error, form.setError, { fieldMap: { email: 'email' } })) {
+        setRestartLinkError(null);
+        return;
+      }
+
+      if (validationErrors?.email?.[0]) {
+        setRestartLinkError(null);
+        form.setError('email', {
+          type: 'manual',
+          message: validationErrors.email[0],
+        });
+        return;
+      }
+
+      setRestartLinkError(apiError.message || 'Unable to send the reset link.');
+    },
+  });
+
+  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
+  const confirmationEmailValue = confirmationEmail ?? '';
+  const showConfirmationSection = confirmationEmailValue.length > 0;
+  const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
+  const credentialsState = {
+    isLoggingIn,
+    isForgotPasswordMode,
+    isSendingRestartLink: forgotPasswordMutation.isPending,
+    loginErrorMessage,
+    showLoginPasswordError,
+    showLoginErrorAlert,
+    restartLinkError,
+    restartLinkMessage,
+  };
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
@@ -197,6 +216,22 @@ export function LoginForm() {
     setResendError(null);
     setResendMessage(null);
     resendMutation.mutate(trimmedEmail);
+  };
+
+  const handleSendRestartLink = async () => {
+    const isEmailValid = await form.trigger('email');
+
+    if (!isEmailValid) {
+      setRestartLinkMessage(null);
+      setRestartLinkError(null);
+      return;
+    }
+
+    const email = form.getValues('email').trim();
+
+    setRestartLinkError(null);
+    setRestartLinkMessage(null);
+    forgotPasswordMutation.mutate(email);
   };
 
   const onLoginSubmit = (data: LoginInput) => {
