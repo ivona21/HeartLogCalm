@@ -38,6 +38,23 @@ The current auth flow is still the same:
 - `POST /api/auth/logout`
 - `GET /api/auth/me`
 
+Password recovery uses these additional endpoints:
+
+- `POST /api/auth/forgot-password`
+- `GET /api/auth/reset-password/confirm`
+- `POST /api/auth/reset-password`
+
+Recovery flow notes:
+
+- The forgot-password form stays inline on the login page.
+- `POST /api/auth/forgot-password` always shows the same generic success copy in the frontend.
+- The recovery email opens the backend callback, not the frontend directly.
+- The callback redirects to `/reset-password?status=ready`, `/reset-password?status=expired`, or `/reset-password?status=invalid`.
+- The `/reset-password` page is public.
+- `status=ready` shows the new-password form with password and confirm-password fields.
+- `status=expired`, `status=invalid`, or a missing status shows the resend-email fallback.
+- The reset submit must send only `{ password }` and include credentials so the HttpOnly recovery cookie is sent.
+
 See the OpenAPI snapshot for the exact schemas and examples.
 
 ## Startup And Retry Behavior
