@@ -126,6 +126,11 @@ export interface ErrorResponse {
   traceId?: string | null;
 }
 
+export interface ForgotPasswordRequestDto {
+  /** @minLength 1 */
+  email: string;
+}
+
 export interface ItemDto {
   name?: string;
   id?: number;
@@ -147,6 +152,11 @@ export interface ItemDtoIEnumerableApiResponse {
 export interface ResendConfirmationRequestDto {
   /** @minLength 1 */
   email: string;
+}
+
+export interface ResetPasswordRequestDto {
+  /** @minLength 1 */
+  password: string;
 }
 
 export interface UserLoginDto {
@@ -177,6 +187,11 @@ export interface UserRegisterDto {
 }
 
 export type AuthConfirmEmailParams = {
+  token_hash?: string;
+  type?: string;
+};
+
+export type AuthConfirmPasswordResetParams = {
   token_hash?: string;
   type?: string;
 };
@@ -243,6 +258,70 @@ export const authResendConfirmation = async (
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(resendConfirmationRequestDto),
+  });
+};
+
+export const getAuthForgotPasswordUrl = () => {
+  return `/api/auth/forgot-password`;
+};
+
+export const authForgotPassword = async (
+  forgotPasswordRequestDto?: ForgotPasswordRequestDto,
+  options?: RequestInit,
+): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthForgotPasswordUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(forgotPasswordRequestDto),
+  });
+};
+
+export const getAuthConfirmPasswordResetUrl = (params?: AuthConfirmPasswordResetParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/auth/reset-password/confirm?${stringifiedParams}`
+    : `/api/auth/reset-password/confirm`;
+};
+
+/**
+ * Confirms the Supabase recovery token, stores a short-lived HTTP-only recovery cookie, and redirects to the configured frontend reset-password route with status ready, expired, or invalid.
+ */
+export const authConfirmPasswordReset = async (
+  params?: AuthConfirmPasswordResetParams,
+  options?: RequestInit,
+): Promise<unknown> => {
+  return heartlogFetch<unknown>(getAuthConfirmPasswordResetUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAuthResetPasswordUrl = () => {
+  return `/api/auth/reset-password`;
+};
+
+/**
+ * Updates the Supabase password using the short-lived HTTP-only recovery cookie. Frontend requests must include credentials.
+ */
+export const authResetPassword = async (
+  resetPasswordRequestDto?: ResetPasswordRequestDto,
+  options?: RequestInit,
+): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthResetPasswordUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(resetPasswordRequestDto),
   });
 };
 
