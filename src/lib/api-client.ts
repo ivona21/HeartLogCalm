@@ -31,6 +31,8 @@ function shouldSkipAuthRefresh(endpoint: string) {
   return (
     endpoint === '/api/auth/login' ||
     endpoint === '/api/auth/register' ||
+    endpoint === '/api/auth/forgot-password' ||
+    endpoint === '/api/auth/reset-password' ||
     endpoint === '/api/auth/refresh' ||
     endpoint === '/api/auth/logout'
   );
@@ -40,6 +42,8 @@ function shouldIncludeCredentials(endpoint: string) {
   return (
     endpoint === '/api/auth/login' ||
     endpoint === '/api/auth/register' ||
+    endpoint === '/api/auth/forgot-password' ||
+    endpoint === '/api/auth/reset-password' ||
     endpoint === '/api/auth/refresh' ||
     endpoint === '/api/auth/logout'
   );
