@@ -9,7 +9,6 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import { Loader2Icon } from 'lucide-react';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
 import { Logo } from '@/components/Logo.tsx';
-import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { AlreadyHaveAccountLink } from '@/features/auth/components/AlreadyHaveAccountLink.tsx';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
@@ -37,14 +36,6 @@ export function RegisterForm() {
       password: '',
       confirmPassword: '',
     });
-  };
-
-  const handleResendConfirmation = async () => {
-    if (!confirmationEmail) {
-      return;
-    }
-
-    await resendConfirmationApi(confirmationEmail);
   };
 
   const onSubmit = (data: RegisterInput) => {
@@ -96,11 +87,7 @@ export function RegisterForm() {
       </div>
 
       {confirmationEmail ? (
-        <CheckYourInboxSection
-          email={confirmationEmail}
-          onResend={handleResendConfirmation}
-          className="text-center"
-        />
+        <CheckYourInboxSection mode="email-confirmation" email={confirmationEmail} />
       ) : (
         <>
           <Form {...form}>
