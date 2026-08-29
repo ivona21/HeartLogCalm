@@ -21,9 +21,10 @@ export const CHECK_YOUR_INBOX_CONTENT: Record<CheckYourInboxMode, CheckYourInbox
     resendErrorMessage: 'Unable to resend the confirmation email.',
   },
   'password-reset': {
-    description: () => (
+    description: (email: string) => (
       <>
-        If an account exists, we&apos;ve sent a reset link.
+        If an account exists for <span className="font-semibold">{email}</span>, a password reset
+        link is on its way.
         <br />
         Open it to change your password safely.
       </>

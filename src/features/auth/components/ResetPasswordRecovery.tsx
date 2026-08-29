@@ -16,11 +16,13 @@ interface ResetPasswordRecoveryProps {
 
 export function ResetPasswordRecovery({ status }: ResetPasswordRecoveryProps) {
   const [requestedEmail, setRequestedEmail] = useState<string | null>(null);
+  const [isPasswordResetComplete, setIsPasswordResetComplete] = useState(false);
   const title = getResetPasswordTitle(status);
   const message = getResetPasswordMessage(status);
 
   useEffect(() => {
     setRequestedEmail(null);
+    setIsPasswordResetComplete(false);
   }, [status]);
 
   return (
@@ -36,10 +38,12 @@ export function ResetPasswordRecovery({ status }: ResetPasswordRecoveryProps) {
 
       {status === 'ready' ? (
         <div className="space-y-6">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-semibold text-foreground">Enter your new password</h1>
-          </div>
-          <ResetPasswordForm />
+          {!isPasswordResetComplete && (
+            <div className="space-y-1">
+              <h1 className="text-2xl font-semibold text-foreground">Enter your new password</h1>
+            </div>
+          )}
+          <ResetPasswordForm onSuccess={() => setIsPasswordResetComplete(true)} />
         </div>
       ) : requestedEmail ? (
         <CheckYourInboxSection mode="password-reset" email={requestedEmail} />

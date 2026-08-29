@@ -37,7 +37,7 @@ export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
     mutationFn: async (password: string) => resetPasswordApi(password),
     onSuccess: () => {
       setFormError(null);
-      setSuccessMessage('Your password has been updated.');
+      setSuccessMessage('Password successfully changed');
       setIsComplete(true);
       onSuccess?.();
     },
@@ -69,10 +69,10 @@ export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
 
   if (isComplete) {
     return (
-      <Alert className="border-border bg-muted/30">
-        <CheckCircle2Icon className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-muted-foreground">{successMessage}</AlertDescription>
-      </Alert>
+      <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-success/30 bg-success/10 px-5 py-4 text-center">
+        <p className="text-base font-semibold leading-6 text-foreground">{successMessage}</p>
+        <CheckCircle2Icon className="h-5 w-5 shrink-0 text-success" />
+      </div>
     );
   }
 
