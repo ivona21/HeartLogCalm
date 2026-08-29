@@ -193,11 +193,7 @@ const confirmationStatusContent: Record<ConfirmationStatus, ConfirmationStatusCo
     ),
     panel: ({ email, showInboxSection, setEmail, setShowInboxSection }) =>
       showInboxSection ? (
-        <CheckYourInboxSection
-          email={email}
-          onResend={async () => resendConfirmationApi(email)}
-          className="text-center"
-        />
+        <CheckYourInboxSection mode="email-confirmation" email={email} />
       ) : (
         <ExpiredConfirmationResendPanel
           initialEmail={email}

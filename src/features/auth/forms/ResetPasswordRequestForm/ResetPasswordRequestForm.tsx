@@ -10,7 +10,6 @@ import { FormInputField } from '@/components/form/FormInputField.tsx';
 import { forgotPasswordApi } from '@/features/auth/api/forgot-password.api.ts';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
-import { GENERIC_RESET_EMAIL_MESSAGE } from '@/features/auth/utils/reset-password.ts';
 import {
   resetPasswordRequestSchema,
   type ResetPasswordRequestInput,
@@ -18,11 +17,10 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 
 interface ResetPasswordRequestFormProps {
-  className?: string;
+  onSuccess?: (email: string) => void;
 }
 
-export function ResetPasswordRequestForm({ className }: ResetPasswordRequestFormProps) {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+export function ResetPasswordRequestForm({ onSuccess }: ResetPasswordRequestFormProps) {
   const [formError, setFormError] = useState<string | null>(null);
 
   const form = useForm<ResetPasswordRequestInput>({
@@ -33,14 +31,15 @@ export function ResetPasswordRequestForm({ className }: ResetPasswordRequestForm
   });
 
   const resendMutation = useMutation({
-    mutationFn: async (email: string) => forgotPasswordApi(email),
-    onSuccess: () => {
+    mutationFn: async (email: string) => {
+      await forgotPasswordApi(email);
+      return email;
+    },
+    onSuccess: (_data, email) => {
       setFormError(null);
-      setSuccessMessage(GENERIC_RESET_EMAIL_MESSAGE);
+      onSuccess?.(email);
     },
     onError: (error: unknown) => {
-      setSuccessMessage(null);
-
       if (
         applyApiValidationErrors(error, form.setError, {
           fieldMap: {
@@ -61,16 +60,12 @@ export function ResetPasswordRequestForm({ className }: ResetPasswordRequestForm
 
   const handleSubmit = (data: ResetPasswordRequestInput) => {
     setFormError(null);
-    setSuccessMessage(null);
     resendMutation.mutate(data.email.trim());
   };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className={className ?? 'space-y-4 rounded-lg border border-border bg-muted/20 p-4'}
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
         <FormInputField
           control={form.control}
           name="email"
@@ -86,7 +81,6 @@ export function ResetPasswordRequestForm({ className }: ResetPasswordRequestForm
               onChange={(event) => {
                 field.onChange(event);
                 setFormError(null);
-                setSuccessMessage(null);
                 form.clearErrors('email');
               }}
             />
@@ -100,30 +94,26 @@ export function ResetPasswordRequestForm({ className }: ResetPasswordRequestForm
           </Alert>
         )}
 
-        {successMessage && (
-          <Alert className="border-border bg-muted/30">
-            <AlertDescription className="text-muted-foreground">{successMessage}</AlertDescription>
-          </Alert>
-        )}
-
-        <Button
-          type="submit"
-          className="w-full font-medium"
-          disabled={resendMutation.isPending}
-          data-testid="button-reset-email-send"
-        >
-          {resendMutation.isPending ? (
-            <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-              Sending reset link...
-            </>
-          ) : (
-            <>
-              <RotateCcwIcon className="h-4 w-4" />
-              Send reset link
-            </>
-          )}
-        </Button>
+        <div className="pt-3">
+          <Button
+            type="submit"
+            className="w-full font-medium"
+            disabled={resendMutation.isPending}
+            data-testid="button-reset-email-send"
+          >
+            {resendMutation.isPending ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Sending reset link...
+              </>
+            ) : (
+              <>
+                <RotateCcwIcon className="h-4 w-4" />
+                Send reset link
+              </>
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

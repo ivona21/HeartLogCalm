@@ -15,7 +15,6 @@ export interface CredentialsState {
   showLoginPasswordError: boolean;
   showLoginErrorAlert: boolean;
   restartLinkError: string | null;
-  restartLinkMessage: string | null;
 }
 
 interface LoginCredentialsSectionProps {
@@ -39,7 +38,6 @@ export function LoginCredentialsSection({
     showLoginPasswordError,
     showLoginErrorAlert,
     restartLinkError,
-    restartLinkMessage,
   } = state;
 
   return (
@@ -81,10 +79,6 @@ export function LoginCredentialsSection({
         <div className="space-y-3 pt-3">
           {restartLinkError && (
             <p className="pl-0.5 text-xs font-medium text-destructive">{restartLinkError}</p>
-          )}
-
-          {restartLinkMessage && (
-            <p className="pl-0.5 text-xs font-medium text-primary">{restartLinkMessage}</p>
           )}
 
           <Button
