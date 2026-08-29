@@ -23,7 +23,7 @@ export function getResetPasswordTitle(status: ResetPasswordStatus | 'missing'): 
 export function getResetPasswordMessage(status: ResetPasswordStatus | 'missing'): string {
   switch (status) {
     case 'ready':
-      return 'Your reset link was verified. Set a new password below.';
+      return 'Set a new password below.';
     case 'expired':
       return 'That reset link is no longer valid. Request a new email below.';
     case 'invalid':
