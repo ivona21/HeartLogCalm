@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AuthBrandHeader } from '@/features/auth/components/AuthBrandHeader.tsx';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
 import { BackToLoginLink } from '@/features/auth/components/BackToLoginLink.tsx';
 import { ResetPasswordForm } from '@/features/auth/forms/ResetPasswordForm/ResetPasswordForm.tsx';
@@ -24,6 +25,8 @@ export function ResetPasswordRecovery({ status }: ResetPasswordRecoveryProps) {
 
   return (
     <div className="space-y-6">
+      <AuthBrandHeader />
+
       {status !== 'ready' && !requestedEmail && (
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
@@ -33,14 +36,18 @@ export function ResetPasswordRecovery({ status }: ResetPasswordRecoveryProps) {
 
       {status === 'ready' ? (
         <div className="space-y-6">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-semibold text-foreground">Enter your new password</h1>
+          </div>
           <ResetPasswordForm />
-          <BackToLoginLink className="text-center" />
         </div>
       ) : requestedEmail ? (
         <CheckYourInboxSection mode="password-reset" email={requestedEmail} />
       ) : (
         <ResetPasswordRequestForm onSuccess={setRequestedEmail} />
       )}
+
+      <BackToLoginLink className="text-center" />
     </div>
   );
 }

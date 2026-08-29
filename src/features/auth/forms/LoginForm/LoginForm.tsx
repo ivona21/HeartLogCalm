@@ -5,7 +5,6 @@ import { useMutation } from '@tanstack/react-query';
 import { Form } from '@/components/ui/form.tsx';
 import { useAuth } from '@/features/auth';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
-import { Logo } from '@/components/Logo.tsx';
 import { AppLink } from '@/components/ui/app-link.tsx';
 import {
   isValidationFailedError,
@@ -17,6 +16,7 @@ import { forgotPasswordApi } from '@/features/auth/api/forgot-password.api.ts';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
+import { AuthBrandHeader } from '@/features/auth/components/AuthBrandHeader.tsx';
 import { BackToLoginLink } from '@/features/auth/components/BackToLoginLink.tsx';
 import { LoginCredentialsSection } from '@/features/auth/forms/LoginForm/LoginCredentialsSection.tsx';
 import { LoginUnconfirmedAccountSection } from '@/features/auth/forms/LoginForm/LoginUnconfirmedAccountSection.tsx';
@@ -245,9 +245,7 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
-        <div className="flex justify-center mb-6">
-          <Logo variant="complexFull" className="h-40" />
-        </div>
+        <AuthBrandHeader />
 
         {!isForgotPasswordMode && (
           <div className="text-center mb-6">
