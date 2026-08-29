@@ -3,9 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Form } from '@/components/ui/form.tsx';
-import { useAuth } from '../../hooks/useAuth.ts';
+import { useAuth } from '@/features/auth';
 import { LoginInput, loginSchema } from '@/features/auth/forms/LoginForm/schema.ts';
-import { Logo } from '@/components/Logo.tsx';
 import { AppLink } from '@/components/ui/app-link.tsx';
 import {
   isValidationFailedError,
@@ -13,9 +12,12 @@ import {
   isUnconfirmedAccountLoginError,
 } from '@/features/auth/utils/auth-errors.ts';
 import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
+import { forgotPasswordApi } from '@/features/auth/api/forgot-password.api.ts';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { getApiValidationErrors, normalizeApiError } from '@/shared/api/api-errors.ts';
-import { LoginConfirmationSection } from '@/features/auth/forms/LoginForm/LoginConfirmationSection.tsx';
+import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
+import { AuthBrandHeader } from '@/features/auth/components/AuthBrandHeader.tsx';
+import { BackToLoginLink } from '@/features/auth/components/BackToLoginLink.tsx';
 import { LoginCredentialsSection } from '@/features/auth/forms/LoginForm/LoginCredentialsSection.tsx';
 import { LoginUnconfirmedAccountSection } from '@/features/auth/forms/LoginForm/LoginUnconfirmedAccountSection.tsx';
 
@@ -29,12 +31,12 @@ type AuthMode = (typeof AUTH_MODE)[keyof typeof AUTH_MODE];
 export function LoginForm() {
   const { login, isLoggingIn, loginError, resetLoginError } = useAuth();
   const [authMode, setAuthMode] = useState<AuthMode>(AUTH_MODE.Login);
-  const [restartLinkMessage, setRestartLinkMessage] = useState<string | null>(null);
   const [restartLinkError, setRestartLinkError] = useState<string | null>(null);
   const [resendEmail, setResendEmail] = useState('');
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string | null>(null);
   const previousUnconfirmedRef = useRef(false);
   const isForgotPasswordMode = authMode === AUTH_MODE.ForgotPassword;
 
@@ -51,26 +53,12 @@ export function LoginForm() {
   const isUnconfirmedAccountError = isUnconfirmedAccountLoginError(loginError);
   const isValidationFailedLoginError = isValidationFailedError(loginError);
 
-  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
-  const confirmationEmailValue = confirmationEmail ?? '';
-  const showConfirmationSection = confirmationEmailValue.length > 0;
-  const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
-  const credentialsState = {
-    isLoggingIn,
-    isForgotPasswordMode,
-    loginErrorMessage,
-    showLoginPasswordError,
-    showLoginErrorAlert,
-    restartLinkError,
-    restartLinkMessage,
-  };
-
   const clearTransientAuthState = () => {
-    setRestartLinkMessage(null);
     setRestartLinkError(null);
     setResendMessage(null);
     setResendError(null);
     setConfirmationEmail(null);
+    setForgotPasswordEmail(null);
   };
 
   const clearAuthFieldErrors = () => {
@@ -94,19 +82,6 @@ export function LoginForm() {
 
   const returnToLoginMode = () => {
     setMode(AUTH_MODE.Login);
-  };
-
-  const handleSendRestartLink = () => {
-    const email = form.getValues('email').trim();
-
-    if (!email) {
-      setRestartLinkError('Enter the email address for your restart link.');
-      setRestartLinkMessage(null);
-      return;
-    }
-
-    setRestartLinkError(null);
-    setRestartLinkMessage(`Restart link sent to ${email}.`);
   };
 
   useEffect(() => {
@@ -148,6 +123,52 @@ export function LoginForm() {
     loginError,
     loginErrorMessage,
   ]);
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (email: string) => forgotPasswordApi(email),
+    onSuccess: (_data, email) => {
+      setRestartLinkError(null);
+      setForgotPasswordEmail(email);
+    },
+    onError: (error: unknown) => {
+      const validationErrors = getApiValidationErrors(error);
+      const apiError = normalizeApiError(error);
+
+      setForgotPasswordEmail(null);
+
+      if (applyApiValidationErrors(error, form.setError, { fieldMap: { email: 'email' } })) {
+        setRestartLinkError(null);
+        return;
+      }
+
+      if (validationErrors?.email?.[0]) {
+        setRestartLinkError(null);
+        form.setError('email', {
+          type: 'manual',
+          message: validationErrors.email[0],
+        });
+        return;
+      }
+
+      setRestartLinkError(apiError.message || 'Unable to send the reset link.');
+    },
+  });
+
+  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
+  const confirmationEmailValue = confirmationEmail ?? '';
+  const showConfirmationSection = confirmationEmailValue.length > 0;
+  const showForgotPasswordInbox = Boolean(forgotPasswordEmail);
+  const showInboxSection = showConfirmationSection || showForgotPasswordInbox;
+  const showLoginErrorAlert = Boolean(loginError && !isInvalidCredentialsError);
+  const credentialsState = {
+    isLoggingIn,
+    isForgotPasswordMode,
+    isSendingRestartLink: forgotPasswordMutation.isPending,
+    loginErrorMessage,
+    showLoginPasswordError,
+    showLoginErrorAlert,
+    restartLinkError,
+  };
 
   const resendMutation = useMutation({
     mutationFn: async (email: string) => resendConfirmationApi(email),
@@ -199,6 +220,21 @@ export function LoginForm() {
     resendMutation.mutate(trimmedEmail);
   };
 
+  const handleSendRestartLink = async () => {
+    const isEmailValid = await form.trigger('email');
+
+    if (!isEmailValid) {
+      setRestartLinkError(null);
+      return;
+    }
+
+    const email = form.getValues('email').trim();
+
+    setRestartLinkError(null);
+    setForgotPasswordEmail(null);
+    forgotPasswordMutation.mutate(email);
+  };
+
   const onLoginSubmit = (data: LoginInput) => {
     clearTransientAuthState();
     form.clearErrors('password');
@@ -209,20 +245,19 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
-        <div className="flex justify-center mb-6">
-          <Logo variant="complexFull" className="h-40" />
-        </div>
+        <AuthBrandHeader />
 
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-          <p className="text-sm text-muted-foreground">Continue where you left off</p>
-        </div>
+        {!isForgotPasswordMode && (
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
+            <p className="text-sm text-muted-foreground">Continue where you left off</p>
+          </div>
+        )}
 
         {showConfirmationSection ? (
-          <LoginConfirmationSection
-            email={confirmationEmailValue}
-            onResend={async () => resendConfirmationApi(confirmationEmailValue)}
-          />
+          <CheckYourInboxSection mode="email-confirmation" email={confirmationEmailValue} />
+        ) : showForgotPasswordInbox && forgotPasswordEmail ? (
+          <CheckYourInboxSection mode="password-reset" email={forgotPasswordEmail} />
         ) : isUnconfirmedAccountError ? (
           <LoginUnconfirmedAccountSection
             resendEmail={resendEmail}
@@ -245,31 +280,20 @@ export function LoginForm() {
           />
         )}
       </form>
-      <div className="mt-16 space-y-6 text-center">
-        {isForgotPasswordMode && (
+      {!showInboxSection && (
+        <div className="mt-16 space-y-6 text-center">
+          {isForgotPasswordMode && <BackToLoginLink onClick={returnToLoginMode} />}
+
           <div>
             <p className="text-sm text-muted-foreground">
-              <AppLink
-                to="/login"
-                className="font-medium"
-                onClick={returnToLoginMode}
-                data-testid="link-back-to-login"
-              >
-                Back to Login
+              Don&apos;t have an account?{' '}
+              <AppLink to="/register" className="font-medium" data-testid="link-register">
+                Sign up
               </AppLink>
             </p>
           </div>
-        )}
-
-        <div>
-          <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <AppLink to="/register" className="font-medium" data-testid="link-register">
-              Sign up
-            </AppLink>
-          </p>
         </div>
-      </div>
+      )}
     </Form>
   );
 }

@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import { passwordSchema } from '@/features/auth/forms/password-policy.ts';
 
-export const registerSchema = z
+export const resetPasswordSchema = z
   .object({
-    email: z.string().email('Please enter a valid email address'),
     password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
@@ -12,4 +11,4 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
-export type RegisterInput = z.infer<typeof registerSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

@@ -15,10 +15,18 @@ Cookie endpoints:
 
 - `POST /api/auth/login`
 - `POST /api/auth/register`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
 - `POST /api/auth/refresh`
 - `POST /api/auth/logout`
 
 These requests must use `credentials: 'include'`.
+
+Password recovery callback:
+
+- `GET /api/auth/reset-password/confirm` is browser navigation, not a frontend fetch.
+- The backend validates the Supabase recovery token and sets a short-lived HttpOnly recovery cookie.
+- The frontend then submits the new password through `POST /api/auth/reset-password`.
 
 Refresh flow:
 

@@ -8,10 +8,9 @@ import { PasswordInput } from '@/components/ui/password-input.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Loader2Icon } from 'lucide-react';
 import { RegisterInput, registerSchema } from '@/features/auth/forms/RegisterForm/schema.ts';
-import { Logo } from '@/components/Logo.tsx';
-import { resendConfirmationApi } from '@/features/auth/api/resend-confirmation.api.ts';
 import { AlreadyHaveAccountLink } from '@/features/auth/components/AlreadyHaveAccountLink.tsx';
 import { CheckYourInboxSection } from '@/features/auth/components/CheckYourInboxSection.tsx';
+import { AuthBrandHeader } from '@/features/auth/components/AuthBrandHeader.tsx';
 import { FormInputField } from '@/components/form/FormInputField.tsx';
 import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
@@ -37,14 +36,6 @@ export function RegisterForm() {
       password: '',
       confirmPassword: '',
     });
-  };
-
-  const handleResendConfirmation = async () => {
-    if (!confirmationEmail) {
-      return;
-    }
-
-    await resendConfirmationApi(confirmationEmail);
   };
 
   const onSubmit = (data: RegisterInput) => {
@@ -91,16 +82,10 @@ export function RegisterForm() {
           Your private space for emotions and reflection
         </p>
       </div>
-      <div className="flex justify-center mb-6">
-        <Logo variant="complexFull" className="h-40" />
-      </div>
+      <AuthBrandHeader className="mb-6" />
 
       {confirmationEmail ? (
-        <CheckYourInboxSection
-          email={confirmationEmail}
-          onResend={handleResendConfirmation}
-          className="text-center"
-        />
+        <CheckYourInboxSection mode="email-confirmation" email={confirmationEmail} />
       ) : (
         <>
           <Form {...form}>

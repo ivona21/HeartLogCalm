@@ -5,6 +5,8 @@ interface AlreadyHaveAccountLinkProps {
   linkClassName?: string;
   testId?: string;
   showDivider?: boolean;
+  prefixText?: string;
+  linkText?: string;
 }
 
 export function AlreadyHaveAccountLink({
@@ -12,14 +14,16 @@ export function AlreadyHaveAccountLink({
   linkClassName,
   testId = 'link-login',
   showDivider = true,
+  prefixText = 'Already have an account?',
+  linkText = 'Log in',
 }: AlreadyHaveAccountLinkProps) {
   return (
     <div className={className}>
       {showDivider && <hr className="mb-4 border-border" />}
       <p className="text-sm text-muted-foreground">
-        Already have an account?{' '}
+        {prefixText}{' '}
         <AppLink to="/login" data-testid={testId} className={linkClassName ?? 'font-medium'}>
-          Log in
+          {linkText}
         </AppLink>
       </p>
     </div>
