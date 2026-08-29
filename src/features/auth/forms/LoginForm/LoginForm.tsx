@@ -256,8 +256,8 @@ export function LoginForm() {
 
         {showConfirmationSection ? (
           <CheckYourInboxSection mode="email-confirmation" email={confirmationEmailValue} />
-        ) : showForgotPasswordInbox ? (
-          <CheckYourInboxSection mode="password-reset" email={forgotPasswordEmail!} />
+        ) : showForgotPasswordInbox && forgotPasswordEmail ? (
+          <CheckYourInboxSection mode="password-reset" email={forgotPasswordEmail} />
         ) : isUnconfirmedAccountError ? (
           <LoginUnconfirmedAccountSection
             resendEmail={resendEmail}
