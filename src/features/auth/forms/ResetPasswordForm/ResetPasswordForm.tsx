@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { AlertCircleIcon, CheckCircle2Icon, Loader2Icon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { PasswordInput } from '@/components/ui/password-input.tsx';
@@ -22,7 +21,6 @@ interface ResetPasswordFormProps {
 }
 
 export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
-  const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
@@ -39,7 +37,7 @@ export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
     mutationFn: async (password: string) => resetPasswordApi(password),
     onSuccess: () => {
       setFormError(null);
-      setSuccessMessage('Your password has been updated.');
+      setSuccessMessage('Password successfully changed');
       setIsComplete(true);
       onSuccess?.();
     },
@@ -63,18 +61,6 @@ export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
     },
   });
 
-  useEffect(() => {
-    if (!isComplete) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      navigate('/login', { replace: true });
-    }, 1200);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [isComplete, navigate]);
-
   const handleSubmit = (data: ResetPasswordInput) => {
     setFormError(null);
     setSuccessMessage(null);
@@ -83,19 +69,16 @@ export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
 
   if (isComplete) {
     return (
-      <Alert className="border-border bg-muted/30">
-        <CheckCircle2Icon className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-muted-foreground">{successMessage}</AlertDescription>
-      </Alert>
+      <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-success/30 bg-success/10 px-5 py-4 text-center">
+        <p className="text-base font-semibold leading-6 text-foreground">{successMessage}</p>
+        <CheckCircle2Icon className="h-5 w-5 shrink-0 text-success" />
+      </div>
     );
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-4 rounded-lg border border-border bg-muted/20 p-4"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
         <FormInputField
           control={form.control}
           name="password"
@@ -133,21 +116,23 @@ export function ResetPasswordForm({ onSuccess }: ResetPasswordFormProps) {
           </Alert>
         )}
 
-        <Button
-          type="submit"
-          className="w-full font-medium"
-          disabled={resetMutation.isPending}
-          data-testid="button-reset-password-submit"
-        >
-          {resetMutation.isPending ? (
-            <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-              Updating password...
-            </>
-          ) : (
-            'Update password'
-          )}
-        </Button>
+        <div className="pt-3">
+          <Button
+            type="submit"
+            className="w-full font-medium"
+            disabled={resetMutation.isPending}
+            data-testid="button-reset-password-submit"
+          >
+            {resetMutation.isPending ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Updating password...
+              </>
+            ) : (
+              'Update password'
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

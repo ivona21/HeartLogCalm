@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type CheckYourInboxMode = 'email-confirmation' | 'forgot-password';
+export type CheckYourInboxMode = 'email-confirmation' | 'password-reset';
 
 export type CheckYourInboxContent = {
   description: (email: string) => ReactNode;
@@ -20,10 +20,11 @@ export const CHECK_YOUR_INBOX_CONTENT: Record<CheckYourInboxMode, CheckYourInbox
     resendSuccessMessage: 'A new confirmation email has been sent to your inbox.',
     resendErrorMessage: 'Unable to resend the confirmation email.',
   },
-  'forgot-password': {
-    description: () => (
+  'password-reset': {
+    description: (email: string) => (
       <>
-        If an account exists, we&apos;ve sent a reset link.
+        If an account exists for <span className="font-semibold">{email}</span>, a password reset
+        link is on its way.
         <br />
         Open it to change your password safely.
       </>
