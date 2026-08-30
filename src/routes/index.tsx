@@ -5,7 +5,9 @@ import { HomeRoute } from '@/shared/routing/HomeRoute.tsx';
 import LoginPage from '@/pages/login';
 import RegisterPage from '@/pages/register';
 import EmailConfirmationPage from '@/pages/email-confirmation';
+import ResetPasswordPage from '@/pages/reset-password';
 import DashboardPage from '@/pages/dashboard';
+import ChangePasswordPage from '@/pages/change-password';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
@@ -32,11 +34,25 @@ const routes = [
     element: <EmailConfirmationPage />,
   },
   {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
+  },
+  {
     path: '/dashboard',
     element: (
       <ProtectedRoute>
         <AppLayout>
           <DashboardPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/change-password',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <ChangePasswordPage />
         </AppLayout>
       </ProtectedRoute>
     ),
