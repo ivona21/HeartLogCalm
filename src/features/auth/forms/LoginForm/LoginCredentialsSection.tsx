@@ -48,7 +48,7 @@ export function LoginCredentialsSection({
             Forgot your password?
           </div>
           <p className="text-sm leading-6 text-foreground">
-            Enter your email and we'll send you a link to reset your password.
+            Confirm your email and we'll send you a link to reset your password.
           </p>
         </div>
       )}

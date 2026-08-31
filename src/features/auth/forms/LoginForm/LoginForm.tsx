@@ -82,6 +82,10 @@ export function LoginForm() {
 
   const returnToLoginMode = () => {
     setMode(AUTH_MODE.Login);
+    form.reset({
+      email: '',
+      password: '',
+    });
   };
 
   useEffect(() => {
@@ -245,19 +249,20 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
-        <AuthBrandHeader />
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
+          <p className="text-sm text-muted-foreground">Continue where you left off</p>
+        </div>
 
-        {!isForgotPasswordMode && (
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-            <p className="text-sm text-muted-foreground">Continue where you left off</p>
-          </div>
-        )}
+        <AuthBrandHeader />
 
         {showConfirmationSection ? (
           <CheckYourInboxSection mode="email-confirmation" email={confirmationEmailValue} />
         ) : showForgotPasswordInbox && forgotPasswordEmail ? (
-          <CheckYourInboxSection mode="password-reset" email={forgotPasswordEmail} />
+          <>
+            <CheckYourInboxSection mode="password-reset" email={forgotPasswordEmail} />
+            <BackToLoginLink className="text-center" onClick={returnToLoginMode} />
+          </>
         ) : isUnconfirmedAccountError ? (
           <LoginUnconfirmedAccountSection
             resendEmail={resendEmail}
@@ -285,6 +290,7 @@ export function LoginForm() {
           {isForgotPasswordMode && <BackToLoginLink onClick={returnToLoginMode} />}
 
           <div>
+            <hr className="mb-4 border-border" />
             <p className="text-sm text-muted-foreground">
               Don&apos;t have an account?{' '}
               <AppLink to="/register" className="font-medium" data-testid="link-register">
