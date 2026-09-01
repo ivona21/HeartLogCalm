@@ -85,7 +85,10 @@ export function RegisterForm() {
       <AuthBrandHeader className="mb-6" />
 
       {confirmationEmail ? (
-        <CheckYourInboxSection mode="email-confirmation" email={confirmationEmail} />
+        <>
+          <CheckYourInboxSection mode="email-confirmation" email={confirmationEmail} />
+          <AlreadyHaveAccountLink className="mt-4 text-center" />
+        </>
       ) : (
         <>
           <Form {...form}>
