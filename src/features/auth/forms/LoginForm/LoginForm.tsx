@@ -249,10 +249,18 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
-          <p className="text-sm text-muted-foreground">Continue where you left off</p>
-        </div>
+        {!showInboxSection && (
+          <div className="text-center mb-6">
+            {isForgotPasswordMode ? (
+              <h2 className="text-2xl font-semibold text-foreground">Forgot password?</h2>
+            ) : (
+              <>
+                <h2 className="text-2xl font-semibold text-foreground mb-2">Welcome Back</h2>
+                <p className="text-sm text-muted-foreground">Continue where you left off</p>
+              </>
+            )}
+          </div>
+        )}
 
         <AuthBrandHeader />
 
