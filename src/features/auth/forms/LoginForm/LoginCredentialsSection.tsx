@@ -43,14 +43,9 @@ export function LoginCredentialsSection({
   return (
     <>
       {isForgotPasswordMode && (
-        <div className="space-y-1">
-          <div className="text-sm font-semibold leading-none text-foreground">
-            Forgot your password?
-          </div>
-          <p className="text-sm leading-6 text-foreground">
-            Enter your email and we'll send you a link to reset your password.
-          </p>
-        </div>
+        <p className="text-sm leading-6 text-foreground">
+          Confirm your email and we&apos;ll send you a link to reset your password.
+        </p>
       )}
 
       <FormInputField
