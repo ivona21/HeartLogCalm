@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedRoute } from '@/shared/routing/ProtectedRoute.tsx';
+import { GuestOnlyRoute } from '@/shared/routing/GuestOnlyRoute.tsx';
 import { HomeRoute } from '@/shared/routing/HomeRoute.tsx';
 import LoginPage from '@/pages/login';
 import RegisterPage from '@/pages/register';
@@ -23,11 +24,19 @@ const routes = [
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: (
+      <GuestOnlyRoute>
+        <LoginPage />
+      </GuestOnlyRoute>
+    ),
   },
   {
     path: '/register',
-    element: <RegisterPage />,
+    element: (
+      <GuestOnlyRoute>
+        <RegisterPage />
+      </GuestOnlyRoute>
+    ),
   },
   {
     path: '/email-confirmation',
