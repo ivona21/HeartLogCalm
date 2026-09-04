@@ -13,6 +13,10 @@ export const AUTH_UNAUTHORIZED_EVENT = 'auth:unauthorized';
 export const AUTH_LOGOUT_EVENT = 'auth:logout';
 const ACCESS_TOKEN_REFRESH_BUFFER_MS = 60_000;
 
+type RequestBehavior = {
+  preserveAuthOnUnauthorized?: boolean;
+};
+
 function handleUnauthorizedResponse() {
   const authStore = useAuthStore.getState();
 
@@ -207,20 +211,25 @@ export class ApiClient {
     return response;
   }
 
-  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  async request<T>(
+    endpoint: string,
+    options: RequestInit = {},
+    behavior: RequestBehavior = {},
+  ): Promise<T> {
     let response = await this.sendRequest(endpoint, options);
 
     if (
       response.status === 401 &&
       !shouldSkipAuthRefresh(endpoint) &&
-      useAuthStore.getState().session
+      useAuthStore.getState().session &&
+      !behavior.preserveAuthOnUnauthorized
     ) {
       const refreshedSession = await this.refreshSession();
       response = await this.fetchWithToken(endpoint, options, refreshedSession.accessToken);
     }
 
     if (!response.ok) {
-      if (response.status === 401) {
+      if (response.status === 401 && !behavior.preserveAuthOnUnauthorized) {
         handleUnauthorizedResponse();
       }
 
