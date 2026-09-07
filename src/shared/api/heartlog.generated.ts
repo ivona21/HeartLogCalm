@@ -17,6 +17,7 @@ export const ApiErrorCode = {
   usernameAlreadyExists: 'usernameAlreadyExists',
   invalidRequest: 'invalidRequest',
   unauthorized: 'unauthorized',
+  invalidCurrentPassword: 'invalidCurrentPassword',
 } as const;
 
 export interface ApiResponse {
