@@ -95,7 +95,7 @@ export function ChangePasswordForm() {
         <FormInputField
           control={form.control}
           name="currentPassword"
-          label="Old password"
+          label="Current password"
           renderInput={(field) => (
             <PasswordInput
               {...field}
