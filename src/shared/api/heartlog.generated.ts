@@ -17,6 +17,7 @@ export const ApiErrorCode = {
   usernameAlreadyExists: 'usernameAlreadyExists',
   invalidRequest: 'invalidRequest',
   unauthorized: 'unauthorized',
+  invalidCurrentPassword: 'invalidCurrentPassword',
 } as const;
 
 export interface ApiResponse {
@@ -45,6 +46,13 @@ export interface AuthSessionResponseDtoApiResponse {
   success?: boolean;
   message?: string;
   data?: AuthSessionResponseDto;
+}
+
+export interface ChangePasswordRequestDto {
+  /** @minLength 1 */
+  currentPassword: string;
+  /** @minLength 1 */
+  newPassword: string;
 }
 
 export interface CreateEmotionEntryRequest {
@@ -322,6 +330,25 @@ export const authResetPassword = async (
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(resetPasswordRequestDto),
+  });
+};
+
+export const getAuthChangePasswordUrl = () => {
+  return `/api/auth/change-password`;
+};
+
+/**
+ * Changes the current authenticated user's Supabase password after validating the current password.
+ */
+export const authChangePassword = async (
+  changePasswordRequestDto?: ChangePasswordRequestDto,
+  options?: RequestInit,
+): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthChangePasswordUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(changePasswordRequestDto),
   });
 };
 

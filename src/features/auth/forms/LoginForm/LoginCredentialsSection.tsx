@@ -1,5 +1,5 @@
 import { AlertCircleIcon, Loader2Icon } from 'lucide-react';
-import { type Control } from 'react-hook-form';
+import { type Control, useFormState } from 'react-hook-form';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Input } from '@/components/ui/input.tsx';
@@ -12,7 +12,6 @@ export interface CredentialsState {
   isForgotPasswordMode: boolean;
   isSendingRestartLink: boolean;
   loginErrorMessage: string;
-  showLoginPasswordError: boolean;
   showLoginErrorAlert: boolean;
   restartLinkError: string | null;
 }
@@ -35,10 +34,11 @@ export function LoginCredentialsSection({
     isForgotPasswordMode,
     isSendingRestartLink,
     loginErrorMessage,
-    showLoginPasswordError,
     showLoginErrorAlert,
     restartLinkError,
   } = state;
+  const { errors } = useFormState({ control, name: 'password' });
+  const hasPasswordError = Boolean(errors.password);
 
   return (
     <>
@@ -100,6 +100,8 @@ export function LoginCredentialsSection({
             control={control}
             name="password"
             label="Password"
+            description={!hasPasswordError ? <span aria-hidden="true">&nbsp;</span> : undefined}
+            descriptionClassName="invisible pl-0.5 pt-1 text-xs font-medium"
             renderInput={(field) => (
               <PasswordInput
                 {...field}
@@ -110,18 +112,16 @@ export function LoginCredentialsSection({
               />
             )}
           />
-          {showLoginPasswordError && (
-            <div className="mb-4 flex justify-end text-right" style={{ marginTop: '-20px' }}>
-              <button
-                type="button"
-                className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-                onClick={onForgotPasswordClick}
-                data-testid="link-forgot-password"
-              >
-                Forgot password?
-              </button>
-            </div>
-          )}
+          <div className="mb-4 flex justify-end text-right" style={{ marginTop: '-20px' }}>
+            <button
+              type="button"
+              className="text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
+              onClick={onForgotPasswordClick}
+              data-testid="link-forgot-password"
+            >
+              Forgot password?
+            </button>
+          </div>
 
           {showLoginErrorAlert && (
             <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
