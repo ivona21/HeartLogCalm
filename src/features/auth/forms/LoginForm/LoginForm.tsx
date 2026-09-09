@@ -158,7 +158,6 @@ export function LoginForm() {
     },
   });
 
-  const showLoginPasswordError = isInvalidCredentialsError && !isForgotPasswordMode;
   const confirmationEmailValue = confirmationEmail ?? '';
   const showConfirmationSection = confirmationEmailValue.length > 0;
   const showForgotPasswordInbox = Boolean(forgotPasswordEmail);
@@ -169,7 +168,6 @@ export function LoginForm() {
     isForgotPasswordMode,
     isSendingRestartLink: forgotPasswordMutation.isPending,
     loginErrorMessage,
-    showLoginPasswordError,
     showLoginErrorAlert,
     restartLinkError,
   };
