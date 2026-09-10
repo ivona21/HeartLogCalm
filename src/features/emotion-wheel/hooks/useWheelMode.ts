@@ -79,7 +79,16 @@ export function useWheelMode(
         const exists = next.has(id);
         if (exists) {
           next.delete(id);
-          setSelectionOrder((prevOrder) => prevOrder.filter((entryId) => entryId !== id));
+          setSelectionOrder((prevOrder) => {
+            const nextOrder = prevOrder.filter((entryId) => entryId !== id);
+            const nextActiveSelectionIds = getActiveSelectionIds(nextOrder);
+
+            setActiveCoreId(nextActiveSelectionIds.activeCoreId);
+            setActiveSecondaryId(nextActiveSelectionIds.activeSecondaryId);
+            setActiveTertiaryId(nextActiveSelectionIds.activeTertiaryId);
+
+            return nextOrder;
+          });
         } else if (next.size < MAX_SELECTED_EMOTIONS) {
           next.add(id);
           setSelectionOrder((prevOrder) => [...prevOrder, id]);
