@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
@@ -65,6 +65,7 @@ function fillPath(
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
   const {
     selectionOrder: pendingSelectionOrder,
+    updatedAt: pendingSelectionUpdatedAt,
     setPendingSelection,
     clearPendingSelection,
   } = usePendingEmotionSelectionStore();
@@ -91,7 +92,6 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const isDarkTheme = useIsDarkTheme();
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
-  const hasValidatedPendingSelectionRef = useRef(false);
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -167,9 +167,6 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
   useEffect(() => {
     if (pendingSelectionOrder.length === 0 || wheelEmotionIds.size === 0) return;
-    if (hasValidatedPendingSelectionRef.current) return;
-
-    hasValidatedPendingSelectionRef.current = true;
 
     const validSelectionOrder = pendingSelectionOrder.filter((emotionId) =>
       wheelEmotionIds.has(emotionId),
@@ -187,6 +184,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     }
   }, [
     pendingSelectionOrder,
+    pendingSelectionUpdatedAt,
     replaceSelection,
     selectionOrder,
     setPendingSelection,
