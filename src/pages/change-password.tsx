@@ -1,33 +1,41 @@
-import { Badge } from '@/components/ui/badge.tsx';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card.tsx';
-import { LockKeyholeIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CheckCircle2Icon } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { ChangePasswordForm } from '@/features/auth/forms/ChangePasswordForm/ChangePasswordForm.tsx';
 
 export default function ChangePasswordPage() {
+  const location = useLocation();
+  const [resetLinkMessage, setResetLinkMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setResetLinkMessage(null);
+  }, [location.key]);
+
+  if (resetLinkMessage) {
+    return (
+      <div className="mx-auto max-w-xl py-10">
+        <Alert variant="success" className="bg-success/10 border-success/30">
+          <CheckCircle2Icon className="h-4 w-4 text-success" />
+          <AlertDescription className="text-foreground">{resetLinkMessage}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto flex max-w-2xl items-center justify-center py-10">
-      <Card className="w-full">
+    <div className="mx-auto max-w-xl py-10">
+      <Card className="w-full mt-4">
         <CardHeader className="space-y-4">
-          <Badge variant="outline" className="w-fit">
-            Account
-          </Badge>
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md border border-card-border bg-muted/40">
-              <LockKeyholeIcon className="h-5 w-5 text-foreground" />
-            </div>
             <div className="space-y-1">
               <CardTitle>Change your password</CardTitle>
-              <CardDescription>Coming soon.</CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          This page is reserved for the password update flow.
+        <CardContent>
+          <ChangePasswordForm key={location.key} onResetLinkSent={setResetLinkMessage} />
         </CardContent>
       </Card>
     </div>
