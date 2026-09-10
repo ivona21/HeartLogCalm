@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
@@ -38,6 +38,7 @@ import { toast } from '@/shared/hooks/use-toast.ts';
 import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { isUnauthorizedError } from '@/features/auth/utils/auth-errors.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
+import { usePendingEmotionSelectionStore } from '@/features/emotion-wheel/stores/pendingEmotionSelectionStore.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -63,6 +64,11 @@ function fillPath(
 
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
   const {
+    selectionOrder: pendingSelectionOrder,
+    setPendingSelection,
+    clearPendingSelection,
+  } = usePendingEmotionSelectionStore();
+  const {
     selected,
     selectionOrder,
     primaryEmotionKey,
@@ -75,7 +81,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     activeCoreId,
     activeSecondaryId,
     activeTertiaryId,
-  } = useWheelMode(mode, onSelect);
+    replaceSelection,
+  } = useWheelMode(mode, onSelect, pendingSelectionOrder);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [interactionCount, setInteractionCount] = useState(0);
@@ -84,10 +91,28 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const isDarkTheme = useIsDarkTheme();
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
+  const hasValidatedPendingSelectionRef = useRef(false);
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
   const wheelLayout = useMemo(() => computeWheelLayout(emotions), [emotions]);
+  const wheelEmotionIds = useMemo(() => {
+    const ids = new Set<string>();
+
+    wheelLayout.forEach((core) => {
+      ids.add(core.id);
+
+      core.children.forEach((secondary) => {
+        ids.add(secondary.id);
+
+        secondary.children.forEach((tertiary) => {
+          ids.add(tertiary.id);
+        });
+      });
+    });
+
+    return ids;
+  }, [wheelLayout]);
   const {
     ancestorOf,
     directParentOf,
@@ -124,8 +149,54 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   });
 
   useEffect(() => {
+    if (isAuthenticated && pendingSelectionOrder.length === 0) return;
+
+    if (selectionOrder.length > 0) {
+      setPendingSelection(selectionOrder);
+      return;
+    }
+
+    clearPendingSelection();
+  }, [
+    clearPendingSelection,
+    isAuthenticated,
+    pendingSelectionOrder.length,
+    selectionOrder,
+    setPendingSelection,
+  ]);
+
+  useEffect(() => {
+    if (pendingSelectionOrder.length === 0 || wheelEmotionIds.size === 0) return;
+    if (hasValidatedPendingSelectionRef.current) return;
+
+    hasValidatedPendingSelectionRef.current = true;
+
+    const validSelectionOrder = pendingSelectionOrder.filter((emotionId) =>
+      wheelEmotionIds.has(emotionId),
+    );
+    const selectionChanged =
+      validSelectionOrder.length !== selectionOrder.length ||
+      validSelectionOrder.some((emotionId, index) => emotionId !== selectionOrder[index]);
+
+    if (selectionChanged) {
+      replaceSelection(validSelectionOrder);
+    }
+
+    if (validSelectionOrder.length !== pendingSelectionOrder.length) {
+      setPendingSelection(validSelectionOrder);
+    }
+  }, [
+    pendingSelectionOrder,
+    replaceSelection,
+    selectionOrder,
+    setPendingSelection,
+    wheelEmotionIds,
+  ]);
+
+  useEffect(() => {
     const handleLogout = () => {
       clearSelection();
+      clearPendingSelection();
       setSaveModalOpen(false);
       setAuthModalOpen(false);
     };
@@ -135,7 +206,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     return () => {
       window.removeEventListener(AUTH_LOGOUT_EVENT, handleLogout);
     };
-  }, [clearSelection]);
+  }, [clearPendingSelection, clearSelection]);
 
   const handleSaveEmotionEntry = async (comment: string) => {
     if (selectionOrder.length === 0 || !primaryEmotionKey) return;
@@ -160,6 +231,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
     setSaveModalOpen(false);
     clearSelection();
+    clearPendingSelection();
     toast({
       description: 'Your emotions have been recorded.',
       duration: 5000,
