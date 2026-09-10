@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { arc } from 'd3-shape';
 import { DEFAULT_WHEEL_DISPLAY_MODE, type WheelDisplayMode } from '@/config/defaults.ts';
 import { computeWheelLayout } from '@/features/emotion-wheel/utils/compute-wheel-layout.ts';
@@ -46,6 +46,12 @@ interface WheelProps {
 }
 
 const arcGen = arc();
+function selectionOrdersEqual(first: string[], second: string[]): boolean {
+  return (
+    first.length === second.length && first.every((emotionId, index) => emotionId === second[index])
+  );
+}
+
 function fillPath(
   innerRadius: number,
   outerRadius: number,
@@ -92,6 +98,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const isDarkTheme = useIsDarkTheme();
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
+  const wasAuthenticatedRef = useRef(isAuthenticated);
+  const skipPendingWriteUntilClearedRef = useRef(false);
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -149,7 +157,29 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   });
 
   useEffect(() => {
-    if (isAuthenticated && pendingSelectionOrder.length === 0) return;
+    if (wasAuthenticatedRef.current && !isAuthenticated) {
+      skipPendingWriteUntilClearedRef.current = true;
+      clearSelection();
+      clearPendingSelection();
+      setSaveModalOpen(false);
+      setAuthModalOpen(false);
+    }
+
+    wasAuthenticatedRef.current = isAuthenticated;
+  }, [clearPendingSelection, clearSelection, isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) return;
+
+    if (skipPendingWriteUntilClearedRef.current) {
+      clearPendingSelection();
+
+      if (selectionOrder.length === 0) {
+        skipPendingWriteUntilClearedRef.current = false;
+      }
+
+      return;
+    }
 
     if (selectionOrder.length > 0) {
       setPendingSelection(selectionOrder);
@@ -157,32 +187,29 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     }
 
     clearPendingSelection();
-  }, [
-    clearPendingSelection,
-    isAuthenticated,
-    pendingSelectionOrder.length,
-    selectionOrder,
-    setPendingSelection,
-  ]);
+  }, [clearPendingSelection, isAuthenticated, selectionOrder, setPendingSelection]);
 
   useEffect(() => {
     if (pendingSelectionOrder.length === 0 || wheelEmotionIds.size === 0) return;
+    if (!isAuthenticated && selectionOrder.length > 0) return;
 
     const validSelectionOrder = pendingSelectionOrder.filter((emotionId) =>
       wheelEmotionIds.has(emotionId),
     );
-    const selectionChanged =
-      validSelectionOrder.length !== selectionOrder.length ||
-      validSelectionOrder.some((emotionId, index) => emotionId !== selectionOrder[index]);
+    const selectionChanged = !selectionOrdersEqual(validSelectionOrder, selectionOrder);
 
     if (selectionChanged) {
       replaceSelection(validSelectionOrder);
     }
 
-    if (validSelectionOrder.length !== pendingSelectionOrder.length) {
+    if (isAuthenticated) {
+      clearPendingSelection();
+    } else if (!selectionOrdersEqual(validSelectionOrder, pendingSelectionOrder)) {
       setPendingSelection(validSelectionOrder);
     }
   }, [
+    clearPendingSelection,
+    isAuthenticated,
     pendingSelectionOrder,
     pendingSelectionUpdatedAt,
     replaceSelection,
