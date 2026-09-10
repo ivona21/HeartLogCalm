@@ -18,7 +18,11 @@ import {
   type ChangePasswordInput,
 } from '@/features/auth/forms/ChangePasswordForm/schema.ts';
 
-export function ChangePasswordForm() {
+interface ChangePasswordFormProps {
+  onResetLinkSent?: () => void;
+}
+
+export function ChangePasswordForm({ onResetLinkSent }: ChangePasswordFormProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [resetLinkMessage, setResetLinkMessage] = useState<string | null>(null);
@@ -81,7 +85,8 @@ export function ChangePasswordForm() {
     mutationFn: forgotPasswordMeApi,
     onSuccess: () => {
       setResetLinkError(null);
-      setResetLinkMessage('Password reset link sent.');
+      setResetLinkMessage('Check your inbox. Password reset link is sent.');
+      onResetLinkSent?.();
     },
     onError: (error: unknown) => {
       const apiError = normalizeApiError(error);
@@ -104,6 +109,15 @@ export function ChangePasswordForm() {
       <Alert variant="success" className="bg-success/10 border-success/30">
         <CheckCircle2Icon className="h-4 w-4 text-success" />
         <AlertDescription className="text-foreground">{successMessage}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (resetLinkMessage) {
+    return (
+      <Alert variant="success" className="bg-success/10 border-success/30">
+        <CheckCircle2Icon className="h-4 w-4 text-success" />
+        <AlertDescription className="text-foreground">{resetLinkMessage}</AlertDescription>
       </Alert>
     );
   }
@@ -191,13 +205,6 @@ export function ChangePasswordForm() {
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-destructive" />
             <AlertDescription className="text-destructive">{formError}</AlertDescription>
-          </Alert>
-        )}
-
-        {resetLinkMessage && (
-          <Alert variant="success" className="bg-success/10 border-success/30">
-            <CheckCircle2Icon className="h-4 w-4 text-success" />
-            <AlertDescription className="text-foreground">{resetLinkMessage}</AlertDescription>
           </Alert>
         )}
 

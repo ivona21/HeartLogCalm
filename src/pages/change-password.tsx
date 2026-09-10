@@ -1,7 +1,18 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { ChangePasswordForm } from '@/features/auth/forms/ChangePasswordForm/ChangePasswordForm.tsx';
 
 export default function ChangePasswordPage() {
+  const [isResetLinkSent, setIsResetLinkSent] = useState(false);
+
+  if (isResetLinkSent) {
+    return (
+      <div className="mx-auto max-w-xl py-10">
+        <ChangePasswordForm onResetLinkSent={() => setIsResetLinkSent(true)} />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-xl py-10">
       <Card className="w-full mt-4">
@@ -13,7 +24,7 @@ export default function ChangePasswordPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <ChangePasswordForm />
+          <ChangePasswordForm onResetLinkSent={() => setIsResetLinkSent(true)} />
         </CardContent>
       </Card>
     </div>
