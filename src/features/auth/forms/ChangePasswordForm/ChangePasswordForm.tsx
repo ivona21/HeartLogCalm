@@ -12,14 +12,21 @@ import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-er
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
 import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
 import { changePasswordApi } from '@/features/auth/api/change-password.api.ts';
+import { forgotPasswordMeApi } from '@/features/auth/api/forgot-password.api.ts';
 import {
   changePasswordSchema,
   type ChangePasswordInput,
 } from '@/features/auth/forms/ChangePasswordForm/schema.ts';
 
-export function ChangePasswordForm() {
+interface ChangePasswordFormProps {
+  onResetLinkSent?: (message: string) => void;
+}
+
+export function ChangePasswordForm({ onResetLinkSent }: ChangePasswordFormProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [resetLinkMessage, setResetLinkMessage] = useState<string | null>(null);
+  const [resetLinkError, setResetLinkError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
   const form = useForm<ChangePasswordInput>({
@@ -74,9 +81,28 @@ export function ChangePasswordForm() {
     },
   });
 
+  const forgotPasswordMeMutation = useMutation({
+    mutationFn: forgotPasswordMeApi,
+    onSuccess: () => {
+      const message = 'Check your inbox. Password reset link is sent.';
+
+      setResetLinkError(null);
+      setResetLinkMessage(message);
+      onResetLinkSent?.(message);
+    },
+    onError: (error: unknown) => {
+      const apiError = normalizeApiError(error);
+
+      setResetLinkMessage(null);
+      setResetLinkError(apiError.message || 'Unable to send the reset link.');
+    },
+  });
+
   const handleSubmit = (data: ChangePasswordInput) => {
     setFormError(null);
     setSuccessMessage(null);
+    setResetLinkError(null);
+    setResetLinkMessage(null);
     changePasswordMutation.mutate(data);
   };
 
@@ -89,28 +115,53 @@ export function ChangePasswordForm() {
     );
   }
 
+  if (resetLinkMessage) {
+    return (
+      <Alert variant="success" className="bg-success/10 border-success/30">
+        <CheckCircle2Icon className="h-4 w-4 text-success" />
+        <AlertDescription className="text-foreground">{resetLinkMessage}</AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
-        <FormInputField
-          control={form.control}
-          name="currentPassword"
-          label="Current password"
-          renderInput={(field) => (
-            <PasswordInput
-              {...field}
-              placeholder="Enter your current password"
-              disabled={changePasswordMutation.isPending}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-current-password"
-              onChange={(event) => {
-                field.onChange(event);
-                setFormError(null);
-                form.clearErrors('currentPassword');
-              }}
-            />
-          )}
-        />
+        <div className="relative">
+          <FormInputField
+            control={form.control}
+            name="currentPassword"
+            label="Current password"
+            renderInput={(field) => (
+              <PasswordInput
+                {...field}
+                placeholder="Enter your current password"
+                disabled={changePasswordMutation.isPending}
+                className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                data-testid="input-current-password"
+                onChange={(event) => {
+                  field.onChange(event);
+                  setFormError(null);
+                  setResetLinkError(null);
+                  setResetLinkMessage(null);
+                  form.clearErrors('currentPassword');
+                }}
+              />
+            )}
+          />
+          <div className="absolute right-0 top-full mt-1 text-sm text-accent-foreground">
+            <span>Forgot password? </span>
+            <button
+              type="button"
+              className="hover:text-primary transition-colors duration-150"
+              disabled={forgotPasswordMeMutation.isPending}
+              onClick={() => forgotPasswordMeMutation.mutate()}
+              data-testid="link-forgot-password"
+            >
+              {forgotPasswordMeMutation.isPending ? 'Sending reset link...' : 'Send reset link'}
+            </button>
+          </div>
+        </div>
 
         <FormInputField
           control={form.control}
@@ -156,6 +207,13 @@ export function ChangePasswordForm() {
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-destructive" />
             <AlertDescription className="text-destructive">{formError}</AlertDescription>
+          </Alert>
+        )}
+
+        {resetLinkError && (
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+            <AlertCircleIcon className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">{resetLinkError}</AlertDescription>
           </Alert>
         )}
 

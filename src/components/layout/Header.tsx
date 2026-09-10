@@ -56,7 +56,7 @@ export function Header() {
                   <DropdownMenuItem
                     onSelect={(event) => {
                       event.preventDefault();
-                      navigate('/change-password');
+                      navigate('/change-password', { state: { resetAt: Date.now() } });
                     }}
                     data-testid="button-change-password"
                   >
