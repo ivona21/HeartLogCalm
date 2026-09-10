@@ -19,7 +19,7 @@ import {
 } from '@/features/auth/forms/ChangePasswordForm/schema.ts';
 
 interface ChangePasswordFormProps {
-  onResetLinkSent?: () => void;
+  onResetLinkSent?: (message: string) => void;
 }
 
 export function ChangePasswordForm({ onResetLinkSent }: ChangePasswordFormProps) {
@@ -84,9 +84,11 @@ export function ChangePasswordForm({ onResetLinkSent }: ChangePasswordFormProps)
   const forgotPasswordMeMutation = useMutation({
     mutationFn: forgotPasswordMeApi,
     onSuccess: () => {
+      const message = 'Check your inbox. Password reset link is sent.';
+
       setResetLinkError(null);
-      setResetLinkMessage('Check your inbox. Password reset link is sent.');
-      onResetLinkSent?.();
+      setResetLinkMessage(message);
+      onResetLinkSent?.(message);
     },
     onError: (error: unknown) => {
       const apiError = normalizeApiError(error);
