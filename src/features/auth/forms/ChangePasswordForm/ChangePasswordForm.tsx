@@ -92,25 +92,34 @@ export function ChangePasswordForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
-        <FormInputField
-          control={form.control}
-          name="currentPassword"
-          label="Current password"
-          renderInput={(field) => (
-            <PasswordInput
-              {...field}
-              placeholder="Enter your current password"
-              disabled={changePasswordMutation.isPending}
-              className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
-              data-testid="input-current-password"
-              onChange={(event) => {
-                field.onChange(event);
-                setFormError(null);
-                form.clearErrors('currentPassword');
-              }}
-            />
-          )}
-        />
+        <div className="relative">
+          <FormInputField
+            control={form.control}
+            name="currentPassword"
+            label="Current password"
+            renderInput={(field) => (
+              <PasswordInput
+                {...field}
+                placeholder="Enter your current password"
+                disabled={changePasswordMutation.isPending}
+                className="bg-background border-border focus-visible:ring-primary transition-all duration-200"
+                data-testid="input-current-password"
+                onChange={(event) => {
+                  field.onChange(event);
+                  setFormError(null);
+                  form.clearErrors('currentPassword');
+                }}
+              />
+            )}
+          />
+          <button
+            type="button"
+            className="absolute right-0 top-full mt-1 text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
+            data-testid="link-forgot-password"
+          >
+            Forgot password?
+          </button>
+        </div>
 
         <FormInputField
           control={form.control}
