@@ -13,13 +13,24 @@ function sanitizeSelectionOrder(selectionOrder: string[]): string[] {
   return Array.from(new Set(selectionOrder.filter(Boolean))).slice(0, MAX_SELECTED_EMOTIONS);
 }
 
+function selectionOrdersEqual(first: string[], second: string[]): boolean {
+  return (
+    first.length === second.length && first.every((emotionId, index) => emotionId === second[index])
+  );
+}
+
 export const usePendingEmotionSelectionStore = create<PendingEmotionSelectionState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       selectionOrder: [],
       updatedAt: null,
       setPendingSelection: (selectionOrder) => {
         const sanitizedSelectionOrder = sanitizeSelectionOrder(selectionOrder);
+        const currentSelectionOrder = get().selectionOrder;
+
+        if (selectionOrdersEqual(currentSelectionOrder, sanitizedSelectionOrder)) {
+          return;
+        }
 
         set({
           selectionOrder: sanitizedSelectionOrder,
@@ -27,6 +38,12 @@ export const usePendingEmotionSelectionStore = create<PendingEmotionSelectionSta
         });
       },
       clearPendingSelection: () => {
+        const { selectionOrder, updatedAt } = get();
+
+        if (selectionOrder.length === 0 && updatedAt === null) {
+          return;
+        }
+
         set({ selectionOrder: [], updatedAt: null });
       },
     }),
