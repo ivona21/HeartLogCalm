@@ -285,6 +285,22 @@ export const authForgotPassword = async (
   });
 };
 
+export const getAuthForgotPasswordForCurrentUserUrl = () => {
+  return `/api/auth/forgot-password/me`;
+};
+
+/**
+ * Sends a password reset email to the currently authenticated user's email address.
+ */
+export const authForgotPasswordForCurrentUser = async (
+  options?: RequestInit,
+): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthForgotPasswordForCurrentUserUrl(), {
+    ...options,
+    method: 'POST',
+  });
+};
+
 export const getAuthConfirmPasswordResetUrl = (params?: AuthConfirmPasswordResetParams) => {
   const normalizedParams = new URLSearchParams();
 
