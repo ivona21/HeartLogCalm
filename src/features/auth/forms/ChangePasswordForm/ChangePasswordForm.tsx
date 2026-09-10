@@ -112,13 +112,16 @@ export function ChangePasswordForm() {
               />
             )}
           />
-          <button
-            type="button"
-            className="absolute right-0 top-full mt-1 text-sm text-accent-foreground hover:text-primary transition-colors duration-150"
-            data-testid="link-forgot-password"
-          >
-            Forgot password?
-          </button>
+          <div className="absolute right-0 top-full mt-1 text-sm text-accent-foreground">
+            <span>Forgot password? </span>
+            <button
+              type="button"
+              className="hover:text-primary transition-colors duration-150"
+              data-testid="link-forgot-password"
+            >
+              Send resend link
+            </button>
+          </div>
         </div>
 
         <FormInputField
