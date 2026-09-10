@@ -12,6 +12,7 @@ import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-er
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
 import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
 import { changePasswordApi } from '@/features/auth/api/change-password.api.ts';
+import { forgotPasswordMeApi } from '@/features/auth/api/forgot-password.api.ts';
 import {
   changePasswordSchema,
   type ChangePasswordInput,
@@ -20,6 +21,8 @@ import {
 export function ChangePasswordForm() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [resetLinkMessage, setResetLinkMessage] = useState<string | null>(null);
+  const [resetLinkError, setResetLinkError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
   const form = useForm<ChangePasswordInput>({
@@ -74,9 +77,25 @@ export function ChangePasswordForm() {
     },
   });
 
+  const forgotPasswordMeMutation = useMutation({
+    mutationFn: forgotPasswordMeApi,
+    onSuccess: () => {
+      setResetLinkError(null);
+      setResetLinkMessage('Password reset link sent.');
+    },
+    onError: (error: unknown) => {
+      const apiError = normalizeApiError(error);
+
+      setResetLinkMessage(null);
+      setResetLinkError(apiError.message || 'Unable to send the reset link.');
+    },
+  });
+
   const handleSubmit = (data: ChangePasswordInput) => {
     setFormError(null);
     setSuccessMessage(null);
+    setResetLinkError(null);
+    setResetLinkMessage(null);
     changePasswordMutation.mutate(data);
   };
 
@@ -107,6 +126,8 @@ export function ChangePasswordForm() {
                 onChange={(event) => {
                   field.onChange(event);
                   setFormError(null);
+                  setResetLinkError(null);
+                  setResetLinkMessage(null);
                   form.clearErrors('currentPassword');
                 }}
               />
@@ -117,9 +138,11 @@ export function ChangePasswordForm() {
             <button
               type="button"
               className="hover:text-primary transition-colors duration-150"
+              disabled={forgotPasswordMeMutation.isPending}
+              onClick={() => forgotPasswordMeMutation.mutate()}
               data-testid="link-forgot-password"
             >
-              Send resend link
+              {forgotPasswordMeMutation.isPending ? 'Sending reset link...' : 'Send reset link'}
             </button>
           </div>
         </div>
@@ -168,6 +191,20 @@ export function ChangePasswordForm() {
           <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
             <AlertCircleIcon className="h-4 w-4 text-destructive" />
             <AlertDescription className="text-destructive">{formError}</AlertDescription>
+          </Alert>
+        )}
+
+        {resetLinkMessage && (
+          <Alert variant="success" className="bg-success/10 border-success/30">
+            <CheckCircle2Icon className="h-4 w-4 text-success" />
+            <AlertDescription className="text-foreground">{resetLinkMessage}</AlertDescription>
+          </Alert>
+        )}
+
+        {resetLinkError && (
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+            <AlertCircleIcon className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">{resetLinkError}</AlertDescription>
           </Alert>
         )}
 
