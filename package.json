@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite --port 5000 --host",
     "build": "vite build",
-    "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "preview": "vite preview",
     "prepare": "husky",
     "check": "tsc",
@@ -123,7 +122,6 @@
     "postcss": "^8.4.47",
     "prettier": "^3.8.0",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.20.5",
     "typescript": "5.6.3",
     "vite": "^5.4.20"
   },
