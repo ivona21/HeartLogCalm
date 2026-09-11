@@ -13,6 +13,7 @@ import {
   clearLegacyGuestEmotionSelectionStorage,
   clearPendingAuthEmotionSelection,
 } from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
+import { clearAuthenticatedEntryDraft } from '@/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts';
 
 async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
   const { setAuth, setSession, clearAuth } = useAuthStore.getState();
@@ -55,6 +56,7 @@ export function useAuth() {
         console.error('Logout failed:', error);
       })
       .finally(() => {
+        clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
         clearPendingAuthEmotionSelection();
         clearLegacyGuestEmotionSelectionStorage();

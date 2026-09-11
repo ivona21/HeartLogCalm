@@ -44,6 +44,11 @@ import {
   clearPendingAuthEmotionSelection,
   consumePendingAuthEmotionSelection,
 } from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
+import {
+  clearAuthenticatedEntryDraft,
+  readAuthenticatedEntryDraft,
+  saveAuthenticatedEntryDraft,
+} from '@/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -96,15 +101,18 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   } = useWheelMode(mode, onSelect, guestSelectionOrder);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [draftComment, setDraftComment] = useState('');
   const [interactionCount, setInteractionCount] = useState(0);
   const { isAuthenticated, user } = useAuth();
+  const authenticatedUserId = user?.id ?? null;
   const { data: emotions = [] } = useEmotions();
   const isDarkTheme = useIsDarkTheme();
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
   const wasAuthenticatedRef = useRef(isAuthenticated);
   const skipGuestWriteUntilClearedRef = useRef(false);
-  const hasCheckedPendingAuthSelectionRef = useRef(false);
+  const initializedAuthenticatedDraftUserIdRef = useRef<string | null>(null);
+  const skipNextAuthenticatedDraftSyncRef = useRef(false);
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -168,15 +176,18 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   useEffect(() => {
     if (wasAuthenticatedRef.current && !isAuthenticated) {
       skipGuestWriteUntilClearedRef.current = true;
+      clearAuthenticatedEntryDraft(authenticatedUserId);
       clearSelection();
       clearGuestSelection();
       clearPendingAuthEmotionSelection();
+      setDraftComment('');
       setSaveModalOpen(false);
       setAuthModalOpen(false);
+      initializedAuthenticatedDraftUserIdRef.current = null;
     }
 
     wasAuthenticatedRef.current = isAuthenticated;
-  }, [clearGuestSelection, clearSelection, isAuthenticated]);
+  }, [authenticatedUserId, clearGuestSelection, clearSelection, isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) return;
@@ -221,36 +232,84 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   useEffect(() => {
     if (
       !isAuthenticated ||
-      hasCheckedPendingAuthSelectionRef.current ||
+      !authenticatedUserId ||
+      initializedAuthenticatedDraftUserIdRef.current === authenticatedUserId ||
       wheelEmotionIds.size === 0
     ) {
       return;
     }
 
-    hasCheckedPendingAuthSelectionRef.current = true;
+    initializedAuthenticatedDraftUserIdRef.current = authenticatedUserId;
 
     const pendingAuthSelection = consumePendingAuthEmotionSelection();
 
-    if (!pendingAuthSelection) {
+    if (pendingAuthSelection) {
+      const validSelectionOrder = pendingAuthSelection.emotionIds.filter((emotionId) =>
+        wheelEmotionIds.has(emotionId),
+      );
+
+      setDraftComment('');
+
+      if (validSelectionOrder.length > 0) {
+        skipNextAuthenticatedDraftSyncRef.current = true;
+        replaceSelection(validSelectionOrder);
+      }
+
       return;
     }
 
-    const validSelectionOrder = pendingAuthSelection.emotionIds.filter((emotionId) =>
+    const authenticatedEntryDraft = readAuthenticatedEntryDraft(authenticatedUserId);
+
+    if (!authenticatedEntryDraft) {
+      setDraftComment('');
+      return;
+    }
+
+    const validSelectionOrder = authenticatedEntryDraft.emotionIds.filter((emotionId) =>
       wheelEmotionIds.has(emotionId),
     );
+
+    setDraftComment(authenticatedEntryDraft.comment ?? '');
+
+    if (validSelectionOrder.length > 0 || (authenticatedEntryDraft.comment ?? '').trim() !== '') {
+      skipNextAuthenticatedDraftSyncRef.current = true;
+    }
 
     if (validSelectionOrder.length > 0) {
       replaceSelection(validSelectionOrder);
     }
-  }, [isAuthenticated, replaceSelection, wheelEmotionIds]);
+  }, [authenticatedUserId, isAuthenticated, replaceSelection, wheelEmotionIds]);
+
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      !authenticatedUserId ||
+      initializedAuthenticatedDraftUserIdRef.current !== authenticatedUserId
+    ) {
+      return;
+    }
+
+    if (skipNextAuthenticatedDraftSyncRef.current) {
+      skipNextAuthenticatedDraftSyncRef.current = false;
+      return;
+    }
+
+    saveAuthenticatedEntryDraft(authenticatedUserId, {
+      emotionIds: selectionOrder,
+      comment: draftComment,
+    });
+  }, [authenticatedUserId, draftComment, isAuthenticated, selectionOrder]);
 
   useEffect(() => {
     const handleLogout = () => {
+      clearAuthenticatedEntryDraft(authenticatedUserId);
       clearSelection();
       clearGuestSelection();
       clearPendingAuthEmotionSelection();
+      setDraftComment('');
       setSaveModalOpen(false);
       setAuthModalOpen(false);
+      initializedAuthenticatedDraftUserIdRef.current = null;
     };
 
     window.addEventListener(AUTH_LOGOUT_EVENT, handleLogout);
@@ -258,7 +317,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     return () => {
       window.removeEventListener(AUTH_LOGOUT_EVENT, handleLogout);
     };
-  }, [clearGuestSelection, clearSelection]);
+  }, [authenticatedUserId, clearGuestSelection, clearSelection]);
 
   const handleSaveEmotionEntry = async (comment: string) => {
     if (selectionOrder.length === 0 || !primaryEmotionKey) return;
@@ -282,6 +341,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     }
 
     setSaveModalOpen(false);
+    clearAuthenticatedEntryDraft(authenticatedUserId);
+    setDraftComment('');
     clearSelection();
     clearGuestSelection();
     clearPendingAuthEmotionSelection();
@@ -512,6 +573,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
         open={saveModalOpen}
         primaryGroups={selectedPrimaryGroups}
         isSaving={createEmotionEntryMutation.isPending}
+        comment={draftComment}
+        onCommentChange={setDraftComment}
         onConfirm={handleSaveEmotionEntry}
         onClose={() => setSaveModalOpen(false)}
       />

@@ -4,10 +4,11 @@ Goal: let guests keep their current wheel selections while they continue the sam
 
 ## Storage Model
 
-There are two separate storage paths:
+There are three separate storage paths:
 
 - Normal guest wheel state uses `sessionStorage`.
 - Pending auth handoff state uses `localStorage` with a 4-hour TTL.
+- Authenticated unsaved entry drafts use user-specific `sessionStorage`.
 
 Keeping these separate is intentional. Normal wheel selections are private session state and should disappear when the tab/browser session ends. Pending auth selections are only created when the guest explicitly chooses to log in or register so they can continue saving those selected emotions after authentication.
 
@@ -52,6 +53,22 @@ Pending auth selection values expire after 4 hours. `readPendingAuthEmotionSelec
 
 After authentication, `Wheel` calls `consumePendingAuthEmotionSelection`, filters the emotion IDs against the loaded wheel data, restores valid IDs, and immediately removes the pending value from `localStorage`. Pending auth selection is consumed once.
 
+## Authenticated Entry Drafts
+
+When a signed-in user changes their unsaved entry, `Wheel` mirrors the draft into `sessionStorage` through `authenticatedEntryDraftStorage`.
+
+Storage key:
+
+```text
+heartlog:user:{userId}:entry-draft
+```
+
+The key is scoped to the authenticated user's backend ID. If no user ID is available, the draft is not persisted. The draft currently stores selected emotion IDs and the unsaved reflection comment.
+
+On wheel initialization, pending auth handoff selection takes precedence. If no pending handoff exists, the wheel restores the current user's session draft and filters emotion IDs against the loaded wheel data.
+
+Empty, invalid, or malformed drafts are removed. A successful save clears the current user's draft only after the backend mutation succeeds. Logout clears the current user's draft before auth state is removed.
+
 ## Cleanup
 
 Logout clears pending auth selection as a defensive privacy measure in `useAuth`, even if the wheel is not mounted. The wheel also clears its local selection state when it receives the logout event.
@@ -68,6 +85,7 @@ That key was used by the previous implementation and could leave guest wheel sel
 
 - `src/features/emotion-wheel/stores/guestEmotionSelectionStore.ts`
 - `src/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts`
+- `src/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts`
 - `src/features/emotion-wheel/components/AuthPromptModal.tsx`
 - `src/features/emotion-wheel/components/Wheel.tsx`
 - `src/features/auth/hooks/useAuth.ts`
