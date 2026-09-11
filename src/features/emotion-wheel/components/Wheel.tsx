@@ -240,7 +240,6 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     }
 
     initializedAuthenticatedDraftUserIdRef.current = authenticatedUserId;
-    skipNextAuthenticatedDraftSyncRef.current = true;
 
     const pendingAuthSelection = consumePendingAuthEmotionSelection();
 
@@ -252,6 +251,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       setDraftComment('');
 
       if (validSelectionOrder.length > 0) {
+        skipNextAuthenticatedDraftSyncRef.current = true;
         replaceSelection(validSelectionOrder);
       }
 
@@ -271,13 +271,21 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
     setDraftComment(authenticatedEntryDraft.comment ?? '');
 
+    if (validSelectionOrder.length > 0 || (authenticatedEntryDraft.comment ?? '').trim() !== '') {
+      skipNextAuthenticatedDraftSyncRef.current = true;
+    }
+
     if (validSelectionOrder.length > 0) {
       replaceSelection(validSelectionOrder);
     }
   }, [authenticatedUserId, isAuthenticated, replaceSelection, wheelEmotionIds]);
 
   useEffect(() => {
-    if (!isAuthenticated || !authenticatedUserId) {
+    if (
+      !isAuthenticated ||
+      !authenticatedUserId ||
+      initializedAuthenticatedDraftUserIdRef.current !== authenticatedUserId
+    ) {
       return;
     }
 
