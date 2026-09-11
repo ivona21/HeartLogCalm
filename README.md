@@ -123,8 +123,9 @@ VITE_API_URL=https://your-backend-api.com
 - **`docs/design/design-guidelines.md`** - Design system and UI guidelines
 - **`docs/integrations/backend-api.md`** - API contract and requirements
 - **`docs/integrations/backend-api.openapi.json`** - OpenAPI snapshot consumed by Orval
+- **`docs/project/setup-and-usage.md`** - Local setup and current user flows
 - **`docs/project/bulletproof-react-guide.md`** - Architecture reference
-- **`docs/project/platform-replit.md`** - Project overview and state
+- **`docs/project/platform-replit.md`** - Project overview
 - **`docs/project/ui-file-naming.md`** - UI component filename convention
 
 ## 🧪 Technology Stack

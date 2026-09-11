@@ -9,6 +9,10 @@ import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
 import type { LoginInput } from '@/features/auth/forms/LoginForm/schema.ts';
 import type { RegisterInput } from '@/features/auth/forms/RegisterForm/schema.ts';
+import {
+  clearLegacyGuestEmotionSelectionStorage,
+  clearPendingAuthEmotionSelection,
+} from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
 
 async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
   const { setAuth, setSession, clearAuth } = useAuthStore.getState();
@@ -52,6 +56,8 @@ export function useAuth() {
       })
       .finally(() => {
         clearAuth();
+        clearPendingAuthEmotionSelection();
+        clearLegacyGuestEmotionSelectionStorage();
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
         }

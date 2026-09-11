@@ -1,245 +1,131 @@
-# HeartLog - Setup and Usage Guide
+# HeartLog Setup And Usage Guide
 
-## 🎉 What's Been Built
+This guide covers local setup, core user flows, and the current frontend/backend contract for HeartLog.
 
-Your HeartLog emotional wellness tracker frontend is complete! Here's what you have:
+## What's Included
 
-### ✨ Features Implemented
+HeartLog is a React frontend for emotional wellness tracking. Current implemented areas include:
 
-1. **Beautiful Registration Page** (`/register`)
-   - Email, username, and password fields with validation
-   - Serene oasis-inspired design with sage green and sky blue accents
-   - Smooth gradient background
-   - Real-time form validation with helpful error messages
-   - Loading states during submission
-   - Link to login page
+- Registration, login, logout, and authenticated user bootstrap.
+- Email confirmation and resend flows.
+- Password reset and change-password flows.
+- Protected dashboard route.
+- Public emotion wheel route.
+- OpenAPI-driven backend client generation.
+- Responsive, calm UI built with Tailwind CSS and shadcn/ui.
 
-2. **Elegant Login Page** (`/login`)
-   - Email and password authentication
-   - Calm, welcoming design matching registration
-   - "Forgot password?" placeholder for future enhancement
-   - Error handling with gentle coral-colored messages
-   - Loading indicators
-   - Link to registration page
-
-3. **Protected Dashboard** (`/dashboard`)
-   - Welcome message with user's name
-   - Clean header with HeartLog branding
-   - Logout functionality
-   - Placeholder for future emotion tracking features
-   - Protected route - only accessible when authenticated
-
-4. **Authentication System**
-   - JWT token management
-   - Automatic token validation
-   - Stale token cleanup on 401 errors
-   - Protected routes with loading states
-   - Seamless redirect flows
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-You mentioned you have your own backend deployed. Make sure it implements the API contract documented in `../integrations/backend-api.md`.
+
+- Node.js 20+
+- A backend that implements the contract in `../integrations/backend-api.md`
 
 ### Configuration
 
-1. **Create environment file:**
+1. Create an environment file:
+
    ```bash
    cp .env.example .env
    ```
 
-2. **Update the API URL:**
-   Open `.env` and set your backend URL:
-   ```
+2. Set your backend URL:
+
+   ```env
    VITE_API_URL=https://your-backend-api.com
    ```
 
-3. **Start the development server:**
-   The application is already running on port 5000!
+3. Start the development server:
 
-## 🎨 Design System
+   ```bash
+   npm run dev
+   ```
 
-Your app follows a calm, oasis-inspired aesthetic:
+The app runs on `http://localhost:5000` by default.
 
-### Colors
-- **Primary**: `--primary` / `--primary-foreground`
-- **Secondary**: `--secondary` / `--secondary-foreground`
-- **Accent**: `--accent` / `--accent-foreground`
-- **Success**: `--success` / `--success-foreground`
-- **Warning**: `--warning` / `--warning-foreground`
-- **Background**: `--background`
-- **Surface**: `--card` / `--popover`
-- **Error**: `--destructive` / `--destructive-foreground`
+## User Flows
 
-### Typography
-- **Font**: Inter - clean, modern, highly readable
-- Consistent hierarchy with proper spacing
+### Registration
 
-### Interactions
-- Smooth 200ms transitions
-- Gentle hover effects
-- Calming loading animations
-- No jarring movements or bounce effects
+1. User opens `/register`.
+2. User submits email, username, and password.
+3. Backend creates the account and sends an email confirmation link.
+4. Frontend shows a check-your-inbox state.
+5. User is not authenticated until the account is confirmed and they log in.
 
-## 📱 User Flow
+### Email Confirmation
 
-1. **First Visit** → Redirects to `/login`
-2. **New User** → Click "Sign up" → Fill registration form → Auto-login → Dashboard
-3. **Returning User** → Enter credentials → Dashboard
-4. **Authenticated** → Access dashboard, logout when done
-5. **Session Expired** → Automatic token cleanup, redirect to login
+1. User clicks the confirmation link in email.
+2. Browser opens the backend callback.
+3. Backend validates the token and redirects to `/email-confirmation?status=...`.
+4. Frontend renders success, expired, or invalid confirmation UI.
 
-## 🔒 Security Features
+### Login
 
-- JWT token stored securely in localStorage
-- Automatic token cleanup on 401 responses
-- No stale credentials sent to login/register endpoints
-- Protected routes prevent unauthorized access
-- Form validation on both client side (with backend validation expected)
+1. User opens `/login`.
+2. User submits email and password.
+3. Backend returns an access token in the response body and manages the refresh token through an HttpOnly cookie.
+4. Frontend stores only the local session fields it needs: `accessToken`, `expiresAt`, and `email`.
+5. Frontend loads the current user with `GET /api/auth/me`.
 
-## 🏗️ Architecture
+### Password Recovery
 
-The app follows **Bulletproof React** principles:
+1. User requests a password reset from the login page.
+2. Backend sends a recovery email.
+3. The recovery email opens the backend callback.
+4. Backend validates the recovery token, sets a short-lived HttpOnly recovery cookie, and redirects to `/reset-password?status=...`.
+5. Frontend submits only the new password to `POST /api/auth/reset-password` with credentials included.
 
-```
-client/src/
-├── features/auth/        # Authentication feature module
-│   ├── api/             # API calls (login, register)
-│   ├── components/      # LoginForm, RegisterForm
-│   ├── hooks/           # useAuth hook
-│   └── index.ts         # Public exports
-├── components/
-│   ├── ui/              # Shadcn components
-│   ├── layout/          # AuthLayout
-│   └── ProtectedRoute.tsx
-├── pages/               # Route pages
-├── lib/                 # API client, utilities
-└── types/               # Shared TypeScript types
-```
+### Session Refresh
 
-### Why This Structure?
-- **Feature-based**: Auth code grouped together
-- **Scalable**: Easy to add new features (emotions, journal, etc.)
-- **Maintainable**: Clear separation of concerns
-- **Type-safe**: Full TypeScript coverage
-- **Testable**: Isolated, modular components
+1. Frontend restores local `accessToken`, `expiresAt`, and `email`.
+2. Frontend calls `GET /api/auth/me`.
+3. If the access token is expired or rejected, frontend calls `POST /api/auth/refresh` with `credentials: include`.
+4. On refresh success, frontend retries the original request once.
+5. On refresh failure, frontend clears local auth state and returns the user to login.
 
-## 🔌 Backend Integration
+## Security Model
 
-Your frontend expects these endpoints from your backend:
+- Refresh tokens are managed by the backend in an HttpOnly cookie.
+- The frontend must not read, store, send, or expect a `refreshToken`.
+- The frontend stores only `accessToken`, `expiresAt`, and `email` in local auth state.
+- Credentialed auth endpoints must use `credentials: include`.
+- Authenticated user-owned requests should not send `userId`; backend ownership is resolved from the access token.
+- Password reset and email confirmation tokens are handled by backend callbacks, not by frontend JavaScript.
 
-### Required Endpoints
+## Backend Integration
 
-#### POST `/api/auth/register`
-```json
-Request:
-{
-  "email": "user@example.com",
-  "username": "johndoe",
-  "password": "securepass123"
-}
+The frontend consumes a checked-in OpenAPI snapshot and generates a typed API client with Orval.
 
-Response (201):
-{
-  "user": { "id": "...", "email": "...", "username": "..." },
-  "token": "jwt-token"
-}
-```
+- Contract guide: `../integrations/backend-api.md`
+- OpenAPI snapshot: `../integrations/backend-api.openapi.json`
+- Generated client: `../../src/shared/api/heartlog.generated.ts`
+- API transport: `../../src/lib/api-client.ts`
 
-#### POST `/api/auth/login`
-```json
-Request:
-{
-  "email": "user@example.com",
-  "password": "securepass123"
-}
+When the backend contract changes:
 
-Response (200):
-{
-  "user": { "id": "...", "email": "...", "username": "..." },
-  "token": "jwt-token"
-}
-```
+1. Export the updated OpenAPI JSON to `docs/integrations/backend-api.openapi.json`.
+2. Run `npm run api:generate`.
+3. Commit the updated snapshot and generated client together.
 
-#### GET `/api/auth/me`
-Headers: `Authorization: Bearer {token}`
-```json
-Response (200):
-{
-  "id": "...",
-  "email": "...",
-  "username": "..."
-}
-```
+## Routes
 
-See `../integrations/backend-api.md` for complete details.
+| Path | Auth required | Description |
+|------|---------------|-------------|
+| `/` | No | Home route, resolved from `DEFAULT_HOME_ROUTE` |
+| `/emotion-wheel` | No | Public emotion wheel |
+| `/login` | No | Login and forgot-password entry point |
+| `/register` | No | Registration page |
+| `/email-confirmation` | No | Email confirmation status page |
+| `/reset-password` | No | Password reset status and reset form |
+| `/dashboard` | Yes | User dashboard |
+| `/change-password` | Yes | Authenticated password change |
 
-## 🎯 Next Steps
+## Development Notes
 
-### Ready to Deploy?
-Your frontend is production-ready! You can publish it using Replit's deployment feature.
+- Keep API calls centralized through the generated client and app API transport.
+- Keep pages focused on route-level composition.
+- Put feature-specific UI, hooks, stores, and types inside the owning feature folder.
+- Use `../design/design-guidelines.md` for UI decisions.
+- Use `architecture.md` and `ui-file-naming.md` for project conventions.
 
-### Future Features to Add
-1. **Emotion Tracking**
-   - Mood selection interface
-   - Daily emotion logging
-   - Visual mood indicators
-
-2. **History & Patterns**
-   - Calendar view of emotions
-   - Mood patterns visualization
-   - Charts and insights
-
-3. **Journal**
-   - Rich text entries
-   - Tags and categories
-   - Search functionality
-
-4. **Profile & Settings**
-   - User preferences
-   - Password change
-   - Account management
-
-## 🧪 Testing Your Backend Integration
-
-Once you configure `VITE_API_URL`:
-
-1. Try registering a new account
-2. Check if you're redirected to dashboard
-3. Logout and login again
-4. Verify the dashboard shows your username
-
-If you encounter errors:
-- Check browser console (F12)
-- Verify backend URL in `.env`
-- Ensure your backend allows CORS from your frontend origin
-- Check backend logs for API errors
-
-## 📚 Code Quality
-
-- ✅ No TypeScript errors
-- ✅ No console warnings or errors
-- ✅ Responsive design (mobile & desktop)
-- ✅ Accessibility (keyboard navigation, ARIA labels)
-- ✅ Loading states for all async operations
-- ✅ Error handling with user-friendly messages
-- ✅ Form validation with helpful feedback
-
-## 💡 Tips
-
-- The design is intentionally calm - avoid adding harsh colors or jarring animations
-- Keep the oasis aesthetic when adding new features
-- Follow the existing component patterns for consistency
-- Use the design guidelines in `../design/design-guidelines.md`
-- Maintain the feature-based structure as you scale
-
-## 🆘 Need Help?
-
-- Architecture questions? Check `bulletproof-react-guide.md`
-- Design questions? See `../design/design-guidelines.md`
-- Backend integration? Read `../integrations/backend-api.md`
-- Project overview? Review `platform-replit.md`
-
----
-
-**Built with care for your emotional wellness journey** 🌿💙

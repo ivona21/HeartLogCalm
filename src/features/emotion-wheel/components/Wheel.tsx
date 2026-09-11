@@ -38,7 +38,12 @@ import { toast } from '@/shared/hooks/use-toast.ts';
 import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { isUnauthorizedError } from '@/features/auth/utils/auth-errors.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
-import { usePendingEmotionSelectionStore } from '@/features/emotion-wheel/stores/pendingEmotionSelectionStore.ts';
+import { useGuestEmotionSelectionStore } from '@/features/emotion-wheel/stores/guestEmotionSelectionStore.ts';
+import {
+  clearLegacyGuestEmotionSelectionStorage,
+  clearPendingAuthEmotionSelection,
+  consumePendingAuthEmotionSelection,
+} from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
 
 interface WheelProps {
   mode?: WheelDisplayMode;
@@ -70,11 +75,10 @@ function fillPath(
 
 export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProps) => {
   const {
-    selectionOrder: pendingSelectionOrder,
-    updatedAt: pendingSelectionUpdatedAt,
-    setPendingSelection,
-    clearPendingSelection,
-  } = usePendingEmotionSelectionStore();
+    selectionOrder: guestSelectionOrder,
+    setGuestSelection,
+    clearGuestSelection,
+  } = useGuestEmotionSelectionStore();
   const {
     selected,
     selectionOrder,
@@ -89,7 +93,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     activeSecondaryId,
     activeTertiaryId,
     replaceSelection,
-  } = useWheelMode(mode, onSelect, pendingSelectionOrder);
+  } = useWheelMode(mode, onSelect, guestSelectionOrder);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [interactionCount, setInteractionCount] = useState(0);
@@ -99,7 +103,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
   const wasAuthenticatedRef = useRef(isAuthenticated);
-  const skipPendingWriteUntilClearedRef = useRef(false);
+  const skipGuestWriteUntilClearedRef = useRef(false);
+  const hasCheckedPendingAuthSelectionRef = useRef(false);
 
   const { viewBox, touchHandlers } = useWheelGestures();
 
@@ -157,70 +162,93 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   });
 
   useEffect(() => {
+    clearLegacyGuestEmotionSelectionStorage();
+  }, []);
+
+  useEffect(() => {
     if (wasAuthenticatedRef.current && !isAuthenticated) {
-      skipPendingWriteUntilClearedRef.current = true;
+      skipGuestWriteUntilClearedRef.current = true;
       clearSelection();
-      clearPendingSelection();
+      clearGuestSelection();
+      clearPendingAuthEmotionSelection();
       setSaveModalOpen(false);
       setAuthModalOpen(false);
     }
 
     wasAuthenticatedRef.current = isAuthenticated;
-  }, [clearPendingSelection, clearSelection, isAuthenticated]);
+  }, [clearGuestSelection, clearSelection, isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) return;
 
-    if (skipPendingWriteUntilClearedRef.current) {
-      clearPendingSelection();
+    if (skipGuestWriteUntilClearedRef.current) {
+      clearGuestSelection();
 
       if (selectionOrder.length === 0) {
-        skipPendingWriteUntilClearedRef.current = false;
+        skipGuestWriteUntilClearedRef.current = false;
       }
 
       return;
     }
 
     if (selectionOrder.length > 0) {
-      setPendingSelection(selectionOrder);
+      setGuestSelection(selectionOrder);
       return;
     }
 
-    clearPendingSelection();
-  }, [clearPendingSelection, isAuthenticated, selectionOrder, setPendingSelection]);
+    clearGuestSelection();
+  }, [clearGuestSelection, isAuthenticated, selectionOrder, setGuestSelection]);
 
   useEffect(() => {
-    if (pendingSelectionOrder.length === 0 || wheelEmotionIds.size === 0) return;
+    if (guestSelectionOrder.length === 0 || wheelEmotionIds.size === 0) return;
 
-    const validSelectionOrder = pendingSelectionOrder.filter((emotionId) =>
+    const validSelectionOrder = guestSelectionOrder.filter((emotionId) =>
       wheelEmotionIds.has(emotionId),
     );
-    const selectionChanged = !selectionOrdersEqual(validSelectionOrder, selectionOrder);
-
-    if (isAuthenticated && selectionChanged) {
-      replaceSelection(validSelectionOrder);
-    }
-
     if (isAuthenticated) {
-      clearPendingSelection();
-    } else if (!selectionOrdersEqual(validSelectionOrder, pendingSelectionOrder)) {
-      setPendingSelection(validSelectionOrder);
+      clearGuestSelection();
+    } else if (!selectionOrdersEqual(validSelectionOrder, guestSelectionOrder)) {
+      setGuestSelection(validSelectionOrder);
     }
   }, [
-    clearPendingSelection,
+    clearGuestSelection,
+    guestSelectionOrder,
     isAuthenticated,
-    pendingSelectionOrder,
-    pendingSelectionUpdatedAt,
-    replaceSelection,
-    selectionOrder,
-    setPendingSelection,
+    setGuestSelection,
     wheelEmotionIds,
   ]);
 
   useEffect(() => {
+    if (
+      !isAuthenticated ||
+      hasCheckedPendingAuthSelectionRef.current ||
+      wheelEmotionIds.size === 0
+    ) {
+      return;
+    }
+
+    hasCheckedPendingAuthSelectionRef.current = true;
+
+    const pendingAuthSelection = consumePendingAuthEmotionSelection();
+
+    if (!pendingAuthSelection) {
+      return;
+    }
+
+    const validSelectionOrder = pendingAuthSelection.emotionIds.filter((emotionId) =>
+      wheelEmotionIds.has(emotionId),
+    );
+
+    if (validSelectionOrder.length > 0) {
+      replaceSelection(validSelectionOrder);
+    }
+  }, [isAuthenticated, replaceSelection, wheelEmotionIds]);
+
+  useEffect(() => {
     const handleLogout = () => {
       clearSelection();
-      clearPendingSelection();
+      clearGuestSelection();
+      clearPendingAuthEmotionSelection();
       setSaveModalOpen(false);
       setAuthModalOpen(false);
     };
@@ -230,7 +258,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
     return () => {
       window.removeEventListener(AUTH_LOGOUT_EVENT, handleLogout);
     };
-  }, [clearPendingSelection, clearSelection]);
+  }, [clearGuestSelection, clearSelection]);
 
   const handleSaveEmotionEntry = async (comment: string) => {
     if (selectionOrder.length === 0 || !primaryEmotionKey) return;
@@ -255,7 +283,8 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
     setSaveModalOpen(false);
     clearSelection();
-    clearPendingSelection();
+    clearGuestSelection();
+    clearPendingAuthEmotionSelection();
     toast({
       description: 'Your emotions have been recorded.',
       duration: 5000,
@@ -474,7 +503,11 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
           onHeartClick={() => setSaveModalOpen(true)}
         />
       </svg>
-      <AuthPromptModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthPromptModal
+        open={authModalOpen}
+        selectionOrder={selectionOrder}
+        onClose={() => setAuthModalOpen(false)}
+      />
       <SaveEmotionModal
         open={saveModalOpen}
         primaryGroups={selectedPrimaryGroups}

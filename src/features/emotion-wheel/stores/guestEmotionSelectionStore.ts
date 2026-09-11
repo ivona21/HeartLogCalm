@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { MAX_SELECTED_EMOTIONS } from '@/features/emotion-wheel/constants/emotion-hierarchy.ts';
 
-interface PendingEmotionSelectionState {
+interface GuestEmotionSelectionState {
   selectionOrder: string[];
   updatedAt: number | null;
-  setPendingSelection: (selectionOrder: string[]) => void;
-  clearPendingSelection: () => void;
+  setGuestSelection: (selectionOrder: string[]) => void;
+  clearGuestSelection: () => void;
 }
 
 function sanitizeSelectionOrder(selectionOrder: string[]): string[] {
@@ -19,12 +19,12 @@ function selectionOrdersEqual(first: string[], second: string[]): boolean {
   );
 }
 
-export const usePendingEmotionSelectionStore = create<PendingEmotionSelectionState>()(
+export const useGuestEmotionSelectionStore = create<GuestEmotionSelectionState>()(
   persist(
     (set, get) => ({
       selectionOrder: [],
       updatedAt: null,
-      setPendingSelection: (selectionOrder) => {
+      setGuestSelection: (selectionOrder) => {
         const sanitizedSelectionOrder = sanitizeSelectionOrder(selectionOrder);
         const currentSelectionOrder = get().selectionOrder;
 
@@ -37,7 +37,7 @@ export const usePendingEmotionSelectionStore = create<PendingEmotionSelectionSta
           updatedAt: sanitizedSelectionOrder.length > 0 ? Date.now() : null,
         });
       },
-      clearPendingSelection: () => {
+      clearGuestSelection: () => {
         const { selectionOrder, updatedAt } = get();
 
         if (selectionOrder.length === 0 && updatedAt === null) {
@@ -48,14 +48,15 @@ export const usePendingEmotionSelectionStore = create<PendingEmotionSelectionSta
       },
     }),
     {
-      name: 'pending-emotion-selection',
-      version: 1,
+      name: 'guest-emotion-selection',
+      storage: createJSONStorage(() => sessionStorage),
+      version: 2,
       migrate: (persistedState) => {
         if (!persistedState || typeof persistedState !== 'object') {
           return persistedState;
         }
 
-        const state = persistedState as Partial<PendingEmotionSelectionState>;
+        const state = persistedState as Partial<GuestEmotionSelectionState>;
 
         return {
           ...state,
