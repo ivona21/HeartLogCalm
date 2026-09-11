@@ -8,21 +8,25 @@ import {
 } from '@/components/ui/dialog.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Logo } from '@/components/Logo.tsx';
+import { savePendingAuthEmotionSelection } from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
 
 interface AuthPromptModalProps {
   open: boolean;
+  selectionOrder: string[];
   onClose: () => void;
 }
 
-export function AuthPromptModal({ open, onClose }: AuthPromptModalProps) {
+export function AuthPromptModal({ open, selectionOrder, onClose }: AuthPromptModalProps) {
   const navigate = useNavigate();
 
   const handleLogin = () => {
+    savePendingAuthEmotionSelection(selectionOrder);
     onClose();
     navigate('/login');
   };
 
   const handleRegister = () => {
+    savePendingAuthEmotionSelection(selectionOrder);
     onClose();
     navigate('/register');
   };

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 5000 --host",
     "build": "vite build",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "preview": "vite preview",
     "prepare": "husky",
     "check": "tsc",
