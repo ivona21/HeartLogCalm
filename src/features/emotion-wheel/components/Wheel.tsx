@@ -191,14 +191,13 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
   useEffect(() => {
     if (pendingSelectionOrder.length === 0 || wheelEmotionIds.size === 0) return;
-    if (!isAuthenticated && selectionOrder.length > 0) return;
 
     const validSelectionOrder = pendingSelectionOrder.filter((emotionId) =>
       wheelEmotionIds.has(emotionId),
     );
     const selectionChanged = !selectionOrdersEqual(validSelectionOrder, selectionOrder);
 
-    if (selectionChanged) {
+    if (isAuthenticated && selectionChanged) {
       replaceSelection(validSelectionOrder);
     }
 
