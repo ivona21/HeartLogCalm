@@ -1,193 +1,105 @@
-# HeartLog - Emotional Wellness Tracker
+# HeartLog Project Overview
+
+This document summarizes the current frontend shape of HeartLog. It is safe for public project documentation and avoids environment-specific secrets or private deployment details.
 
 ## Overview
-HeartLog is a beautifully designed emotional wellness tracking application with a calm, oasis-inspired aesthetic. The frontend is built with React TypeScript following Bulletproof React architecture principles.
+
+HeartLog is an emotional wellness tracking frontend built with React, TypeScript, Vite, Tailwind CSS, and shadcn/ui. It connects to an external backend API through an OpenAPI-generated client.
 
 ## Current State
-**Phase:** MVP Authentication (Registration & Login) - Frontend Only  
-**Last Updated:** November 30, 2025
 
-### Implemented Features
-- ✅ User registration with email, username, and password
-- ✅ User login with email and password
-- ✅ Protected routes with authentication
-- ✅ Beautiful, calm UI with sage green and sky blue color palette
-- ✅ Responsive design for mobile and desktop
-- ✅ Form validation with Zod
-- ✅ Loading and error states
-- ✅ Dashboard with calming nature GIF welcome screen
-- ✅ Interactive D3 SVG emotion wheel (Junto Institute model: 6 core, 5 secondary, 2 tertiary per branch)
-- ✅ Emotion wheel publicly accessible — no login required
-- ✅ Configurable home route via `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts`
-- ✅ Frontend-only architecture with clean root-level structure
-- ✅ Direct Vite dev server on port 5000
+Current frontend capabilities:
 
-### Architecture
-The project follows **Bulletproof React** principles:
-- **Feature-based structure**: Code organized by features (`features/auth/`)
-- **API layer abstraction**: Centralized API client in `lib/api-client.ts`
-- **Type safety**: Comprehensive TypeScript usage with shared schemas
-- **Component composition**: Modular, reusable components
-- **State management**: React Query for server state, React Context for auth
+- User registration with email confirmation.
+- Login and logout.
+- HttpOnly refresh-cookie session flow coordinated with short-lived access tokens.
+- Password reset and authenticated password change flows.
+- Protected dashboard route.
+- Public emotion wheel route.
+- Guest emotion selection persistence for the active browser session.
+- Pending auth handoff for guest emotion selections with a limited TTL.
+- Configurable home route through `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts`.
 
-### Tech Stack
-- **Frontend Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **Routing**: React Router DOM v6 (createBrowserRouter pattern)
-- **State Management**: TanStack Query (React Query)
-- **Form Handling**: React Hook Form + Zod validation
-- **Styling**: Tailwind CSS
-- **UI Components**: Shadcn UI
-- **Backend**: External API (user provides their own deployed backend)
+## Tech Stack
 
-### Project Structure
-```
+- React 18 with TypeScript.
+- Vite.
+- React Router DOM.
+- TanStack Query.
+- React Hook Form and Zod.
+- Tailwind CSS.
+- shadcn/ui.
+- Lucide React.
+- Orval-generated API client from OpenAPI.
+
+## Project Structure
+
+```text
 heartlog/
-├── src/                    # Frontend application source code
-│   ├── features/           # Feature modules (auth, etc.)
-│   ├── components/         # Reusable components
-│   ├── pages/              # Page components
-│   ├── routes/             # Centralized route configuration
-│   ├── lib/                # Utilities & API client
-│   └── types/              # TypeScript types & schemas
-├── public/                 # Static assets
-├── index.html              # Entry HTML
-├── package.json            # Dependencies
-├── vite.config.ts          # Vite build configuration
-├── tailwind.config.ts      # Tailwind CSS config
-├── tsconfig.json           # TypeScript configuration
-├── postcss.config.js       # PostCSS configuration
-└── components.json         # Shadcn UI config
+├── src/
+│   ├── components/
+│   ├── config/
+│   ├── features/
+│   ├── lib/
+│   ├── pages/
+│   ├── routes/
+│   └── shared/
+├── docs/
+├── public/
+├── index.html
+├── package.json
+├── vite.config.ts
+└── tailwind.config.ts
 ```
-
-## Design System
-
-### Color Palette
-- **Primary**: `--primary` - growth and calm
-- **Secondary**: `--secondary` - neutral support
-- **Accent**: `--accent` - gentle emphasis
-- **Success**: `--success` - positive feedback
-- **Warning**: `--warning` - caution and attention
-- **Surface**: `--background`, `--card`, `--popover`
-- **Text**: `--foreground`, `--muted-foreground`
-- **Error**: `--destructive` instead of harsh red
-
-### Typography
-- **Font Family**: Inter (clean, modern sans-serif)
-- **Hierarchy**: Consistent sizing with proper font weights
-- **Line Height**: 1.6 for readability
-
-### Component Guidelines
-- **Spacing**: Generous padding (p-6 to p-8) for breathing room
-- **Borders**: `--border`, `--input`, `--ring`
-- **Shadows**: Soft, warm-toned shadows
-- **Transitions**: Smooth 200ms transitions
-- **Interactions**: Minimal, calm animations
 
 ## Backend Integration
 
-### API Configuration
-The frontend connects to an external backend API. Configure via environment variables:
+The frontend uses `VITE_API_URL` to call the backend:
 
-```bash
+```env
 VITE_API_URL=https://your-backend-api.com
 ```
 
-### Expected Endpoints
-See `../integrations/backend-api.md` for complete API contract.
+The backend contract is documented in `../integrations/backend-api.md` and represented by `../integrations/backend-api.openapi.json`.
 
-#### Authentication Endpoints
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
+## Authentication Model
 
-### Token Management
-- JWT tokens stored in `localStorage` under `auth_token`
-- Tokens included in Authorization header: `Bearer {token}`
-- Auto-logout on 401 responses
+- Login and registration responses include an access token and expiration.
+- The refresh token is set and rotated by the backend as an HttpOnly cookie.
+- The frontend stores only `accessToken`, `expiresAt`, and `email` in local auth state.
+- Refresh, logout, password reset, and other cookie-dependent auth requests include credentials.
+- The frontend loads user profile state through `GET /api/auth/me`.
+- The frontend does not decode tokens to determine user identity.
 
-## Routing Architecture
+## Routing
 
-### Configurable Home Route
-
-The app root (`/`) always renders whichever feature is set as `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts`. This is resolved at build time by `src/shared/routing/HomeRoute.tsx`.
-
-**Current configuration:** `DEFAULT_HOME_ROUTE = '/emotion-wheel'` → `/` shows the emotion wheel.
-
-**To change the home feature:**
-1. Update `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts` to the desired route path (e.g. `'/dashboard'`)
-2. Ensure the corresponding component is registered in `HOME_COMPONENTS` inside `src/shared/routing/HomeRoute.tsx`
-
-**Key behaviours:**
-- `/` and the named route (e.g. `/emotion-wheel`) both render the same page independently — no redirects
-- After login or registration, users are always sent to `/`
-- The named routes (e.g. `/emotion-wheel`, `/dashboard`) remain accessible at their own URLs regardless of the home setting
-- The emotion wheel (`/emotion-wheel` and `/`) is publicly accessible — no login required
-- `/dashboard` is protected and requires authentication
-
-### Route Summary
+The root route (`/`) renders the feature configured by `DEFAULT_HOME_ROUTE` in `src/config/defaults.ts`.
 
 | Path | Auth required | Description |
-|------|--------------|-------------|
-| `/` | No | Home — renders `DEFAULT_HOME_ROUTE` feature |
-| `/emotion-wheel` | No | Emotion wheel (always public) |
+|------|---------------|-------------|
+| `/` | No | Configured home feature |
+| `/emotion-wheel` | No | Public emotion wheel |
 | `/login` | No | Login page |
 | `/register` | No | Registration page |
+| `/email-confirmation` | No | Confirmation status page |
+| `/reset-password` | No | Password reset page |
 | `/dashboard` | Yes | User dashboard |
+| `/change-password` | Yes | Password change page |
+
+## Running Locally
+
+```bash
+npm install
+npm run dev
+```
+
+The dev server runs on port `5000`.
 
 ## Development Guidelines
 
-### Adding New Features
-1. Create feature folder in `features/`
-2. Structure: `api/`, `components/`, `hooks/`, `types/`
-3. Export public API via `index.ts`
-4. Follow existing patterns for consistency
+- Keep frontend API behavior aligned with the OpenAPI snapshot.
+- Keep auth behavior aligned with `src/features/auth/docs/http-only-refresh.md`.
+- Keep password recovery behavior aligned with `src/features/auth/docs/password-reset-flow.md`.
+- Keep email confirmation behavior aligned with `src/features/auth/docs/email-confirmation-flow.md`.
+- Keep UI decisions aligned with `../design/design-guidelines.md`.
 
-### Component Best Practices
-- Use Shadcn UI components from `@/components/ui/`
-- Follow design guidelines for spacing, colors, typography
-- Add `data-testid` attributes for testing
-- Implement loading and error states
-- Ensure responsive design
-
-### State Management
-- **Server State**: Use React Query (`useQuery`, `useMutation`)
-- **Auth State**: Custom `useAuth` hook
-- **UI State**: Local component state or React Context
-
-### Form Handling
-- Use React Hook Form with Zod validation
-- Schema validation in `src/types/schema.ts`
-- Display friendly error messages
-- Loading states during submission
-
-## Running the Project
-
-The project runs Vite directly on port 5000:
-
-```bash
-npm run dev  # Runs vite --port 5000 --host
-```
-
-The `--host` flag allows external connections in the Replit environment. Make sure your backend API is running and the `VITE_API_URL` is configured correctly if you want full authentication to work.
-
-## Next Phase Features
-- Emotion logging interface with mood selection
-- Emotion history and calendar view
-- Mood patterns visualization dashboard
-- Journal entries with tags
-- User profile and settings
-
-## User Preferences
-- **Design Philosophy**: Calm, sanctuary-like oasis aesthetic
-- **No SSO**: Simple email/password authentication only
-- **External Backend**: User provides their own deployed API
-- **Architecture**: Follow Bulletproof React patterns strictly
-
-## Technical Notes
-- Vite configuration uses root-level `src/` directory with `@/` and `@shared/` path aliases
-- Dev server runs on port 5000 with `--host` flag for Replit compatibility
-- Path aliases:
-  - `@/` → `src/`
-  - `@shared/` → `src/types/`
-  - `@assets/` → `attached_assets/`
