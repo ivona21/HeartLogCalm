@@ -289,6 +289,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       return;
     }
 
+    // Restoring a draft updates wheel state; skip the immediate sync so it does not rewrite the same draft.
     if (skipNextAuthenticatedDraftSyncRef.current) {
       skipNextAuthenticatedDraftSyncRef.current = false;
       return;
