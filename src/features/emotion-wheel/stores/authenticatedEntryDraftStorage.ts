@@ -127,3 +127,7 @@ export function readAuthenticatedEntryDraft(
     return null;
   }
 }
+
+export function hasAuthenticatedEntryDraft(userId: string | null | undefined): boolean {
+  return readAuthenticatedEntryDraft(userId) !== null;
+}
