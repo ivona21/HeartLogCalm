@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import { render, type RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
 import { I18nProvider } from '@/lib/i18n';
 
 export function createTestQueryClient() {
@@ -19,16 +20,23 @@ export function createTestQueryClient() {
 
 type CustomRenderOptions = Omit<RenderOptions, 'wrapper'> & {
   queryClient?: QueryClient;
+  route?: string;
 };
 
 export function renderWithProviders(
   ui: ReactElement,
-  { queryClient = createTestQueryClient(), ...renderOptions }: CustomRenderOptions = {},
+  { queryClient = createTestQueryClient(), route, ...renderOptions }: CustomRenderOptions = {},
 ) {
   function Wrapper({ children }: { children: ReactNode }) {
+    const wrappedChildren = route ? (
+      <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+    ) : (
+      children
+    );
+
     return (
       <QueryClientProvider client={queryClient}>
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider>{wrappedChildren}</I18nProvider>
       </QueryClientProvider>
     );
   }
