@@ -12,11 +12,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
 import { LogoutConfirmationDialog } from '@/components/layout/LogoutConfirmationDialog.tsx';
+import { hasAuthenticatedEntryDraft } from '@/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts';
 
 export function Header() {
   const { logout, isAuthenticated, session, user } = useAuth();
   const navigate = useNavigate();
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [logoutHasUnsavedEntry, setLogoutHasUnsavedEntry] = useState(false);
   const loggedInEmail = user?.email ?? session?.email;
 
   return (
@@ -66,6 +68,7 @@ export function Header() {
                   <DropdownMenuItem
                     onSelect={(event) => {
                       event.preventDefault();
+                      setLogoutHasUnsavedEntry(hasAuthenticatedEntryDraft(user?.id));
                       setLogoutModalOpen(true);
                     }}
                     data-testid="button-logout"
@@ -77,6 +80,7 @@ export function Header() {
 
               <LogoutConfirmationDialog
                 open={logoutModalOpen}
+                hasUnsavedEntry={logoutHasUnsavedEntry}
                 onOpenChange={setLogoutModalOpen}
                 onConfirmLogout={() => {
                   setLogoutModalOpen(false);
