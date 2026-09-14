@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Loader2Icon } from 'lucide-react';
 import {
@@ -20,6 +20,8 @@ interface SaveEmotionModalProps {
   open: boolean;
   primaryGroups: PrimaryGroupSummary[];
   isSaving: boolean;
+  comment: string;
+  onCommentChange: (comment: string) => void;
   onConfirm: (comment: string) => Promise<void> | void;
   onClose: () => void;
 }
@@ -32,6 +34,8 @@ export function SaveEmotionModal({
   open,
   primaryGroups,
   isSaving,
+  comment,
+  onCommentChange,
   onConfirm,
   onClose,
 }: SaveEmotionModalProps) {
@@ -40,10 +44,21 @@ export function SaveEmotionModal({
       comment: '',
     },
   });
+  const previousOpenRef = useRef(open);
 
   useEffect(() => {
-    if (!open) form.reset({ comment: '' });
-  }, [form, open]);
+    const wasOpen = previousOpenRef.current;
+
+    if (open && !wasOpen) {
+      form.reset({ comment });
+    }
+
+    if (!open && wasOpen) {
+      form.reset({ comment: '' });
+    }
+
+    previousOpenRef.current = open;
+  }, [comment, form, open]);
 
   const handleSubmit = async ({ comment }: SaveEmotionFormValues) => {
     await onConfirm(comment.trim());
@@ -74,6 +89,10 @@ export function SaveEmotionModal({
                     <FormControl>
                       <Textarea
                         {...field}
+                        onChange={(event) => {
+                          field.onChange(event);
+                          onCommentChange(event.target.value);
+                        }}
                         rows={12}
                         placeholder="Write here..."
                         disabled={isSaving}
