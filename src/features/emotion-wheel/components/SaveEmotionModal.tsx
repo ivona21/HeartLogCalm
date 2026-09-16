@@ -34,10 +34,26 @@ type SaveEmotionFormValues = {
 };
 
 const hardcodedFeelings = [
-  { label: 'grateful', className: 'border-[#f1bdd9] bg-[#fff0f8] text-[#604751]' },
-  { label: 'hopeful', className: 'border-[#d3c3fa] bg-[#f6f0ff] text-[#55496c]' },
-  { label: 'tender', className: 'border-[#b8e5c5] bg-[#f0fff3] text-[#425d42]' },
-  { label: 'unsettled', className: 'border-[#bad8f5] bg-[#eff8ff] text-[#465461]' },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
 ];
 
 export function SaveEmotionModal({
@@ -78,35 +94,35 @@ export function SaveEmotionModal({
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent
-        overlayClassName="bg-[#17111f]/95"
-        className="w-[calc(100vw-2rem)] max-w-[674px] gap-0 overflow-hidden border-[#efe2d0] bg-[#fffaf0] p-0 text-[#3f3839] shadow-[0_30px_76px_rgba(14,9,23,0.46)] sm:rounded-[24px] [&>button:last-child]:right-8 [&>button:last-child]:top-7 [&>button:last-child]:flex [&>button:last-child]:h-8 [&>button:last-child]:w-8 [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-full [&>button:last-child]:bg-[#eee7db] [&>button:last-child]:text-[#8d8072] [&>button:last-child]:opacity-100 [&>button:last-child]:ring-offset-[#fffaf0] [&>button:last-child_svg]:h-5 [&>button:last-child_svg]:w-5 max-sm:max-h-[calc(100dvh-2rem)] max-sm:overflow-y-auto max-sm:rounded-[22px] max-sm:[&>button:last-child]:right-4 max-sm:[&>button:last-child]:top-4"
+        overlayClassName="bg-journal-overlay/95"
+        className="w-[calc(100vw-var(--journal-entry-screen-gutter))] max-w-[var(--journal-entry-width)] gap-0 overflow-hidden border-journal-border bg-journal-paper p-0 text-journal-foreground shadow-[var(--journal-entry-shadow)] sm:rounded-[var(--journal-entry-radius)] [&>button:last-child]:right-8 [&>button:last-child]:top-7 [&>button:last-child]:flex [&>button:last-child]:h-8 [&>button:last-child]:w-8 [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-full [&>button:last-child]:bg-journal-close [&>button:last-child]:text-journal-close-foreground [&>button:last-child]:opacity-100 [&>button:last-child]:ring-offset-journal-paper [&>button:last-child_svg]:h-5 [&>button:last-child_svg]:w-5 max-sm:max-h-[calc(100dvh-var(--journal-entry-screen-gutter-mobile))] max-sm:overflow-y-auto max-sm:rounded-[var(--journal-entry-radius-mobile)] max-sm:[&>button:last-child]:right-4 max-sm:[&>button:last-child]:top-4"
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="relative flex min-h-[534px] [--paper-content:64px] [--paper-line:32px] [--paper-margin:52px] [--paper-rule-offset:6px] [--paper-text-inset-top:28px] flex-col bg-[radial-gradient(circle_at_20%_16%,rgba(255,255,255,0.78),transparent_34%),linear-gradient(90deg,transparent_0,var(--paper-margin),rgba(221,184,158,0.5)_var(--paper-margin),rgba(221,184,158,0.5)_calc(var(--paper-margin)+1px),transparent_calc(var(--paper-margin)+1px)),repeating-linear-gradient(0deg,transparent_0,transparent_calc(var(--paper-line)-1px),rgba(226,201,173,0.58)_calc(var(--paper-line)-1px),rgba(226,201,173,0.58)_var(--paper-line)),linear-gradient(180deg,#fffaf0_0%,#fff8ee_100%)] bg-[position:0_0,0_0,0_var(--paper-rule-offset),0_0] max-sm:min-h-[calc(100dvh-2rem)] max-sm:[--paper-content:24px] max-sm:[--paper-margin:20px] max-sm:[--paper-text-inset-top:27px]"
+            className="relative flex min-h-[var(--journal-entry-min-height)] [--paper-content:var(--journal-entry-paper-content)] [--paper-line:var(--journal-entry-line-height)] [--paper-margin:var(--journal-entry-paper-margin)] [--paper-rule-offset:var(--journal-entry-rule-offset)] [--paper-text-inset-top:var(--journal-entry-text-inset-top)] flex-col bg-[var(--journal-entry-highlight),linear-gradient(90deg,transparent_0,var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_calc(var(--paper-margin)+1px),transparent_calc(var(--paper-margin)+1px)),repeating-linear-gradient(0deg,transparent_0,transparent_calc(var(--paper-line)-1px),hsl(var(--journal-entry-rule)/0.58)_calc(var(--paper-line)-1px),hsl(var(--journal-entry-rule)/0.58)_var(--paper-line)),linear-gradient(180deg,hsl(var(--journal-entry-paper))_0%,hsl(var(--journal-entry-paper-end))_100%)] bg-[position:0_0,0_0,0_var(--paper-rule-offset),0_0] max-sm:min-h-[calc(100dvh-var(--journal-entry-screen-gutter-mobile))] max-sm:[--paper-content:var(--journal-entry-paper-content-mobile)] max-sm:[--paper-margin:var(--journal-entry-paper-margin-mobile)] max-sm:[--paper-text-inset-top:var(--journal-entry-text-inset-top-mobile)]"
           >
-            <div className="min-h-[84px] border-b border-[#ecddca] pl-[var(--paper-content)] pr-16 pt-[26px] max-sm:pr-16 max-sm:pt-6">
-              <DialogTitle className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[16px] font-semibold leading-6 tracking-normal text-[#3f3839]">
+            <div className="min-h-[var(--journal-entry-header-height)] border-b border-journal-border pl-[var(--paper-content)] pr-16 pt-[var(--journal-entry-header-padding-top)] max-sm:pr-16 max-sm:pt-6">
+              <DialogTitle className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base font-semibold leading-6 tracking-normal text-journal-foreground">
                 <span>{format(entryDate, 'EEEE, MMMM d, yyyy')}</span>
-                <span className="font-medium text-[#a58dff]">{format(entryDate, 'h:mm a')}</span>
+                <span className="font-medium text-journal-time">{format(entryDate, 'h:mm a')}</span>
               </DialogTitle>
-              <DialogDescription className="mt-1 text-xs font-medium uppercase tracking-[0.17em] text-[#c9ae97]">
+              <DialogDescription className="mt-1 text-xs font-medium uppercase tracking-[var(--journal-entry-meta-tracking)] text-journal-meta">
                 Personal reflection
               </DialogDescription>
               <span className="sr-only">{formatSaveEmotionSummary(primaryGroups)}</span>
             </div>
 
-            <div className="flex min-h-[64px] items-center border-b border-[#ecddca] pl-[var(--paper-content)] pr-16 max-sm:pr-6">
+            <div className="flex min-h-[var(--journal-entry-feelings-height)] items-center border-b border-journal-border pl-[var(--paper-content)] pr-16 max-sm:pr-6">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 text-xs font-medium lowercase tracking-[0.08em] text-[#c7aa94]">
+                <span className="mr-1 text-xs font-medium lowercase tracking-[var(--journal-entry-label-tracking)] text-journal-meta">
                   feeling
                 </span>
                 {hardcodedFeelings.map((feeling) => (
                   <span
                     key={feeling.label}
                     className={cn(
-                      'inline-flex min-h-[30px] items-center rounded-full border px-3.5 text-sm font-medium leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62)]',
+                      'inline-flex min-h-[var(--journal-entry-feeling-chip-height)] items-center rounded-full border px-3.5 text-sm font-medium leading-none shadow-[var(--journal-entry-chip-gloss)]',
                       feeling.className,
                     )}
                   >
@@ -132,19 +148,19 @@ export function SaveEmotionModal({
                       rows={8}
                       placeholder="Write anything you want, or leave this quiet"
                       disabled={isSaving}
-                      className="min-h-[320px] resize-none rounded-none border-0 bg-transparent pl-[var(--paper-content)] pr-16 pt-[var(--paper-text-inset-top)] font-serif text-[18px] italic leading-[var(--paper-line)] text-[#5d4e49] shadow-none outline-none placeholder:text-[#bba995] focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 max-sm:min-h-[330px] max-sm:pr-6 max-sm:text-[18px]"
+                      className="min-h-[var(--journal-entry-writing-min-height)] resize-none rounded-none border-0 bg-transparent pl-[var(--paper-content)] pr-16 pt-[var(--paper-text-inset-top)] font-serif text-lg italic leading-[var(--paper-line)] text-journal-text shadow-none outline-none placeholder:text-journal-placeholder focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 max-sm:min-h-[var(--journal-entry-writing-min-height-mobile)] max-sm:pr-6 max-sm:text-lg"
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
 
-            <DialogFooter className="mt-auto min-h-[66px] flex-row items-center justify-between gap-4 border-t border-[#ecddca] pl-[var(--paper-content)] pr-8 py-3 sm:space-x-0 max-sm:flex-col max-sm:items-stretch max-sm:pr-6">
-              <div className="flex items-center gap-2.5 text-xs font-medium text-[#b79d8d] max-sm:order-3">
-                <span className="flex h-4 w-4 flex-col justify-center gap-[2px]" aria-hidden="true">
-                  <span className="block h-[2px] w-3 rounded-full bg-[#b79d8d]" />
-                  <span className="block h-[2px] w-2 rounded-full bg-[#b79d8d]" />
-                  <span className="block h-[2px] w-[10px] rounded-full bg-[#b79d8d]" />
+            <DialogFooter className="mt-auto min-h-[var(--journal-entry-footer-height)] flex-row items-center justify-between gap-4 border-t border-journal-border pl-[var(--paper-content)] pr-8 py-3 sm:space-x-0 max-sm:flex-col max-sm:items-stretch max-sm:pr-6">
+              <div className="flex items-center gap-2.5 text-xs font-medium text-journal-muted max-sm:order-3">
+                <span className="flex h-4 w-4 flex-col justify-center gap-0.5" aria-hidden="true">
+                  <span className="block h-0.5 w-3 rounded-full bg-journal-muted" />
+                  <span className="block h-0.5 w-2 rounded-full bg-journal-muted" />
+                  <span className="block h-0.5 w-2.5 rounded-full bg-journal-muted" />
                 </span>
                 <span>Your entry is private</span>
               </div>
@@ -155,7 +171,7 @@ export function SaveEmotionModal({
                     type="button"
                     variant="ghost"
                     disabled={isSaving}
-                    className="text-[#715d56] hover:bg-[#efe4d5]"
+                    className="text-journal-text hover:bg-journal-action-hover"
                   >
                     Discard
                   </Button>
