@@ -155,7 +155,7 @@ export function SaveEmotionModal({
               )}
             />
 
-            <DialogFooter className="mt-auto min-h-[var(--journal-entry-footer-height)] flex-row items-center justify-between gap-4 border-t border-journal-border pl-[var(--paper-content)] pr-8 py-3 sm:space-x-0 max-sm:flex-col max-sm:items-stretch max-sm:pr-6">
+            <DialogFooter className="mt-auto min-h-[var(--journal-entry-footer-height)] flex-row items-center justify-between gap-4 border-t border-journal-border pl-[var(--paper-content)] pr-8 py-3 sm:justify-between sm:space-x-0 max-sm:flex-col max-sm:items-stretch max-sm:pr-6">
               <div className="flex items-center gap-2.5 text-xs font-medium text-journal-muted max-sm:order-3">
                 <span className="flex h-4 w-4 flex-col justify-center gap-0.5" aria-hidden="true">
                   <span className="block h-0.5 w-3 rounded-full bg-journal-muted" />
