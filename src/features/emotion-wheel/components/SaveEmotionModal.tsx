@@ -103,11 +103,11 @@ export function SaveEmotionModal({
             className="relative flex min-h-[var(--journal-entry-min-height)] [--paper-content:var(--journal-entry-paper-content)] [--paper-line:var(--journal-entry-line-height)] [--paper-margin:var(--journal-entry-paper-margin)] [--paper-rule-offset:var(--journal-entry-rule-offset)] [--paper-text-inset-top:var(--journal-entry-text-inset-top)] flex-col bg-[var(--journal-entry-highlight),linear-gradient(90deg,transparent_0,var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_calc(var(--paper-margin)+1px),transparent_calc(var(--paper-margin)+1px)),linear-gradient(180deg,hsl(var(--journal-entry-paper))_0%,hsl(var(--journal-entry-paper-end))_100%)] bg-[position:0_0,0_0,0_0] max-sm:min-h-[calc(100dvh-var(--journal-entry-screen-gutter-mobile))] max-sm:[--paper-content:var(--journal-entry-paper-content-mobile)] max-sm:[--paper-margin:var(--journal-entry-paper-margin-mobile)] max-sm:[--paper-text-inset-top:var(--journal-entry-text-inset-top-mobile)]"
           >
             <div className="min-h-[var(--journal-entry-header-height)] border-b border-journal-border pl-[var(--paper-content)] pr-16 pt-[var(--journal-entry-header-padding-top)] max-sm:pr-16 max-sm:pt-6">
-              <DialogTitle className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base font-semibold leading-6 tracking-normal text-journal-foreground">
+              <DialogTitle className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm font-semibold leading-6 tracking-normal text-journal-foreground">
                 <span>{format(entryDate, 'EEEE, MMMM d, yyyy')}</span>
                 <span className="font-medium text-journal-time">{format(entryDate, 'h:mm a')}</span>
               </DialogTitle>
-              <DialogDescription className="mt-1 text-xs font-medium uppercase tracking-[var(--journal-entry-meta-tracking)] text-journal-meta">
+              <DialogDescription className="mt-1 text-[0.6875rem] font-medium uppercase tracking-[var(--journal-entry-meta-tracking)] text-journal-meta">
                 Personal reflection
               </DialogDescription>
               <span className="sr-only">{formatSaveEmotionSummary(primaryGroups)}</span>
