@@ -119,17 +119,17 @@
     --journal-entry-paper-content-mobile: 24px;
     --journal-entry-paper-margin: 52px;
     --journal-entry-paper-margin-mobile: 20px;
-    --journal-entry-line-height: 37px;
-    --journal-entry-rule-offset: 6px;
-    --journal-entry-text-inset-top: 28px;
-    --journal-entry-text-inset-top-mobile: 27px;
+    --journal-entry-line-height: 2rem;
+    --journal-entry-text-inset-top: 0.75rem;
+    --journal-entry-writing-font-size: 1.0625rem;
+    --journal-entry-writing-letter-spacing: 0.005em;
     --journal-entry-header-height: 84px;
     --journal-entry-header-padding-top: 26px;
     --journal-entry-meta-tracking: 0.17em;
     --journal-entry-label-tracking: 0.08em;
     --journal-entry-feelings-height: 64px;
-    --journal-entry-writing-min-height: 320px;
-    --journal-entry-writing-min-height-mobile: 330px;
+    --journal-entry-writing-min-height: 280px;
+    --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
     --journal-entry-feeling-chip-height: 30px;
 
@@ -308,17 +308,17 @@
     --journal-entry-paper-content-mobile: 24px;
     --journal-entry-paper-margin: 52px;
     --journal-entry-paper-margin-mobile: 20px;
-    --journal-entry-line-height: 37px;
-    --journal-entry-rule-offset: 6px;
-    --journal-entry-text-inset-top: 28px;
-    --journal-entry-text-inset-top-mobile: 27px;
+    --journal-entry-line-height: 2rem;
+    --journal-entry-text-inset-top: 0.75rem;
+    --journal-entry-writing-font-size: 1.0625rem;
+    --journal-entry-writing-letter-spacing: 0.005em;
     --journal-entry-header-height: 84px;
     --journal-entry-header-padding-top: 26px;
     --journal-entry-meta-tracking: 0.17em;
     --journal-entry-label-tracking: 0.08em;
     --journal-entry-feelings-height: 64px;
-    --journal-entry-writing-min-height: 320px;
-    --journal-entry-writing-min-height-mobile: 330px;
+    --journal-entry-writing-min-height: 280px;
+    --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
     --journal-entry-feeling-chip-height: 30px;
 
@@ -400,6 +400,32 @@
 
     a:visited {
         color: hsl(var(--link-visited));
+    }
+}
+
+@layer utilities {
+    .journal-writing-area {
+        min-height: var(--journal-entry-writing-min-height);
+        max-height: var(--journal-entry-writing-max-height);
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: var(--journal-entry-writing-font-size) !important;
+        line-height: var(--journal-entry-line-height) !important;
+        letter-spacing: var(--journal-entry-writing-letter-spacing);
+        padding-top: var(--journal-entry-text-inset-top) !important;
+        overflow-y: auto;
+        resize: none;
+        background-color: transparent !important;
+        background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent calc(var(--journal-entry-line-height) - 1px),
+                hsl(var(--journal-entry-rule) / 0.58) calc(var(--journal-entry-line-height) - 1px),
+                hsl(var(--journal-entry-rule) / 0.58) var(--journal-entry-line-height)
+        );
+        background-size: 100% var(--journal-entry-line-height);
+        background-position-y: var(--journal-entry-text-inset-top);
+        background-attachment: local;
     }
 }
 

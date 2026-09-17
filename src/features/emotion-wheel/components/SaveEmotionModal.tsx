@@ -100,7 +100,7 @@ export function SaveEmotionModal({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="relative flex min-h-[var(--journal-entry-min-height)] [--paper-content:var(--journal-entry-paper-content)] [--paper-line:var(--journal-entry-line-height)] [--paper-margin:var(--journal-entry-paper-margin)] [--paper-rule-offset:var(--journal-entry-rule-offset)] [--paper-text-inset-top:var(--journal-entry-text-inset-top)] flex-col bg-[var(--journal-entry-highlight),linear-gradient(90deg,transparent_0,var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_calc(var(--paper-margin)+1px),transparent_calc(var(--paper-margin)+1px)),linear-gradient(180deg,hsl(var(--journal-entry-paper))_0%,hsl(var(--journal-entry-paper-end))_100%)] bg-[position:0_0,0_0,0_0] max-sm:min-h-[calc(100dvh-var(--journal-entry-screen-gutter-mobile))] max-sm:[--paper-content:var(--journal-entry-paper-content-mobile)] max-sm:[--paper-margin:var(--journal-entry-paper-margin-mobile)] max-sm:[--paper-text-inset-top:var(--journal-entry-text-inset-top-mobile)]"
+            className="relative flex min-h-[var(--journal-entry-min-height)] [--paper-content:var(--journal-entry-paper-content)] [--paper-margin:var(--journal-entry-paper-margin)] flex-col bg-[var(--journal-entry-highlight),linear-gradient(90deg,transparent_0,var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_var(--paper-margin),hsl(var(--journal-entry-margin-rule)/0.5)_calc(var(--paper-margin)+1px),transparent_calc(var(--paper-margin)+1px)),linear-gradient(180deg,hsl(var(--journal-entry-paper))_0%,hsl(var(--journal-entry-paper-end))_100%)] bg-[position:0_0,0_0,0_0] max-sm:min-h-[calc(100dvh-var(--journal-entry-screen-gutter-mobile))] max-sm:[--paper-content:var(--journal-entry-paper-content-mobile)] max-sm:[--paper-margin:var(--journal-entry-paper-margin-mobile)]"
           >
             <div className="min-h-[var(--journal-entry-header-height)] border-b border-journal-border pl-[var(--paper-content)] pr-16 pt-[var(--journal-entry-header-padding-top)] max-sm:pr-16 max-sm:pt-6">
               <DialogTitle className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm font-semibold leading-6 tracking-normal text-journal-foreground">
@@ -136,7 +136,7 @@ export function SaveEmotionModal({
               control={form.control}
               name="comment"
               render={({ field }) => (
-                <FormItem className="space-y-0 bg-[repeating-linear-gradient(0deg,transparent_0,transparent_calc(var(--paper-line)-1px),hsl(var(--journal-entry-rule)/0.58)_calc(var(--paper-line)-1px),hsl(var(--journal-entry-rule)/0.58)_var(--paper-line))] bg-[position:0_var(--paper-rule-offset)]">
+                <FormItem className="space-y-0">
                   <FormLabel className="sr-only">Reflection</FormLabel>
                   <FormControl>
                     <Textarea
@@ -148,7 +148,7 @@ export function SaveEmotionModal({
                       rows={8}
                       placeholder="Write anything you want, or leave this quiet"
                       disabled={isSaving}
-                      className="min-h-[var(--journal-entry-writing-min-height)] resize-none rounded-none border-0 bg-transparent pl-[var(--paper-content)] pr-16 pt-[var(--paper-text-inset-top)] font-serif text-2xl italic leading-[var(--paper-line)] text-journal-text shadow-none outline-none placeholder:text-journal-placeholder focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 max-sm:min-h-[var(--journal-entry-writing-min-height-mobile)] max-sm:pr-6 max-sm:text-2xl"
+                      className="journal-writing-area rounded-none border-0 pl-[var(--paper-content)] pr-16 text-journal-text shadow-none outline-none placeholder:text-journal-placeholder focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 max-sm:pr-6"
                     />
                   </FormControl>
                 </FormItem>
