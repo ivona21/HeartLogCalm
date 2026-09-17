@@ -9,6 +9,14 @@ interface UseWheelSelectionDecorationsParams {
   isDarkTheme: boolean;
 }
 
+export type SelectedEmotionChip = {
+  id: string;
+  label: string;
+  backgroundColor: string;
+  borderColor: string;
+  textColor: string;
+};
+
 export function useWheelSelectionDecorations({
   wheelLayout,
   selected,
@@ -26,16 +34,6 @@ export function useWheelSelectionDecorations({
           labelMap.set(tertiary.id, tertiary.label);
         }
       }
-    }
-
-    return labelMap;
-  }, [wheelLayout]);
-
-  const primaryLabelByRootId = useMemo(() => {
-    const labelMap = new Map<string, string>();
-
-    for (const core of wheelLayout) {
-      labelMap.set(core.id, core.label);
     }
 
     return labelMap;
@@ -108,54 +106,39 @@ export function useWheelSelectionDecorations({
     );
   }, [coreColorByRootId, isDarkTheme, selected]);
 
-  const selectedEmotionLabels = useMemo(
-    () =>
-      (selectionOrder.length > 0 ? selectionOrder : [...selected])
-        .map((id) => emotionLabelById.get(id))
-        .filter((label): label is string => Boolean(label)),
-    [emotionLabelById, selected, selectionOrder],
-  );
-
-  const selectedPrimaryGroups = useMemo(() => {
+  const selectedEmotionChips = useMemo(() => {
     const orderedSelection = selectionOrder.length > 0 ? selectionOrder : [...selected];
-    const groups = new Map<
-      string,
-      {
-        primaryId: string;
-        primaryLabel: string;
-        selectedEmotionLabels: string[];
-      }
-    >();
 
-    for (const id of orderedSelection) {
+    return orderedSelection.flatMap((id): SelectedEmotionChip[] => {
       const rootId = id.split('.')[0];
-      const primaryLabel = primaryLabelByRootId.get(rootId);
-      const selectedEmotionLabel = emotionLabelById.get(id);
+      const label = emotionLabelById.get(id);
+      const coreColor = coreColorByRootId.get(rootId);
 
-      if (!primaryLabel || !selectedEmotionLabel) continue;
-
-      const existingGroup = groups.get(rootId);
-      if (existingGroup) {
-        existingGroup.selectedEmotionLabels.push(selectedEmotionLabel);
-        continue;
+      if (!label || !coreColor) {
+        return [];
       }
 
-      groups.set(rootId, {
-        primaryId: rootId,
-        primaryLabel,
-        selectedEmotionLabels: [selectedEmotionLabel],
-      });
-    }
-
-    return [...groups.values()];
-  }, [emotionLabelById, primaryLabelByRootId, selected, selectionOrder]);
+      return [
+        {
+          id,
+          label,
+          backgroundColor: getWheelDisplayColor(
+            tintColor(coreColor, 0.78),
+            'tertiary',
+            isDarkTheme,
+          ),
+          borderColor: getWheelDisplayColor(tintColor(coreColor, 0.45), 'secondary', isDarkTheme),
+          textColor: getWheelDisplayColor(coreColor, 'core', isDarkTheme),
+        },
+      ];
+    });
+  }, [coreColorByRootId, emotionLabelById, isDarkTheme, selected, selectionOrder]);
 
   return {
     ancestorOf,
     directParentOf,
     ancestorFillMap,
     selectedHeartColors,
-    selectedEmotionLabels,
-    selectedPrimaryGroups,
+    selectedEmotionChips,
   };
 }

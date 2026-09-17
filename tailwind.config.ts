@@ -131,6 +131,24 @@ export default {
         'color-border-light': 'hsl(var(--color-border-light) / <alpha-value>)',
         'color-border-subtle': 'hsl(var(--color-border-subtle) / <alpha-value>)',
 
+        journal: {
+          overlay: 'hsl(var(--journal-entry-overlay) / <alpha-value>)',
+          paper: 'hsl(var(--journal-entry-paper) / <alpha-value>)',
+          'paper-end': 'hsl(var(--journal-entry-paper-end) / <alpha-value>)',
+          border: 'hsl(var(--journal-entry-border) / <alpha-value>)',
+          rule: 'hsl(var(--journal-entry-rule) / <alpha-value>)',
+          'margin-rule': 'hsl(var(--journal-entry-margin-rule) / <alpha-value>)',
+          foreground: 'hsl(var(--journal-entry-foreground) / <alpha-value>)',
+          time: 'hsl(var(--journal-entry-time) / <alpha-value>)',
+          meta: 'hsl(var(--journal-entry-meta) / <alpha-value>)',
+          muted: 'hsl(var(--journal-entry-muted) / <alpha-value>)',
+          text: 'hsl(var(--journal-entry-text) / <alpha-value>)',
+          placeholder: 'hsl(var(--journal-entry-placeholder) / <alpha-value>)',
+          close: 'hsl(var(--journal-entry-close) / <alpha-value>)',
+          'close-foreground': 'hsl(var(--journal-entry-close-foreground) / <alpha-value>)',
+          'action-hover': 'hsl(var(--journal-entry-action-hover) / <alpha-value>)',
+        },
+
         status: {
           online: 'rgb(34 197 94)',
           away: 'rgb(245 158 11)',
