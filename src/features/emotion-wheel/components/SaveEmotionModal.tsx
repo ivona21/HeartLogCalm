@@ -148,7 +148,7 @@ export function SaveEmotionModal({
                       rows={8}
                       placeholder="Write anything you want, or leave this quiet"
                       disabled={isSaving}
-                      className="min-h-[var(--journal-entry-writing-min-height)] resize-none rounded-none border-0 bg-transparent pl-[var(--paper-content)] pr-16 pt-[var(--paper-text-inset-top)] font-serif text-lg italic leading-[var(--paper-line)] text-journal-text shadow-none outline-none placeholder:text-journal-placeholder focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 max-sm:min-h-[var(--journal-entry-writing-min-height-mobile)] max-sm:pr-6 max-sm:text-lg"
+                      className="min-h-[var(--journal-entry-writing-min-height)] resize-none rounded-none border-0 bg-transparent pl-[var(--paper-content)] pr-16 pt-[var(--paper-text-inset-top)] font-serif text-2xl italic leading-[var(--paper-line)] text-journal-text shadow-none outline-none placeholder:text-journal-placeholder focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 max-sm:min-h-[var(--journal-entry-writing-min-height-mobile)] max-sm:pr-6 max-sm:text-2xl"
                     />
                   </FormControl>
                 </FormItem>
