@@ -134,18 +134,13 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
     return ids;
   }, [wheelLayout]);
-  const {
-    ancestorOf,
-    directParentOf,
-    ancestorFillMap,
-    selectedHeartColors,
-    selectedPrimaryGroups,
-  } = useWheelSelectionDecorations({
-    wheelLayout,
-    selected,
-    selectionOrder,
-    isDarkTheme,
-  });
+  const { ancestorOf, directParentOf, ancestorFillMap, selectedHeartColors, selectedEmotionChips } =
+    useWheelSelectionDecorations({
+      wheelLayout,
+      selected,
+      selectionOrder,
+      isDarkTheme,
+    });
 
   const handleWheelClick = (id: string) => {
     const isSelectingEmotion = mode === 'full' || id.split('.').length === 3;
@@ -572,7 +567,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       />
       <SaveEmotionModal
         open={saveModalOpen}
-        primaryGroups={selectedPrimaryGroups}
+        selectedEmotionChips={selectedEmotionChips}
         isSaving={createEmotionEntryMutation.isPending}
         comment={draftComment}
         onCommentChange={setDraftComment}

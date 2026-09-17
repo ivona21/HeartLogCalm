@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { type CSSProperties, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { Loader2Icon } from 'lucide-react';
@@ -12,16 +12,12 @@ import {
 } from '@/components/ui/dialog.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
-import {
-  formatSaveEmotionSummary,
-  type PrimaryGroupSummary,
-} from '@/features/emotion-wheel/helpers/format-save-emotion-summary.ts';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form.tsx';
-import { cn } from '@/shared/utils/cn.ts';
+import type { SelectedEmotionChip } from '@/features/emotion-wheel/hooks/useWheelSelectionDecorations.ts';
 
 interface SaveEmotionModalProps {
   open: boolean;
-  primaryGroups: PrimaryGroupSummary[];
+  selectedEmotionChips: SelectedEmotionChip[];
   isSaving: boolean;
   comment: string;
   onCommentChange: (comment: string) => void;
@@ -33,292 +29,23 @@ type SaveEmotionFormValues = {
   comment: string;
 };
 
-const hardcodedFeelings = [
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-  {
-    label: 'grateful',
-    className:
-      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
-  },
-  {
-    label: 'hopeful',
-    className:
-      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
-  },
-  {
-    label: 'tender',
-    className:
-      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
-  },
-  {
-    label: 'unsettled',
-    className:
-      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
-  },
-];
+type EmotionChipStyle = CSSProperties & {
+  '--journal-emotion-chip-background': string;
+  '--journal-emotion-chip-border': string;
+  '--journal-emotion-chip-foreground': string;
+};
+
+function getEmotionChipStyle(chip: SelectedEmotionChip): EmotionChipStyle {
+  return {
+    '--journal-emotion-chip-background': chip.backgroundColor,
+    '--journal-emotion-chip-border': chip.borderColor,
+    '--journal-emotion-chip-foreground': chip.textColor,
+  };
+}
 
 export function SaveEmotionModal({
   open,
-  primaryGroups,
+  selectedEmotionChips,
   isSaving,
   comment,
   onCommentChange,
@@ -351,6 +78,8 @@ export function SaveEmotionModal({
     await onConfirm(comment.trim());
   };
 
+  const selectedEmotionLabel = selectedEmotionChips.map((chip) => chip.label).join(', ');
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent
@@ -370,23 +99,21 @@ export function SaveEmotionModal({
               <DialogDescription className="mt-1 text-[0.6875rem] font-medium uppercase tracking-[var(--journal-entry-meta-tracking)] text-journal-meta">
                 Personal reflection
               </DialogDescription>
-              <span className="sr-only">{formatSaveEmotionSummary(primaryGroups)}</span>
+              <span className="sr-only">Selected emotions: {selectedEmotionLabel}</span>
             </div>
 
             <div className="flex min-h-[var(--journal-entry-feelings-height)] items-center border-b border-journal-border pl-[var(--paper-content)] pr-16 max-sm:pr-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-xs font-medium tracking-[var(--journal-entry-label-tracking)] text-journal-meta">
-                  Emotions:
+                  Current emotions:
                 </span>
-                {hardcodedFeelings.map((feeling) => (
+                {selectedEmotionChips.map((chip) => (
                   <span
-                    key={feeling.label}
-                    className={cn(
-                      'inline-flex min-h-[var(--journal-entry-feeling-chip-height)] items-center rounded-full border px-2.5 text-xs font-semibold leading-none shadow-[var(--journal-entry-chip-gloss)]',
-                      feeling.className,
-                    )}
+                    key={chip.id}
+                    style={getEmotionChipStyle(chip)}
+                    className="inline-flex min-h-[var(--journal-entry-feeling-chip-height)] items-center rounded-full border border-[var(--journal-emotion-chip-border)] bg-[var(--journal-emotion-chip-background)] px-2.5 text-xs font-semibold leading-none text-[var(--journal-emotion-chip-foreground)] shadow-[var(--journal-entry-chip-gloss)]"
                   >
-                    {feeling.label}
+                    {chip.label}
                   </span>
                 ))}
               </div>
