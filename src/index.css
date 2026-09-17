@@ -121,6 +121,7 @@
     --journal-entry-paper-margin-mobile: 20px;
     --journal-entry-line-height: 2rem;
     --journal-entry-text-inset-top: 0.75rem;
+    --journal-entry-text-inset-bottom: var(--journal-entry-line-height);
     --journal-entry-writing-font-size: 1.0625rem;
     --journal-entry-writing-letter-spacing: 0.005em;
     --journal-entry-header-height: 84px;
@@ -310,6 +311,7 @@
     --journal-entry-paper-margin-mobile: 20px;
     --journal-entry-line-height: 2rem;
     --journal-entry-text-inset-top: 0.75rem;
+    --journal-entry-text-inset-bottom: var(--journal-entry-line-height);
     --journal-entry-writing-font-size: 1.0625rem;
     --journal-entry-writing-letter-spacing: 0.005em;
     --journal-entry-header-height: 84px;
@@ -413,6 +415,8 @@
         line-height: var(--journal-entry-line-height) !important;
         letter-spacing: var(--journal-entry-writing-letter-spacing);
         padding-top: var(--journal-entry-text-inset-top) !important;
+        padding-bottom: var(--journal-entry-text-inset-bottom) !important;
+        scroll-padding-bottom: var(--journal-entry-text-inset-bottom);
         overflow-y: auto;
         resize: none;
         background-color: transparent !important;
