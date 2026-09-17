@@ -102,7 +102,7 @@ export function SaveEmotionModal({
               <span className="sr-only">Selected emotions: {selectedEmotionLabel}</span>
             </div>
 
-            <div className="flex min-h-[var(--journal-entry-feelings-height)] items-center border-b border-journal-border py-[var(--journal-entry-feelings-padding-block)] pl-[var(--paper-content)] pr-16 max-sm:pr-6">
+            <div className="flex min-h-[var(--journal-entry-feelings-height)] items-center py-[var(--journal-entry-feelings-padding-block)] pl-[var(--paper-content)] pr-16 max-sm:pr-6">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
                 <span className="mr-1 text-xs font-medium tracking-[var(--journal-entry-label-tracking)] text-journal-meta">
                   Current emotions:
