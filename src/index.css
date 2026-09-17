@@ -135,19 +135,6 @@
     --journal-entry-footer-height: 66px;
     --journal-entry-feeling-chip-height: 23px;
 
-    --journal-feeling-grateful: 329 100% 97%;
-    --journal-feeling-grateful-border: 329 65% 84%;
-    --journal-feeling-grateful-foreground: 342 15% 33%;
-    --journal-feeling-hopeful: 263 100% 97%;
-    --journal-feeling-hopeful-border: 261 80% 87%;
-    --journal-feeling-hopeful-foreground: 261 20% 35%;
-    --journal-feeling-tender: 132 100% 97%;
-    --journal-feeling-tender-border: 133 53% 81%;
-    --journal-feeling-tender-foreground: 120 17% 31%;
-    --journal-feeling-unsettled: 205 100% 97%;
-    --journal-feeling-unsettled-border: 208 74% 85%;
-    --journal-feeling-unsettled-foreground: 208 16% 33%;
-
     --font-sans: Inter, system-ui, -apple-system, sans-serif;
     --font-serif: Georgia, serif;
     --font-mono: Menlo, monospace;
@@ -325,19 +312,6 @@
     --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
     --journal-entry-feeling-chip-height: 23px;
-
-    --journal-feeling-grateful: 329 100% 97%;
-    --journal-feeling-grateful-border: 329 65% 84%;
-    --journal-feeling-grateful-foreground: 342 15% 33%;
-    --journal-feeling-hopeful: 263 100% 97%;
-    --journal-feeling-hopeful-border: 261 80% 87%;
-    --journal-feeling-hopeful-foreground: 261 20% 35%;
-    --journal-feeling-tender: 132 100% 97%;
-    --journal-feeling-tender-border: 133 53% 81%;
-    --journal-feeling-tender-foreground: 120 17% 31%;
-    --journal-feeling-unsettled: 205 100% 97%;
-    --journal-feeling-unsettled-border: 208 74% 85%;
-    --journal-feeling-unsettled-foreground: 208 16% 33%;
 
     --shadow-2xs: 0px 2px 0px 0px hsl(258 24% 4% / 0.12);
     --shadow-xs: 0px 2px 0px 0px hsl(258 24% 4% / 0.16);

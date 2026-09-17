@@ -149,29 +149,6 @@ export default {
           'action-hover': 'hsl(var(--journal-entry-action-hover) / <alpha-value>)',
         },
 
-        'journal-feeling': {
-          grateful: {
-            DEFAULT: 'hsl(var(--journal-feeling-grateful) / <alpha-value>)',
-            border: 'hsl(var(--journal-feeling-grateful-border) / <alpha-value>)',
-            foreground: 'hsl(var(--journal-feeling-grateful-foreground) / <alpha-value>)',
-          },
-          hopeful: {
-            DEFAULT: 'hsl(var(--journal-feeling-hopeful) / <alpha-value>)',
-            border: 'hsl(var(--journal-feeling-hopeful-border) / <alpha-value>)',
-            foreground: 'hsl(var(--journal-feeling-hopeful-foreground) / <alpha-value>)',
-          },
-          tender: {
-            DEFAULT: 'hsl(var(--journal-feeling-tender) / <alpha-value>)',
-            border: 'hsl(var(--journal-feeling-tender-border) / <alpha-value>)',
-            foreground: 'hsl(var(--journal-feeling-tender-foreground) / <alpha-value>)',
-          },
-          unsettled: {
-            DEFAULT: 'hsl(var(--journal-feeling-unsettled) / <alpha-value>)',
-            border: 'hsl(var(--journal-feeling-unsettled-border) / <alpha-value>)',
-            foreground: 'hsl(var(--journal-feeling-unsettled-foreground) / <alpha-value>)',
-          },
-        },
-
         status: {
           online: 'rgb(34 197 94)',
           away: 'rgb(245 158 11)',
