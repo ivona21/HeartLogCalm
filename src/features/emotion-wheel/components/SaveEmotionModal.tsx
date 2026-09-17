@@ -54,6 +54,266 @@ const hardcodedFeelings = [
     className:
       'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
   },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
+  {
+    label: 'grateful',
+    className:
+      'border-journal-feeling-grateful-border bg-journal-feeling-grateful text-journal-feeling-grateful-foreground',
+  },
+  {
+    label: 'hopeful',
+    className:
+      'border-journal-feeling-hopeful-border bg-journal-feeling-hopeful text-journal-feeling-hopeful-foreground',
+  },
+  {
+    label: 'tender',
+    className:
+      'border-journal-feeling-tender-border bg-journal-feeling-tender text-journal-feeling-tender-foreground',
+  },
+  {
+    label: 'unsettled',
+    className:
+      'border-journal-feeling-unsettled-border bg-journal-feeling-unsettled text-journal-feeling-unsettled-foreground',
+  },
 ];
 
 export function SaveEmotionModal({
@@ -115,14 +375,14 @@ export function SaveEmotionModal({
 
             <div className="flex min-h-[var(--journal-entry-feelings-height)] items-center border-b border-journal-border pl-[var(--paper-content)] pr-16 max-sm:pr-6">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 text-xs font-medium lowercase tracking-[var(--journal-entry-label-tracking)] text-journal-meta">
-                  feeling
+                <span className="mr-1 text-xs font-medium tracking-[var(--journal-entry-label-tracking)] text-journal-meta">
+                  Emotions:
                 </span>
                 {hardcodedFeelings.map((feeling) => (
                   <span
                     key={feeling.label}
                     className={cn(
-                      'inline-flex min-h-[var(--journal-entry-feeling-chip-height)] items-center rounded-full border px-3.5 text-sm font-medium leading-none shadow-[var(--journal-entry-chip-gloss)]',
+                      'inline-flex min-h-[var(--journal-entry-feeling-chip-height)] items-center rounded-full border px-2.5 text-xs font-semibold leading-none shadow-[var(--journal-entry-chip-gloss)]',
                       feeling.className,
                     )}
                   >

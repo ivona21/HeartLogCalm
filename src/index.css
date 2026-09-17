@@ -132,7 +132,7 @@
     --journal-entry-writing-min-height: 280px;
     --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
-    --journal-entry-feeling-chip-height: 30px;
+    --journal-entry-feeling-chip-height: 23px;
 
     --journal-feeling-grateful: 329 100% 97%;
     --journal-feeling-grateful-border: 329 65% 84%;
@@ -322,7 +322,7 @@
     --journal-entry-writing-min-height: 280px;
     --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
-    --journal-entry-feeling-chip-height: 30px;
+    --journal-entry-feeling-chip-height: 23px;
 
     --journal-feeling-grateful: 329 100% 97%;
     --journal-feeling-grateful-border: 329 65% 84%;
