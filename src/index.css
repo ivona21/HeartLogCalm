@@ -91,6 +91,50 @@
     --color-border-light: 260 24% 92%;
     --color-border-subtle: 262 24% 88%;
 
+    --journal-entry-overlay: 264 29% 9%;
+    --journal-entry-paper: 43 100% 97%;
+    --journal-entry-paper-end: 40 100% 96%;
+    --journal-entry-border: 35 50% 88%;
+    --journal-entry-rule: 33 53% 78%;
+    --journal-entry-margin-rule: 21 47% 74%;
+    --journal-entry-foreground: 350 6% 23%;
+    --journal-entry-time: 255 100% 78%;
+    --journal-entry-meta: 26 40% 69%;
+    --journal-entry-muted: 25 32% 64%;
+    --journal-entry-text: 13 12% 33%;
+    --journal-entry-placeholder: 29 24% 66%;
+    --journal-entry-close: 39 28% 90%;
+    --journal-entry-close-foreground: 31 11% 50%;
+    --journal-entry-action-hover: 37 45% 89%;
+    --journal-entry-shadow: 0 30px 76px hsl(264 44% 5% / 0.46);
+    --journal-entry-highlight: radial-gradient(circle at 20% 16%, hsl(var(--color-white) / 0.78), transparent 34%);
+    --journal-entry-chip-gloss: inset 0 1px 0 hsl(var(--color-white) / 0.62);
+    --journal-entry-screen-gutter: 2rem;
+    --journal-entry-screen-gutter-mobile: 2rem;
+    --journal-entry-width: 674px;
+    --journal-entry-min-height: 534px;
+    --journal-entry-radius: 24px;
+    --journal-entry-radius-mobile: 22px;
+    --journal-entry-paper-content: 64px;
+    --journal-entry-paper-content-mobile: 24px;
+    --journal-entry-paper-margin: 52px;
+    --journal-entry-paper-margin-mobile: 20px;
+    --journal-entry-line-height: 2rem;
+    --journal-entry-text-inset-top: 0.75rem;
+    --journal-entry-text-inset-bottom: var(--journal-entry-line-height);
+    --journal-entry-writing-font-size: 1.0625rem;
+    --journal-entry-writing-letter-spacing: 0.005em;
+    --journal-entry-header-height: 84px;
+    --journal-entry-header-padding-top: 26px;
+    --journal-entry-meta-tracking: 0.17em;
+    --journal-entry-label-tracking: 0.08em;
+    --journal-entry-feelings-height: 64px;
+    --journal-entry-feelings-padding-block: 0.75rem;
+    --journal-entry-writing-min-height: 280px;
+    --journal-entry-writing-max-height: 420px;
+    --journal-entry-footer-height: 66px;
+    --journal-entry-feeling-chip-height: 23px;
+
     --font-sans: Inter, system-ui, -apple-system, sans-serif;
     --font-serif: Georgia, serif;
     --font-mono: Menlo, monospace;
@@ -225,6 +269,50 @@
     --color-border-light: 0 0% 90%;
     --color-border-subtle: 258 10% 24%;
 
+    --journal-entry-overlay: 264 29% 9%;
+    --journal-entry-paper: 43 100% 97%;
+    --journal-entry-paper-end: 40 100% 96%;
+    --journal-entry-border: 35 50% 88%;
+    --journal-entry-rule: 33 53% 78%;
+    --journal-entry-margin-rule: 21 47% 74%;
+    --journal-entry-foreground: 350 6% 23%;
+    --journal-entry-time: 255 100% 78%;
+    --journal-entry-meta: 26 40% 69%;
+    --journal-entry-muted: 25 32% 64%;
+    --journal-entry-text: 13 12% 33%;
+    --journal-entry-placeholder: 29 24% 66%;
+    --journal-entry-close: 39 28% 90%;
+    --journal-entry-close-foreground: 31 11% 50%;
+    --journal-entry-action-hover: 37 45% 89%;
+    --journal-entry-shadow: 0 30px 76px hsl(264 44% 5% / 0.46);
+    --journal-entry-highlight: radial-gradient(circle at 20% 16%, hsl(var(--color-white) / 0.78), transparent 34%);
+    --journal-entry-chip-gloss: inset 0 1px 0 hsl(var(--color-white) / 0.62);
+    --journal-entry-screen-gutter: 2rem;
+    --journal-entry-screen-gutter-mobile: 2rem;
+    --journal-entry-width: 674px;
+    --journal-entry-min-height: 534px;
+    --journal-entry-radius: 24px;
+    --journal-entry-radius-mobile: 22px;
+    --journal-entry-paper-content: 64px;
+    --journal-entry-paper-content-mobile: 24px;
+    --journal-entry-paper-margin: 52px;
+    --journal-entry-paper-margin-mobile: 20px;
+    --journal-entry-line-height: 2rem;
+    --journal-entry-text-inset-top: 0.75rem;
+    --journal-entry-text-inset-bottom: var(--journal-entry-line-height);
+    --journal-entry-writing-font-size: 1.0625rem;
+    --journal-entry-writing-letter-spacing: 0.005em;
+    --journal-entry-header-height: 84px;
+    --journal-entry-header-padding-top: 26px;
+    --journal-entry-meta-tracking: 0.17em;
+    --journal-entry-label-tracking: 0.08em;
+    --journal-entry-feelings-height: 64px;
+    --journal-entry-feelings-padding-block: 0.75rem;
+    --journal-entry-writing-min-height: 280px;
+    --journal-entry-writing-max-height: 420px;
+    --journal-entry-footer-height: 66px;
+    --journal-entry-feeling-chip-height: 23px;
+
     --shadow-2xs: 0px 2px 0px 0px hsl(258 24% 4% / 0.12);
     --shadow-xs: 0px 2px 0px 0px hsl(258 24% 4% / 0.16);
     --shadow-sm: 0px 2px 0px 0px hsl(258 24% 4% / 0.14), 0px 1px 2px -1px hsl(258 24% 4% / 0.22);
@@ -290,6 +378,34 @@
 
     a:visited {
         color: hsl(var(--link-visited));
+    }
+}
+
+@layer utilities {
+    .journal-writing-area {
+        min-height: var(--journal-entry-writing-min-height);
+        max-height: var(--journal-entry-writing-max-height);
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: var(--journal-entry-writing-font-size) !important;
+        line-height: var(--journal-entry-line-height) !important;
+        letter-spacing: var(--journal-entry-writing-letter-spacing);
+        padding-top: var(--journal-entry-text-inset-top) !important;
+        padding-bottom: var(--journal-entry-text-inset-bottom) !important;
+        scroll-padding-bottom: var(--journal-entry-text-inset-bottom);
+        overflow-y: auto;
+        resize: none;
+        background-color: transparent !important;
+        background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent calc(var(--journal-entry-line-height) - 1px),
+                hsl(var(--journal-entry-rule) / 0.58) calc(var(--journal-entry-line-height) - 1px),
+                hsl(var(--journal-entry-rule) / 0.58) var(--journal-entry-line-height)
+        );
+        background-size: 100% var(--journal-entry-line-height);
+        background-position-y: var(--journal-entry-text-inset-top);
+        background-attachment: local;
     }
 }
 
