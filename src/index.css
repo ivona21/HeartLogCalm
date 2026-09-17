@@ -129,6 +129,7 @@
     --journal-entry-meta-tracking: 0.17em;
     --journal-entry-label-tracking: 0.08em;
     --journal-entry-feelings-height: 64px;
+    --journal-entry-feelings-padding-block: 0.75rem;
     --journal-entry-writing-min-height: 280px;
     --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
@@ -319,6 +320,7 @@
     --journal-entry-meta-tracking: 0.17em;
     --journal-entry-label-tracking: 0.08em;
     --journal-entry-feelings-height: 64px;
+    --journal-entry-feelings-padding-block: 0.75rem;
     --journal-entry-writing-min-height: 280px;
     --journal-entry-writing-max-height: 420px;
     --journal-entry-footer-height: 66px;
