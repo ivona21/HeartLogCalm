@@ -180,7 +180,7 @@ export function DataDisplaySection() {
               <AccordionItem value="item-2">
                 <AccordionTrigger>How are corners handled?</AccordionTrigger>
                 <AccordionContent>
-                  The shared button primitive is rounded-md by default, with individual components
+                  The shared button primitive is pill-shaped by default, with individual components
                   overriding that when the layout calls for it.
                 </AccordionContent>
               </AccordionItem>
