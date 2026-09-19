@@ -1,7 +1,7 @@
-import LogoComplexFullSmallImage from '@/assets/LogoComplexFullSmall.png';
-import LogoComplexSmallImage from '@/assets/LogoComplexSmall.png';
-import LogoSimpleImage from '@/assets/LogoSimpleWithText.png';
-import LogoIconImage from '@/assets/LogoSimpleNoText.png';
+import LogoSimpleWithText from '@/assets/LogoSimpleWithText.png';
+import LogoSimpleNoText from '@/assets/LogoSimpleNoText.png';
+import LogoComplexWithText from '@/assets/LogoComplexWithText.png';
+import LogoComplexNoText from '@/assets/LogoComplexNoText.png';
 
 interface LogoProps {
   variant?: 'complexFull' | 'complex' | 'simple' | 'icon';
@@ -9,10 +9,10 @@ interface LogoProps {
 }
 
 const LOGO_MAP = {
-  complexFull: { src: LogoComplexFullSmallImage, alt: 'HeartLog - Emotion Logger' },
-  complex: { src: LogoComplexSmallImage, alt: 'HeartLog' },
-  simple: { src: LogoSimpleImage, alt: 'HeartLog' },
-  icon: { src: LogoIconImage, alt: 'HeartLog' },
+  complexFull: { src: LogoComplexWithText, alt: 'HeartLog - Emotion Logger' },
+  complex: { src: LogoComplexNoText, alt: 'HeartLog' },
+  simple: { src: LogoSimpleWithText, alt: 'HeartLog' },
+  icon: { src: LogoSimpleNoText, alt: 'HeartLog' },
 };
 
 export function Logo({ variant = 'simple', className = '' }: LogoProps) {
