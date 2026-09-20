@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/register';
 import EmailConfirmationPage from '@/pages/email-confirmation';
 import ResetPasswordPage from '@/pages/reset-password';
 import DashboardPage from '@/pages/dashboard';
+import EntriesPage from '@/pages/entries';
 import ChangePasswordPage from '@/pages/change-password';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
@@ -80,7 +81,7 @@ const routes = [
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <AppSectionPlaceholder title="Coming soon" />
+          <EntriesPage />
         </AppLayout>
       </ProtectedRoute>
     ),
