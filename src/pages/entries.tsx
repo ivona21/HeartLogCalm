@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { useAuth } from '@/features/auth';
 import { useEmotionEntries } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import type { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emotion.ts';
@@ -189,7 +190,9 @@ function EntryCard({
 }
 
 export default function EntriesPage() {
-  const entriesQuery = useEmotionEntries();
+  const { user, session } = useAuth();
+  const userKey = user?.id ?? user?.email ?? session?.email;
+  const entriesQuery = useEmotionEntries(Boolean(userKey), userKey);
   const emotionsQuery = useEmotions();
 
   const emotionMap = useMemo(() => buildEmotionMap(emotionsQuery.data ?? []), [emotionsQuery.data]);
