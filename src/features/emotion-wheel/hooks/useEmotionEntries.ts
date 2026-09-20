@@ -4,9 +4,10 @@ import type { EmotionEntry } from '@/features/emotion-wheel/types/emotion-entry.
 
 export const emotionEntriesQueryKey = ['emotion-entries'] as const;
 
-export function useEmotionEntries() {
+export function useEmotionEntries(enabled: boolean, userKey?: string) {
   return useQuery<EmotionEntry[]>({
-    queryKey: emotionEntriesQueryKey,
+    queryKey: [...emotionEntriesQueryKey, userKey ?? 'anonymous'],
     queryFn: fetchEmotionEntries,
+    enabled,
   });
 }

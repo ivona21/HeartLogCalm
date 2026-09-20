@@ -4,6 +4,7 @@ import { registerApi as registerApi } from '@/features/auth/api/register.api.ts'
 import { logoutApi } from '@/features/auth/api/logout.api.ts';
 import { getCurrentUserApi } from '@/features/auth/api/get-current-user.api.ts';
 import { useAuthStore } from '@/features/auth/stores/authStore';
+import { queryClient } from '@/lib/queryClient.ts';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
@@ -14,6 +15,7 @@ import {
   clearPendingAuthEmotionSelection,
 } from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
 import { clearAuthenticatedEntryDraft } from '@/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts';
+import { emotionEntriesQueryKey } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
 
 async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
   const { setAuth, setSession, clearAuth } = useAuthStore.getState();
@@ -58,6 +60,8 @@ export function useAuth() {
       .finally(() => {
         clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
+        queryClient.removeQueries({ queryKey: emotionEntriesQueryKey });
+        queryClient.removeQueries({ queryKey: ['emotion-entry-summary'] });
         clearPendingAuthEmotionSelection();
         clearLegacyGuestEmotionSelectionStorage();
         if (typeof window !== 'undefined') {
