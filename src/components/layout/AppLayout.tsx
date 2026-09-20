@@ -7,7 +7,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-[56px] container mx-auto px-4 py-8 md:py-12">{children}</main>
+      <main className="container mx-auto px-4 pt-[72px] pb-8 md:pb-12">{children}</main>
     </div>
   );
 }
