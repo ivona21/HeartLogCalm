@@ -121,10 +121,11 @@ export function Header() {
                         key={href}
                         disabled={disabled}
                         onSelect={(event) => {
-                          event.preventDefault();
                           if (disabled) {
+                            event.preventDefault();
                             return;
                           }
+
                           navigate(href);
                         }}
                       >
