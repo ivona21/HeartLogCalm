@@ -12,6 +12,7 @@ import ChangePasswordPage from '@/pages/change-password';
 import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
+import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
 
 const routes = [
   {
@@ -72,6 +73,50 @@ const routes = [
       <AppLayout>
         <EmotionWheelPage />
       </AppLayout>
+    ),
+  },
+  {
+    path: '/entries',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AppSectionPlaceholder title="Coming soon" />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/insights',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AppSectionPlaceholder title="Coming soon" />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/activity',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AppSectionPlaceholder title="Coming soon" />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/settings',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AppSectionPlaceholder
+            eyebrow="Preferences"
+            title="Settings"
+            description="Manage account preferences, reminders, privacy choices, and personal HeartLog defaults."
+          />
+        </AppLayout>
+      </ProtectedRoute>
     ),
   },
   {
