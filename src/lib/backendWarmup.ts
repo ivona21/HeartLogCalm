@@ -3,9 +3,8 @@ const ENABLED = import.meta.env.VITE_ENABLE_BACKEND_WARMUP === 'true';
 
 const ACTIVITY_WINDOW_MS = 10 * 60 * 1000;
 const WARMUP_COOLDOWN_MS = 10 * 60 * 1000;
-const HEARTBEAT_INTERVAL_MS = 60 * 1000;
 const ACTIVITY_THROTTLE_MS = 1000;
-const REQUEST_TIMEOUT_MS = 30 * 1000;
+const REQUEST_TIMEOUT_MS = 90 * 1000;
 
 let started = false;
 
@@ -48,24 +47,21 @@ export function startBackendWarmup(): void {
   };
 
   const onVisibilityChange = () => {
-    if (document.visibilityState === 'visible') warmup();
+    if (document.visibilityState === 'visible') {
+      lastActivityAt = Date.now();
+      warmup();
+    }
   };
 
   window.addEventListener('pointerdown', onActivity, { passive: true });
   window.addEventListener('keydown', onActivity);
   document.addEventListener('visibilitychange', onVisibilityChange);
-  const heartbeat = window.setInterval(warmup, HEARTBEAT_INTERVAL_MS);
 
   warmup();
 
-  window.addEventListener(
-    'pagehide',
-    () => {
-      window.clearInterval(heartbeat);
-      window.removeEventListener('pointerdown', onActivity);
-      window.removeEventListener('keydown', onActivity);
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    },
-    { once: true },
-  );
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      onVisibilityChange();
+    }
+  });
 }
