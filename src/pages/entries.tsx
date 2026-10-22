@@ -213,12 +213,12 @@ export default function EntriesPage() {
           <h1 className="text-3xl font-semibold tracking-tight">Entries</h1>
           <p className="mt-2 text-sm text-muted-foreground">Your reflections, newest first.</p>
         </div>
-        <LoadingEntries />
         {patienceMessage ? (
           <p className="text-sm text-muted-foreground" role="status">
             {patienceMessage}
           </p>
         ) : null}
+        <LoadingEntries />
       </div>
     );
   }

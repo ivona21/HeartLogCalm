@@ -252,11 +252,6 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onLoginSubmit)} className="space-y-5">
-        {loginPatienceMessage ? (
-          <p className="text-center text-sm text-muted-foreground" role="status">
-            {loginPatienceMessage}
-          </p>
-        ) : null}
         {!showInboxSection && (
           <div className="text-center mb-6">
             {isForgotPasswordMode ? (
@@ -301,6 +296,11 @@ export function LoginForm() {
           />
         )}
       </form>
+      {loginPatienceMessage ? (
+        <p className="text-center text-sm text-muted-foreground mt-4" role="status">
+          {loginPatienceMessage}
+        </p>
+      ) : null}
       {!showInboxSection && (
         <div className="mt-16 space-y-6 text-center">
           {isForgotPasswordMode && <BackToLoginLink onClick={returnToLoginMode} />}
