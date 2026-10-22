@@ -20,6 +20,7 @@ import { AuthBrandHeader } from '@/features/auth/components/AuthBrandHeader.tsx'
 import { BackToLoginLink } from '@/features/auth/components/BackToLoginLink.tsx';
 import { LoginCredentialsSection } from '@/features/auth/forms/LoginForm/LoginCredentialsSection.tsx';
 import { LoginUnconfirmedAccountSection } from '@/features/auth/forms/LoginForm/LoginUnconfirmedAccountSection.tsx';
+import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
 
 const AUTH_MODE = {
   Login: 'login',
@@ -39,6 +40,10 @@ export function LoginForm() {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string | null>(null);
   const previousUnconfirmedRef = useRef(false);
   const isForgotPasswordMode = authMode === AUTH_MODE.ForgotPassword;
+  const loginPatienceMessage = useDelayedPendingMessage(
+    isLoggingIn,
+    'This is taking a little longer than usual. Thank you for your patience.',
+  );
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -291,6 +296,11 @@ export function LoginForm() {
           />
         )}
       </form>
+      {loginPatienceMessage ? (
+        <p className="text-center text-sm text-muted-foreground mt-4" role="status">
+          {loginPatienceMessage}
+        </p>
+      ) : null}
       {!showInboxSection && (
         <div className="mt-16 space-y-6 text-center">
           {isForgotPasswordMode && <BackToLoginLink onClick={returnToLoginMode} />}

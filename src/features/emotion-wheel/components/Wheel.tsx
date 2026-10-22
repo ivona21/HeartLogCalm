@@ -316,7 +316,9 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   }, [authenticatedUserId, clearGuestSelection, clearSelection]);
 
   const handleSaveEmotionEntry = async (comment: string) => {
-    if (selectionOrder.length === 0 || !primaryEmotionKey) return;
+    if (createEmotionEntryMutation.isPending || selectionOrder.length === 0 || !primaryEmotionKey) {
+      return;
+    }
 
     try {
       await createEmotionEntryMutation.mutateAsync({

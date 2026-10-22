@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.t
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useAuth } from '@/features/auth';
 import { useEmotionEntries } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
+import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import type { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emotion.ts';
 import type { EmotionEntry } from '@/features/emotion-wheel/types/emotion-entry.ts';
@@ -194,6 +195,10 @@ export default function EntriesPage() {
   const userKey = user?.id ?? user?.email ?? session?.email;
   const entriesQuery = useEmotionEntries(Boolean(userKey), userKey);
   const emotionsQuery = useEmotions();
+  const patienceMessage = useDelayedPendingMessage(
+    entriesQuery.isLoading,
+    'Your entries are taking a little longer than usual to load. Thank you for your patience.',
+  );
 
   const emotionMap = useMemo(() => buildEmotionMap(emotionsQuery.data ?? []), [emotionsQuery.data]);
   const groupedEntries = useMemo(
@@ -208,6 +213,11 @@ export default function EntriesPage() {
           <h1 className="text-3xl font-semibold tracking-tight">Entries</h1>
           <p className="mt-2 text-sm text-muted-foreground">Your reflections, newest first.</p>
         </div>
+        {patienceMessage ? (
+          <p className="text-sm text-muted-foreground" role="status">
+            {patienceMessage}
+          </p>
+        ) : null}
         <LoadingEntries />
       </div>
     );

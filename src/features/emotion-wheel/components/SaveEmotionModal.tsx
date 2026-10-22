@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form.tsx';
 import type { SelectedEmotionChip } from '@/features/emotion-wheel/hooks/useWheelSelectionDecorations.ts';
+import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
 
 interface SaveEmotionModalProps {
   open: boolean;
@@ -59,6 +60,10 @@ export function SaveEmotionModal({
   });
   const previousOpenRef = useRef(open);
   const entryDate = useMemo(() => new Date(), [open]);
+  const patienceMessage = useDelayedPendingMessage(
+    isSaving,
+    'Saving your entry is taking a little longer than usual. Thank you for your patience. Please keep this page open while we finish.',
+  );
 
   useEffect(() => {
     const wasOpen = previousOpenRef.current;
@@ -175,6 +180,14 @@ export function SaveEmotionModal({
                 </Button>
               </div>
             </DialogFooter>
+            {patienceMessage ? (
+              <p
+                className="px-[var(--paper-content)] pb-3 text-xs text-journal-muted"
+                role="status"
+              >
+                {patienceMessage}
+              </p>
+            ) : null}
           </form>
         </Form>
       </DialogContent>
