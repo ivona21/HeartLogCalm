@@ -15,10 +15,15 @@ import { FormInputField } from '@/components/form/FormInputField.tsx';
 import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
+import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
+  const patienceMessage = useDelayedPendingMessage(
+    isRegistering,
+    'This is taking a little longer than usual. Thank you for your patience.',
+  );
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -93,6 +98,11 @@ export function RegisterForm() {
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              {patienceMessage ? (
+                <p className="text-center text-sm text-muted-foreground" role="status">
+                  {patienceMessage}
+                </p>
+              ) : null}
               <FormInputField
                 control={form.control}
                 name="email"

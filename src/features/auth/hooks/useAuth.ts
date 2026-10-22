@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 import { loginApi as loginApi } from '@/features/auth/api/login.api.ts';
 import { registerApi as registerApi } from '@/features/auth/api/register.api.ts';
 import { logoutApi } from '@/features/auth/api/logout.api.ts';
@@ -36,6 +37,17 @@ async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
 export function useAuth() {
   const navigate = useNavigate();
   const { authStatus, clearAuth, session, user } = useAuthStore();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const patienceToastRef = useRef<ReturnType<typeof toast> | null>(null);
+  const patienceTimerRef = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (patienceTimerRef.current !== null) window.clearTimeout(patienceTimerRef.current);
+      patienceToastRef.current?.dismiss();
+    },
+    [],
+  );
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginInput) => {
@@ -53,11 +65,25 @@ export function useAuth() {
   });
 
   const logout = () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    patienceTimerRef.current = window.setTimeout(() => {
+      patienceToastRef.current = toast({
+        description:
+          'Logging out is taking a little longer than usual. Thank you for your patience.',
+      });
+    }, 3000);
+
     logoutApi()
       .catch((error) => {
+        toast({ variant: 'destructive', description: 'Logout failed. Please try again.' });
         console.error('Logout failed:', error);
       })
       .finally(() => {
+        if (patienceTimerRef.current !== null) window.clearTimeout(patienceTimerRef.current);
+        patienceToastRef.current?.dismiss();
+        patienceToastRef.current = null;
+        setIsLoggingOut(false);
         clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
         queryClient.removeQueries({ queryKey: emotionEntriesQueryKey });
@@ -94,5 +120,6 @@ export function useAuth() {
     registerError: registerMutation.error,
     isLoggingIn: loginMutation.isPending,
     isRegistering: registerMutation.isPending,
+    isLoggingOut,
   };
 }

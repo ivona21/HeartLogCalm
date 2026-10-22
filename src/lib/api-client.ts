@@ -12,6 +12,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 export const AUTH_UNAUTHORIZED_EVENT = 'auth:unauthorized';
 export const AUTH_LOGOUT_EVENT = 'auth:logout';
 const ACCESS_TOKEN_REFRESH_BUFFER_MS = 60_000;
+const REQUEST_TIMEOUT_MS = 60_000;
 
 type RequestBehavior = {
   preserveAuthOnUnauthorized?: boolean;
@@ -193,19 +194,35 @@ export class ApiClient {
     }
 
     let response;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const abortFromCaller = () => controller.abort();
+    options.signal?.addEventListener('abort', abortFromCaller, { once: true });
+
     try {
       response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         headers,
+        signal: controller.signal,
         credentials: shouldIncludeCredentials(endpoint) ? 'include' : options.credentials,
       });
     } catch (error) {
+      if (controller.signal.aborted) {
+        throw createApiError({
+          message: 'The request took too long to complete. Please try again.',
+          kind: 'network',
+          raw: error,
+        });
+      }
       // Network error (backend unreachable)
       throw createApiError({
         message: DEFAULT_NETWORK_ERROR_MESSAGE,
         kind: 'network',
         raw: error,
       });
+    } finally {
+      clearTimeout(timeout);
+      options.signal?.removeEventListener('abort', abortFromCaller);
     }
 
     return response;
