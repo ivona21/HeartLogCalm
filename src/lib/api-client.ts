@@ -194,20 +194,26 @@ export class ApiClient {
     }
 
     let response;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-    const abortFromCaller = () => controller.abort();
-    options.signal?.addEventListener('abort', abortFromCaller, { once: true });
+    const timeoutController = new AbortController();
+    const timeout = setTimeout(() => timeoutController.abort(), REQUEST_TIMEOUT_MS);
+    const signal = options.signal
+      ? AbortSignal.any([options.signal, timeoutController.signal])
+      : timeoutController.signal;
 
     try {
       response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         headers,
-        signal: controller.signal,
+        signal,
         credentials: shouldIncludeCredentials(endpoint) ? 'include' : options.credentials,
       });
     } catch (error) {
-      if (controller.signal.aborted) {
+      // Preserve caller cancellations; only the internal timeout is translated.
+      if (options.signal?.aborted) {
+        throw error;
+      }
+
+      if (timeoutController.signal.aborted) {
         throw createApiError({
           message: 'The request took too long to complete. Please try again.',
           kind: 'network',
@@ -222,7 +228,6 @@ export class ApiClient {
       });
     } finally {
       clearTimeout(timeout);
-      options.signal?.removeEventListener('abort', abortFromCaller);
     }
 
     return response;
