@@ -103,6 +103,7 @@ See `docs/integrations/backend-api.md` for the sync workflow and contract notes.
 ```bash
 npm run dev      # Start development server (port 5000)
 npm run build    # Build for production
+npm run generate:emotions # Refresh public/emotions.json from the backend
 npm run preview  # Preview production build
 npm run check    # TypeScript type checking
 npm run api:generate # Regenerate the API client from the OpenAPI snapshot
@@ -117,6 +118,8 @@ Create a `.env` file:
 ```env
 VITE_API_URL=https://your-backend-api.com
 ```
+
+`npm run build` generates `public/emotions.json` from `VITE_API_URL` before Vite builds the site. To refresh the snapshot locally, set `VITE_API_URL` to your local or deployed backend and run `npm run generate:emotions`, then start the usual development server with `npm run dev`. Configure `VITE_API_URL` in Cloudflare Pages with the backend API URL so production builds can generate the snapshot.
 
 ## 📚 Documentation
 

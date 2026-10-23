@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --port 5000 --host",
+    "prebuild": "npm run generate:emotions",
     "build": "vite build",
+    "generate:emotions": "node scripts/generate-emotions.mjs",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",

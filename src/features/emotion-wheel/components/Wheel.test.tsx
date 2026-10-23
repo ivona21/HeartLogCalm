@@ -60,7 +60,7 @@ function resetAuthStore() {
 
 function useDefaultWheelHandlers() {
   server.use(
-    http.get('http://localhost/api/emotions', () => HttpResponse.json(emotionsResponse)),
+    http.get('*/emotions.json', () => HttpResponse.json(emotionsResponse)),
     http.get('http://localhost/api/emotion-entries/summary', () =>
       HttpResponse.json(entrySummaryResponse),
     ),
