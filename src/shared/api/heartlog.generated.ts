@@ -18,6 +18,7 @@ export const ApiErrorCode = {
   invalidRequest: 'invalidRequest',
   unauthorized: 'unauthorized',
   invalidCurrentPassword: 'invalidCurrentPassword',
+  emotionEntryNotFound: 'emotionEntryNotFound',
 } as const;
 
 export interface ApiResponse {
@@ -335,7 +336,7 @@ export const getAuthResetPasswordUrl = () => {
 };
 
 /**
- * Updates the Supabase password using the short-lived HTTP-only recovery cookie. Frontend requests must include credentials.
+ * Updates the Supabase password using the short-lived HTTP-only recovery cookie, signs out the recovered user's sessions, and clears HeartLog auth cookies. Frontend requests must include credentials.
  */
 export const authResetPassword = async (
   resetPasswordRequestDto?: ResetPasswordRequestDto,
@@ -522,5 +523,19 @@ export const itemsSave = async (
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(itemDto),
+  });
+};
+
+export const getEmotionEntriesDeleteUrl = (entryId: string) => {
+  return `/api/emotion-entries/${entryId}`;
+};
+
+export const emotionEntriesDelete = async (
+  entryId: string,
+  options?: RequestInit,
+): Promise<void> => {
+  return heartlogFetch<void>(getEmotionEntriesDeleteUrl(entryId), {
+    ...options,
+    method: 'DELETE',
   });
 };
