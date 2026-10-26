@@ -9,6 +9,7 @@ import {
   MenuIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useAuth } from '@/features/auth';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo.tsx';
@@ -33,7 +34,7 @@ const navigationItems = [
 ];
 
 export function Header() {
-  const { logout, isAuthenticated, session, user } = useAuth();
+  const { logout, isAuthenticated, isLoading, session, user } = useAuth();
   const navigate = useNavigate();
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [logoutHasUnsavedEntry, setLogoutHasUnsavedEntry] = useState(false);
@@ -101,7 +102,14 @@ export function Header() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            {isAuthenticated ? (
+            {isLoading ? (
+              <Skeleton
+                className="mr-1 h-9 w-20 rounded-[20px]"
+                aria-label="Checking authentication"
+                data-testid="auth-checking-skeleton"
+                role="status"
+              />
+            ) : isAuthenticated ? (
               <>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
