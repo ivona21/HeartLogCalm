@@ -1,11 +1,17 @@
 import { format, isValid, parseISO } from 'date-fns';
-import { AlertCircleIcon, BookOpenIcon, Trash2Icon } from 'lucide-react';
+import { AlertCircleIcon, BookOpenIcon, EllipsisVerticalIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useAuth } from '@/features/auth';
 import { useEmotionEntries } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
@@ -181,16 +187,28 @@ function EntryCard({
             />
           ))}
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="no-default-hover-elevate no-default-active-elevate absolute right-4 top-4 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          aria-label="Delete entry"
-          onClick={() => onDelete(entry)}
-        >
-          <Trash2Icon />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="no-default-hover-elevate no-default-active-elevate absolute right-4 top-4"
+              aria-label="Open entry actions"
+            >
+              <EllipsisVerticalIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={() => onDelete(entry)}
+            >
+              <Trash2Icon className="text-destructive" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       <CardContent className="p-4">
         {comment ? (
