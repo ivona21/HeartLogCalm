@@ -1,18 +1,27 @@
 import { format, isValid, parseISO } from 'date-fns';
-import { AlertCircleIcon, BookOpenIcon } from 'lucide-react';
-import { useMemo } from 'react';
+import { AlertCircleIcon, BookOpenIcon, EllipsisVerticalIcon, Trash2Icon } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useAuth } from '@/features/auth';
 import { useEmotionEntries } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
+import { useDeleteEmotionEntry } from '@/features/emotion-wheel/hooks/useDeleteEmotionEntry.ts';
+import { DeleteEmotionEntryDialog } from '@/features/emotion-wheel/components/DeleteEmotionEntryDialog.tsx';
 import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import type { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emotion.ts';
 import type { EmotionEntry } from '@/features/emotion-wheel/types/emotion-entry.ts';
+import { toast } from '@/shared/hooks/use-toast.ts';
 
 type EmotionDisplay = {
   label: string;
@@ -147,9 +156,11 @@ function EmotionChip({
 function EntryCard({
   entry,
   emotionMap,
+  onDelete,
 }: {
   entry: EmotionEntry;
   emotionMap: Map<string, EmotionDisplay>;
+  onDelete: (entry: EmotionEntry) => void;
 }) {
   const entryDate = getEntryDate(entry);
   const primaryEmotion = entry.selectedEmotions.find((emotion) => emotion.isPrimary);
@@ -160,24 +171,44 @@ function EntryCard({
 
   return (
     <Card className="overflow-hidden bg-card/80">
-      <CardHeader className="border-b border-border/70 bg-muted/15 p-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+      <CardHeader className="relative border-b border-border/70 bg-muted/15 p-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0">
         <div className="space-y-1">
           <p className="text-sm font-semibold text-foreground">{format(entryDate, 'h:mm a')}</p>
           {primaryLabel ? (
             <p className="text-xs font-medium text-muted-foreground">Primary: {primaryLabel}</p>
           ) : null}
         </div>
-        {entry.selectedEmotions.length > 0 ? (
-          <div className="flex flex-wrap gap-2 sm:justify-end">
-            {entry.selectedEmotions.map((emotion) => (
-              <EmotionChip
-                key={`${entry.id}-${emotion.emotionKey}`}
-                emotion={emotion}
-                emotionMap={emotionMap}
-              />
-            ))}
-          </div>
-        ) : null}
+        <div className="flex flex-wrap items-center gap-2 pr-12 sm:ml-auto sm:justify-end sm:self-center">
+          {entry.selectedEmotions.map((emotion) => (
+            <EmotionChip
+              key={`${entry.id}-${emotion.emotionKey}`}
+              emotion={emotion}
+              emotionMap={emotionMap}
+            />
+          ))}
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="no-default-hover-elevate no-default-active-elevate absolute right-4 top-4"
+              aria-label="Open entry actions"
+            >
+              <EllipsisVerticalIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={() => onDelete(entry)}
+            >
+              <Trash2Icon className="text-destructive" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       <CardContent className="p-4">
         {comment ? (
@@ -192,6 +223,8 @@ function EntryCard({
 
 export default function EntriesPage() {
   const { user, session } = useAuth();
+  const [entryToDelete, setEntryToDelete] = useState<EmotionEntry | null>(null);
+  const deleteEntryMutation = useDeleteEmotionEntry();
   const userKey = user?.id ?? user?.email ?? session?.email;
   const entriesQuery = useEmotionEntries(Boolean(userKey), userKey);
   const emotionsQuery = useEmotions();
@@ -205,6 +238,26 @@ export default function EntriesPage() {
     () => groupEntriesByDate(entriesQuery.data ?? []),
     [entriesQuery.data],
   );
+
+  const handleDeleteEntry = () => {
+    if (!entryToDelete) return;
+
+    deleteEntryMutation.mutate(entryToDelete.id, {
+      onSuccess: () => {
+        setEntryToDelete(null);
+        toast({
+          variant: 'info',
+          description: 'Entry deleted successfully.',
+        });
+      },
+      onError: () => {
+        toast({
+          variant: 'destructive',
+          description: 'Unable to delete this entry. Please try again.',
+        });
+      },
+    });
+  };
 
   if (entriesQuery.isLoading) {
     return (
@@ -258,12 +311,28 @@ export default function EntriesPage() {
             </h2>
             <div className="space-y-3">
               {group.entries.map((entry) => (
-                <EntryCard key={entry.id} entry={entry} emotionMap={emotionMap} />
+                <EntryCard
+                  key={entry.id}
+                  entry={entry}
+                  emotionMap={emotionMap}
+                  onDelete={setEntryToDelete}
+                />
               ))}
             </div>
           </section>
         ))}
       </div>
+
+      <DeleteEmotionEntryDialog
+        open={entryToDelete !== null}
+        isDeleting={deleteEntryMutation.isPending}
+        onOpenChange={(open) => {
+          if (!open && !deleteEntryMutation.isPending) {
+            setEntryToDelete(null);
+          }
+        }}
+        onConfirmDelete={handleDeleteEntry}
+      />
     </div>
   );
 }

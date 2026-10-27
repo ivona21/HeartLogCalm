@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { loadEnv } from 'vite';
@@ -7,6 +7,7 @@ const env = loadEnv('production', process.cwd(), 'VITE_');
 const backendUrl = env.VITE_API_URL;
 
 const outputPath = resolve('public/emotions.json');
+const temporaryOutputPath = `${outputPath}.tmp`;
 const timeoutMs = 120_000;
 
 if (!backendUrl) {
@@ -65,8 +66,6 @@ function validateEmotionTree(response) {
 }
 
 async function generate() {
-  await rm(outputPath, { force: true });
-
   let response;
   try {
     response = await fetch(endpoint, { signal: controller.signal });
@@ -94,7 +93,8 @@ async function generate() {
 
   validateEmotionTree(data);
   await mkdir(dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+  await writeFile(temporaryOutputPath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+  await rename(temporaryOutputPath, outputPath);
   console.log(`Generated ${outputPath} from ${endpoint}`);
 }
 
