@@ -165,14 +165,14 @@ function EntryCard({
 
   return (
     <Card className="overflow-hidden bg-card/80">
-      <CardHeader className="border-b border-border/70 bg-muted/15 p-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+      <CardHeader className="relative border-b border-border/70 bg-muted/15 p-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0">
         <div className="space-y-1">
           <p className="text-sm font-semibold text-foreground">{format(entryDate, 'h:mm a')}</p>
           {primaryLabel ? (
             <p className="text-xs font-medium text-muted-foreground">Primary: {primaryLabel}</p>
           ) : null}
         </div>
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 pr-12 sm:ml-auto sm:justify-end sm:self-center">
           {entry.selectedEmotions.map((emotion) => (
             <EmotionChip
               key={`${entry.id}-${emotion.emotionKey}`}
@@ -180,17 +180,17 @@ function EntryCard({
               emotionMap={emotionMap}
             />
           ))}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-            aria-label="Delete entry"
-            onClick={() => onDelete(entry)}
-          >
-            <Trash2Icon />
-          </Button>
         </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="no-default-hover-elevate no-default-active-elevate absolute right-4 top-4 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          aria-label="Delete entry"
+          onClick={() => onDelete(entry)}
+        >
+          <Trash2Icon />
+        </Button>
       </CardHeader>
       <CardContent className="p-4">
         {comment ? (

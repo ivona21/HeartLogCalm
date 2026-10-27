@@ -42,16 +42,15 @@ export function DeleteEmotionEntryDialog({
             </Button>
           </AlertDialogCancel>
           <AlertDialogAction
-            asChild
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground border-destructive-border hover:bg-destructive-hover active:bg-destructive-active"
             onClick={(event) => {
               event.preventDefault();
               onConfirmDelete();
             }}
           >
-            <Button variant="destructive" disabled={isDeleting}>
-              {isDeleting ? <Loader2Icon className="animate-spin" /> : null}
-              {isDeleting ? 'Deleting...' : 'Delete'}
-            </Button>
+            {isDeleting ? <Loader2Icon className="animate-spin" /> : null}
+            {isDeleting ? 'Deleting...' : 'Delete'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
