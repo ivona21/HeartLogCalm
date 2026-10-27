@@ -1,6 +1,6 @@
 import { format, isValid, parseISO } from 'date-fns';
-import { AlertCircleIcon, BookOpenIcon } from 'lucide-react';
-import { useMemo } from 'react';
+import { AlertCircleIcon, BookOpenIcon, Trash2Icon } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
@@ -9,10 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.t
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useAuth } from '@/features/auth';
 import { useEmotionEntries } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
+import { useDeleteEmotionEntry } from '@/features/emotion-wheel/hooks/useDeleteEmotionEntry.ts';
+import { DeleteEmotionEntryDialog } from '@/features/emotion-wheel/components/DeleteEmotionEntryDialog.tsx';
 import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
 import { useEmotions } from '@/features/emotion-wheel/hooks/useEmotions.ts';
 import type { BackendCoreEmotion } from '@/features/emotion-wheel/types/backend-emotion.ts';
 import type { EmotionEntry } from '@/features/emotion-wheel/types/emotion-entry.ts';
+import { toast } from '@/shared/hooks/use-toast.ts';
 
 type EmotionDisplay = {
   label: string;
@@ -147,9 +150,11 @@ function EmotionChip({
 function EntryCard({
   entry,
   emotionMap,
+  onDelete,
 }: {
   entry: EmotionEntry;
   emotionMap: Map<string, EmotionDisplay>;
+  onDelete: (entry: EmotionEntry) => void;
 }) {
   const entryDate = getEntryDate(entry);
   const primaryEmotion = entry.selectedEmotions.find((emotion) => emotion.isPrimary);
@@ -167,17 +172,25 @@ function EntryCard({
             <p className="text-xs font-medium text-muted-foreground">Primary: {primaryLabel}</p>
           ) : null}
         </div>
-        {entry.selectedEmotions.length > 0 ? (
-          <div className="flex flex-wrap gap-2 sm:justify-end">
-            {entry.selectedEmotions.map((emotion) => (
-              <EmotionChip
-                key={`${entry.id}-${emotion.emotionKey}`}
-                emotion={emotion}
-                emotionMap={emotionMap}
-              />
-            ))}
-          </div>
-        ) : null}
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          {entry.selectedEmotions.map((emotion) => (
+            <EmotionChip
+              key={`${entry.id}-${emotion.emotionKey}`}
+              emotion={emotion}
+              emotionMap={emotionMap}
+            />
+          ))}
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            aria-label="Delete entry"
+            onClick={() => onDelete(entry)}
+          >
+            <Trash2Icon />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="p-4">
         {comment ? (
@@ -192,6 +205,8 @@ function EntryCard({
 
 export default function EntriesPage() {
   const { user, session } = useAuth();
+  const [entryToDelete, setEntryToDelete] = useState<EmotionEntry | null>(null);
+  const deleteEntryMutation = useDeleteEmotionEntry();
   const userKey = user?.id ?? user?.email ?? session?.email;
   const entriesQuery = useEmotionEntries(Boolean(userKey), userKey);
   const emotionsQuery = useEmotions();
@@ -205,6 +220,26 @@ export default function EntriesPage() {
     () => groupEntriesByDate(entriesQuery.data ?? []),
     [entriesQuery.data],
   );
+
+  const handleDeleteEntry = () => {
+    if (!entryToDelete) return;
+
+    deleteEntryMutation.mutate(entryToDelete.id, {
+      onSuccess: () => {
+        setEntryToDelete(null);
+        toast({
+          variant: 'info',
+          description: 'Entry deleted successfully.',
+        });
+      },
+      onError: () => {
+        toast({
+          variant: 'destructive',
+          description: 'Unable to delete this entry. Please try again.',
+        });
+      },
+    });
+  };
 
   if (entriesQuery.isLoading) {
     return (
@@ -258,12 +293,28 @@ export default function EntriesPage() {
             </h2>
             <div className="space-y-3">
               {group.entries.map((entry) => (
-                <EntryCard key={entry.id} entry={entry} emotionMap={emotionMap} />
+                <EntryCard
+                  key={entry.id}
+                  entry={entry}
+                  emotionMap={emotionMap}
+                  onDelete={setEntryToDelete}
+                />
               ))}
             </div>
           </section>
         ))}
       </div>
+
+      <DeleteEmotionEntryDialog
+        open={entryToDelete !== null}
+        isDeleting={deleteEntryMutation.isPending}
+        onOpenChange={(open) => {
+          if (!open && !deleteEntryMutation.isPending) {
+            setEntryToDelete(null);
+          }
+        }}
+        onConfirmDelete={handleDeleteEntry}
+      />
     </div>
   );
 }

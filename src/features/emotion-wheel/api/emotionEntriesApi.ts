@@ -1,5 +1,6 @@
 import {
   emotionEntriesCreate,
+  emotionEntriesDelete,
   emotionEntriesGetAll,
   emotionEntriesGetSummary,
   type EmotionEntryResponse,
@@ -53,4 +54,8 @@ export async function createEmotionEntry(input: CreateEmotionEntryInput): Promis
     comment: input.comment || null,
     occurredAt: null,
   });
+}
+
+export async function deleteEmotionEntry(entryId: string): Promise<void> {
+  await emotionEntriesDelete(entryId);
 }
