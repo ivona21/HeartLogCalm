@@ -103,13 +103,14 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [draftComment, setDraftComment] = useState('');
   const [interactionCount, setInteractionCount] = useState(0);
-  const { isAuthenticated, user } = useAuth();
+  const { authStatus, isAuthenticated, user } = useAuth();
   const authenticatedUserId = user?.id ?? null;
   const { data: emotions = [] } = useEmotions();
   const isDarkTheme = useIsDarkTheme();
   const emotionEntrySummaryQuery = useEmotionEntrySummary(isAuthenticated, user?.email);
   const createEmotionEntryMutation = useCreateEmotionEntry();
   const wasAuthenticatedRef = useRef(isAuthenticated);
+  const authPromptShownRef = useRef(false);
   const skipGuestWriteUntilClearedRef = useRef(false);
   const initializedAuthenticatedDraftUserIdRef = useRef<string | null>(null);
   const skipNextAuthenticatedDraftSyncRef = useRef(false);
@@ -144,12 +145,17 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
 
   const handleWheelClick = (id: string) => {
     const isSelectingEmotion = mode === 'full' || id.split('.').length === 3;
-    const isFirstSelection = isSelectingEmotion && selected.size === 0 && !selected.has(id);
 
     setInteractionCount((count) => count + 1);
     handleClick(id);
 
-    if (isFirstSelection && !isAuthenticated) {
+    if (
+      isSelectingEmotion &&
+      !selected.has(id) &&
+      authStatus === 'anonymous' &&
+      !authPromptShownRef.current
+    ) {
+      authPromptShownRef.current = true;
       setAuthModalOpen(true);
     }
   };
@@ -178,6 +184,7 @@ export const Wheel = ({ mode = DEFAULT_WHEEL_DISPLAY_MODE, onSelect }: WheelProp
       setDraftComment('');
       setSaveModalOpen(false);
       setAuthModalOpen(false);
+      authPromptShownRef.current = false;
       initializedAuthenticatedDraftUserIdRef.current = null;
     }
 
