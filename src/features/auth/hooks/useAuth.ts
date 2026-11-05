@@ -86,6 +86,7 @@ export function useAuth() {
         setIsLoggingOut(false);
         clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
+        useAuthStore.persist.clearStorage();
         queryClient.removeQueries({ queryKey: emotionEntriesQueryKey });
         queryClient.removeQueries({ queryKey: ['emotion-entry-summary'] });
         clearPendingAuthEmotionSelection();

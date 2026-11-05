@@ -107,7 +107,11 @@ export default function SettingsPage() {
                   cannot be undone.
                 </p>
               </div>
-              <Button variant="destructive" onClick={openDeleteDialog} className="shrink-0">
+              <Button
+                variant="destructive"
+                onClick={openDeleteDialog}
+                className="shrink-0 border-[hsl(var(--destructive))]"
+              >
                 <Trash2Icon className="h-4 w-4" />
                 Delete profile
               </Button>
@@ -154,7 +158,7 @@ export default function SettingsPage() {
                 event.preventDefault();
                 deleteMutation.mutate();
               }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive-hover"
+              className="border-[hsl(var(--destructive))] bg-destructive text-destructive-foreground hover:bg-destructive-hover"
             >
               {deleteMutation.isPending ? (
                 <>
