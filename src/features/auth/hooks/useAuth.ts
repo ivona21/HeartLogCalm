@@ -108,6 +108,7 @@ export function useAuth() {
   };
 
   return {
+    authStatus,
     user,
     session,
     isLoading: authStatus === 'checking' || (authStatus === 'idle' && !!session),
