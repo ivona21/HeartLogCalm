@@ -182,15 +182,6 @@ export function Header() {
                     >
                       Settings
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={(event) => {
-                        event.preventDefault();
-                        navigate('/change-password', { state: { resetAt: Date.now() } });
-                      }}
-                      data-testid="button-change-password"
-                    >
-                      Change your password
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onSelect={(event) => {
