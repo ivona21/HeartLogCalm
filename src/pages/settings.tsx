@@ -38,7 +38,7 @@ export default function SettingsPage() {
     onSuccess: () => {
       setDeleteDialogOpen(false);
       setCurrentPassword('');
-      logout();
+      logout({ reason: 'account-deletion' });
     },
     onError: (error: unknown) => {
       setDeleteError(normalizeApiError(error).message || 'Unable to delete your profile.');

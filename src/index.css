@@ -55,6 +55,7 @@
     --success-hover: 134 33% 49%;
     --success-active: 134 33% 45%;
     --success-foreground: 0 0% 100%;
+    --success-link: 258 76% 92%;
 
     --warning: 39 62% 53%;
     --warning-hover: 39 62% 48%;
@@ -233,6 +234,7 @@
     --success-hover: 134 30% 41%;
     --success-active: 134 30% 46%;
     --success-foreground: 0 0% 100%;
+    --success-link: 258 88% 88%;
 
     --warning: 39 62% 53%;
     --warning-hover: 39 62% 58%;

@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { createElement } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { loginApi as loginApi } from '@/features/auth/api/login.api.ts';
 import { registerApi as registerApi } from '@/features/auth/api/register.api.ts';
@@ -64,7 +65,7 @@ export function useAuth() {
     },
   });
 
-  const logout = () => {
+  const logout = (options?: { reason?: 'account-deletion' }) => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
     patienceTimerRef.current = window.setTimeout(() => {
@@ -74,7 +75,9 @@ export function useAuth() {
       });
     }, 3000);
 
-    logoutApi()
+    const logoutRequest = options?.reason === 'account-deletion' ? Promise.resolve() : logoutApi();
+
+    logoutRequest
       .catch((error) => {
         toast({ variant: 'destructive', description: 'Logout failed. Please try again.' });
         console.error('Logout failed:', error);
@@ -84,6 +87,7 @@ export function useAuth() {
         patienceToastRef.current?.dismiss();
         patienceToastRef.current = null;
         setIsLoggingOut(false);
+        navigate(options?.reason === 'account-deletion' ? '/emotion-wheel' : '/');
         clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
         useAuthStore.persist.clearStorage();
@@ -95,16 +99,37 @@ export function useAuth() {
           window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
         }
 
-        const logoutToast = toast({
-          variant: 'info',
-          description: 'You can still explore your feelings — log in to remember them.',
-        });
+        const logoutToast =
+          options?.reason === 'account-deletion'
+            ? toast({
+                title: 'Your account is being deleted',
+                duration: Infinity,
+                description: createElement(
+                  'span',
+                  null,
+                  'You’ve been signed out. We’ll email you once your HeartLog account and entries have been deleted. You can still explore the ',
+                  createElement(
+                    'a',
+                    {
+                      href: '/emotion-wheel',
+                      className:
+                        'font-medium text-[hsl(var(--success-link))] underline underline-offset-2',
+                    },
+                    'emotion wheel',
+                  ),
+                  '.',
+                ),
+              })
+            : toast({
+                variant: 'info',
+                description: 'You can still explore your feelings — log in to remember them.',
+              });
 
-        window.setTimeout(() => {
-          logoutToast.dismiss();
-        }, 4500);
-
-        navigate('/');
+        if (options?.reason !== 'account-deletion') {
+          window.setTimeout(() => {
+            logoutToast.dismiss();
+          }, 4500);
+        }
       });
   };
 
