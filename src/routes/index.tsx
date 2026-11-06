@@ -15,6 +15,7 @@ import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
 import AccountPage from '@/pages/account.tsx';
+import SettingsPage from '@/pages/settings.tsx';
 
 const routes = [
   {
@@ -122,7 +123,7 @@ const routes = [
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <div />
+          <SettingsPage />
         </AppLayout>
       </ProtectedRoute>
     ),
