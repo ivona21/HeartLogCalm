@@ -68,6 +68,7 @@ export function useAuth() {
   const logout = (options?: { reason?: 'account-deletion' }) => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
+    navigate('/emotion-wheel');
     patienceTimerRef.current = window.setTimeout(() => {
       patienceToastRef.current = toast({
         description:
@@ -87,7 +88,6 @@ export function useAuth() {
         patienceToastRef.current?.dismiss();
         patienceToastRef.current = null;
         setIsLoggingOut(false);
-        navigate(options?.reason === 'account-deletion' ? '/emotion-wheel' : '/');
         clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
         useAuthStore.persist.clearStorage();
