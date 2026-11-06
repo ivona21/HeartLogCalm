@@ -195,6 +195,11 @@ export interface UserRegisterDto {
   password: string;
 }
 
+export interface DeleteAccountRequestDto {
+  /** @minLength 1 */
+  currentPassword: string;
+}
+
 export type AuthConfirmEmailParams = {
   token_hash?: string;
   type?: string;
@@ -428,6 +433,25 @@ export const authGetCurrentUser = async (
   return heartlogFetch<UserMeResponseDtoApiResponse>(getAuthGetCurrentUserUrl(), {
     ...options,
     method: 'GET',
+  });
+};
+
+export const getAuthDeleteCurrentUserUrl = () => {
+  return `/api/auth/me`;
+};
+
+/**
+ * Verifies the current password and durably requests permanent account and emotion-data deletion. Access ends immediately; cleanup retries automatically. Include credentials to clear auth cookies.
+ */
+export const authDeleteCurrentUser = async (
+  deleteAccountRequestDto: DeleteAccountRequestDto,
+  options?: RequestInit,
+): Promise<ApiResponse> => {
+  return heartlogFetch<ApiResponse>(getAuthDeleteCurrentUserUrl(), {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(deleteAccountRequestDto),
   });
 };
 

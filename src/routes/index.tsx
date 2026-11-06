@@ -14,6 +14,8 @@ import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
+import AccountPage from '@/pages/account.tsx';
+import SettingsPage from '@/pages/settings.tsx';
 
 const routes = [
   {
@@ -107,15 +109,21 @@ const routes = [
     ),
   },
   {
+    path: '/account',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AccountPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/settings',
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <AppSectionPlaceholder
-            eyebrow="Preferences"
-            title="Settings"
-            description="Manage account preferences, reminders, privacy choices, and personal HeartLog defaults."
-          />
+          <SettingsPage />
         </AppLayout>
       </ProtectedRoute>
     ),
