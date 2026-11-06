@@ -14,6 +14,7 @@ import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
+import SettingsPage from '@/pages/settings.tsx';
 
 const routes = [
   {
@@ -111,11 +112,7 @@ const routes = [
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <AppSectionPlaceholder
-            eyebrow="Preferences"
-            title="Settings"
-            description="Manage account preferences, reminders, privacy choices, and personal HeartLog defaults."
-          />
+          <SettingsPage />
         </AppLayout>
       </ProtectedRoute>
     ),

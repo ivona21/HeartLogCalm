@@ -50,7 +50,8 @@ function shouldIncludeCredentials(endpoint: string) {
     endpoint === '/api/auth/forgot-password' ||
     endpoint === '/api/auth/reset-password' ||
     endpoint === '/api/auth/refresh' ||
-    endpoint === '/api/auth/logout'
+    endpoint === '/api/auth/logout' ||
+    endpoint === '/api/auth/me'
   );
 }
 
