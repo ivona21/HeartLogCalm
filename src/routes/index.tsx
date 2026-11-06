@@ -14,6 +14,7 @@ import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
+import AccountPage from '@/pages/account.tsx';
 import SettingsPage from '@/pages/settings.tsx';
 
 const routes = [
@@ -103,6 +104,16 @@ const routes = [
       <ProtectedRoute>
         <AppLayout>
           <AppSectionPlaceholder title="Coming soon" />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/account',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AccountPage />
         </AppLayout>
       </ProtectedRoute>
     ),
