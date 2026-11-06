@@ -7,6 +7,7 @@ import {
   HeartPulseIcon,
   LogInIcon,
   MenuIcon,
+  UserIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
@@ -26,11 +27,11 @@ import { hasAuthenticatedEntryDraft } from '@/features/emotion-wheel/stores/auth
 import { cn } from '@/shared/utils/cn.ts';
 
 const navigationItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: GaugeIcon, disabled: true },
+  { label: 'Dashboard', href: '/dashboard', icon: GaugeIcon, disabled: true, hidden: true },
   { label: 'Emotion Wheel', href: '/emotion-wheel', icon: HeartPulseIcon },
   { label: 'Entries', href: '/entries', icon: BookOpenIcon },
-  { label: 'Insights', href: '/insights', icon: BarChart3Icon },
-  { label: 'Activity / Calendar', href: '/activity', icon: ActivityIcon },
+  { label: 'Activity', href: '/activity', icon: ActivityIcon, disabled: true, hidden: true },
+  { label: 'Insights', href: '/insights', icon: BarChart3Icon, disabled: true, hidden: true },
 ];
 
 export function Header() {
@@ -39,7 +40,6 @@ export function Header() {
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [logoutHasUnsavedEntry, setLogoutHasUnsavedEntry] = useState(false);
   const loggedInEmail = user?.email ?? session?.email;
-  const accountInitial = (loggedInEmail?.trim().charAt(0) || 'A').toUpperCase();
 
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-border/70 bg-background/85 py-2 backdrop-blur-md">
@@ -69,33 +69,35 @@ export function Header() {
                   className="hidden min-w-0 items-center gap-1 xl:flex"
                   aria-label="Primary navigation"
                 >
-                  {navigationItems.map(({ label, href, icon: Icon, disabled }) =>
-                    disabled ? (
-                      <span
-                        key={href}
-                        aria-disabled="true"
-                        className="inline-flex h-9 cursor-not-allowed items-center gap-2 rounded-full px-3 text-sm font-medium text-muted-foreground/45"
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{label}</span>
-                      </span>
-                    ) : (
-                      <NavLink
-                        key={href}
-                        to={href}
-                        className={({ isActive }) =>
-                          cn(
-                            'inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-medium !text-muted-foreground transition-colors hover:!bg-primary-hover hover:!text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring visited:!text-muted-foreground',
-                            isActive &&
-                              '!bg-primary !text-white shadow-sm hover:!bg-primary-hover hover:!text-white visited:!text-white',
-                          )
-                        }
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{label}</span>
-                      </NavLink>
-                    ),
-                  )}
+                  {navigationItems
+                    .filter(({ hidden }) => !hidden)
+                    .map(({ label, href, icon: Icon, disabled }) =>
+                      disabled ? (
+                        <span
+                          key={href}
+                          aria-disabled="true"
+                          className="inline-flex h-9 cursor-not-allowed items-center gap-2 rounded-full px-3 text-sm font-medium text-muted-foreground/45"
+                        >
+                          <Icon className="h-4 w-4" />
+                          <span>{label}</span>
+                        </span>
+                      ) : (
+                        <NavLink
+                          key={href}
+                          to={href}
+                          className={({ isActive }) =>
+                            cn(
+                              'inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-medium !text-muted-foreground transition-colors hover:!bg-primary-hover hover:!text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring visited:!text-muted-foreground',
+                              isActive &&
+                                '!bg-primary !text-white shadow-sm hover:!bg-primary-hover hover:!text-white visited:!text-white',
+                            )
+                          }
+                        >
+                          <Icon className="h-4 w-4" />
+                          <span>{label}</span>
+                        </NavLink>
+                      ),
+                    )}
                 </nav>
               </>
             ) : null}
@@ -124,23 +126,25 @@ export function Header() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="min-w-64">
                     <DropdownMenuLabel>Navigate</DropdownMenuLabel>
-                    {navigationItems.map(({ label, href, icon: Icon, disabled }) => (
-                      <DropdownMenuItem
-                        key={href}
-                        disabled={disabled}
-                        onSelect={(event) => {
-                          if (disabled) {
-                            event.preventDefault();
-                            return;
-                          }
+                    {navigationItems
+                      .filter(({ hidden }) => !hidden)
+                      .map(({ label, href, icon: Icon, disabled }) => (
+                        <DropdownMenuItem
+                          key={href}
+                          disabled={disabled}
+                          onSelect={(event) => {
+                            if (disabled) {
+                              event.preventDefault();
+                              return;
+                            }
 
-                          navigate(href);
-                        }}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {label}
-                      </DropdownMenuItem>
-                    ))}
+                            navigate(href);
+                          }}
+                        >
+                          <Icon className="h-4 w-4" />
+                          {label}
+                        </DropdownMenuItem>
+                      ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
@@ -148,20 +152,21 @@ export function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="h-9 min-w-9 shrink-0 cursor-pointer border-0 px-3 text-sm font-semibold no-default-hover-elevate no-default-active-elevate hover:bg-muted/60 hover:text-foreground active:bg-muted/80 active:text-foreground"
+                      className="h-10 w-10 shrink-0 cursor-pointer rounded-full border border-border/80 p-0 text-sm font-semibold no-default-hover-elevate no-default-active-elevate hover:bg-muted/60 hover:text-foreground active:bg-muted/80 active:text-foreground"
                       aria-label="Open account menu"
                       data-testid="button-settings-menu"
                     >
-                      <span className="hidden whitespace-nowrap sm:inline" title={loggedInEmail}>
-                        {loggedInEmail ?? 'Account'}
-                      </span>
-                      <span className="grid h-6 w-6 place-items-center rounded-full bg-primary text-xs text-primary-foreground sm:hidden">
-                        {accountInitial}
-                      </span>
+                      <UserIcon className="h-10 w-10" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="min-w-48">
-                    <DropdownMenuItem disabled className="flex flex-col items-start gap-0.5">
+                    <DropdownMenuItem
+                      className="flex flex-col items-start gap-0.5"
+                      onSelect={(event) => {
+                        event.preventDefault();
+                        navigate('/account');
+                      }}
+                    >
                       <span>Account</span>
                       {loggedInEmail ? (
                         <span
@@ -174,6 +179,7 @@ export function Header() {
                       ) : null}
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                      className="hidden"
                       onSelect={(event) => {
                         event.preventDefault();
                         navigate('/settings');

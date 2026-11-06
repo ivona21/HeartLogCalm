@@ -14,7 +14,7 @@ import NotFound from '@/pages/not-found';
 import EmotionWheelPage from '@/pages/emotion-wheel.tsx';
 import AppLayout from '@/components/layout/AppLayout.tsx';
 import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
-import SettingsPage from '@/pages/settings.tsx';
+import AccountPage from '@/pages/account.tsx';
 
 const routes = [
   {
@@ -108,11 +108,21 @@ const routes = [
     ),
   },
   {
+    path: '/account',
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <AccountPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/settings',
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <SettingsPage />
+          <div />
         </AppLayout>
       </ProtectedRoute>
     ),

@@ -54,9 +54,7 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto w-full max-w-4xl py-8 md:py-10">
       <div className="mb-8 space-y-2">
-        <p className="text-sm font-medium text-muted-foreground">Preferences</p>
-        <h1 className="text-3xl font-semibold tracking-tight">Settings</h1>
-        <p className="max-w-2xl text-muted-foreground">Manage your account security and profile.</p>
+        <h1 className="text-3xl font-semibold tracking-tight">Account</h1>
       </div>
 
       <div className="space-y-6">
@@ -67,19 +65,12 @@ export default function SettingsPage() {
                 <ShieldCheckIcon className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <CardTitle>Security</CardTitle>
-                <CardDescription>Keep your HeartLog account secure.</CardDescription>
+                <CardTitle>Change password</CardTitle>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div>
-                <h2 className="font-medium">Change your password</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Update the password you use to sign in to HeartLog.
-                </p>
-              </div>
               <ChangePasswordForm />
             </div>
           </CardContent>
@@ -92,28 +83,24 @@ export default function SettingsPage() {
                 <AlertTriangleIcon className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <CardTitle>Danger zone</CardTitle>
-                <CardDescription>Actions here can permanently affect your account.</CardDescription>
+                <CardTitle>Delete your account</CardTitle>
+                <CardDescription>
+                  Your account and all your saved emotion entries will be permanently deleted. This
+                  action cannot be undone.
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <Separator className="mb-5" />
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1">
-                <h2 className="font-medium">Delete your profile</h2>
-                <p className="max-w-xl text-sm text-muted-foreground">
-                  Permanently delete your profile and all of your emotion entries. This action
-                  cannot be undone.
-                </p>
-              </div>
               <Button
                 variant="destructive"
                 onClick={openDeleteDialog}
                 className="shrink-0 border-[hsl(var(--destructive))]"
               >
                 <Trash2Icon className="h-4 w-4" />
-                Delete profile
+                Delete account
               </Button>
             </div>
           </CardContent>
@@ -123,9 +110,9 @@ export default function SettingsPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete your profile?</AlertDialogTitle>
+            <AlertDialogTitle>Delete your account?</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently deletes your profile and emotion entries. Enter your current password
+              This permanently deletes your account and emotion entries. Enter your current password
               to confirm. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -166,7 +153,7 @@ export default function SettingsPage() {
                   Deleting...
                 </>
               ) : (
-                'Delete profile'
+                'Delete account'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
