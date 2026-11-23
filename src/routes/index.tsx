@@ -16,6 +16,8 @@ import AppLayout from '@/components/layout/AppLayout.tsx';
 import AppSectionPlaceholder from '@/pages/app-section-placeholder.tsx';
 import AccountPage from '@/pages/account.tsx';
 import SettingsPage from '@/pages/settings.tsx';
+import PrivacyPolicyPage from '@/pages/privacy-policy.tsx';
+import TermsPage from '@/pages/terms.tsx';
 
 const routes = [
   {
@@ -49,6 +51,22 @@ const routes = [
   {
     path: '/reset-password',
     element: <ResetPasswordPage />,
+  },
+  {
+    path: '/privacy-policy',
+    element: (
+      <AppLayout>
+        <PrivacyPolicyPage />
+      </AppLayout>
+    ),
+  },
+  {
+    path: '/terms',
+    element: (
+      <AppLayout>
+        <TermsPage />
+      </AppLayout>
+    ),
   },
   {
     path: '/dashboard',
