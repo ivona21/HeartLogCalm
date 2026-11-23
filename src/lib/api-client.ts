@@ -7,6 +7,7 @@ import {
   normalizeApiError,
 } from '@/shared/api/api-errors.ts';
 import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
+import { getAuthGeneration } from '@/features/auth/authSessionCoordinator.ts';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 export const AUTH_UNAUTHORIZED_EVENT = 'auth:unauthorized';
@@ -106,6 +107,7 @@ export class ApiClient {
       });
     }
 
+    const requestGeneration = getAuthGeneration();
     this.refreshPromise = (async () => {
       let response: Response;
 
@@ -140,6 +142,14 @@ export class ApiClient {
         });
       }
 
+      if (requestGeneration !== getAuthGeneration()) {
+        throw createApiError({
+          message: 'Authentication changed while refreshing.',
+          kind: 'unexpected',
+          status: 401,
+          code: ApiErrorCode.unauthorized,
+        });
+      }
       useAuthStore.getState().setSession(refreshResponse.data);
       return refreshResponse.data;
     })();

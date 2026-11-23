@@ -18,16 +18,32 @@ import {
 } from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
 import { clearAuthenticatedEntryDraft } from '@/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts';
 import { emotionEntriesQueryKey } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
+import {
+  broadcastAuthChange,
+  getAuthGeneration,
+  invalidateAuthGeneration,
+} from '@/features/auth/authSessionCoordinator.ts';
 
 async function completeAuth(session: Awaited<ReturnType<typeof loginApi>>) {
-  const { setAuth, setSession, clearAuth } = useAuthStore.getState();
+  const requestGeneration = invalidateAuthGeneration();
+  const { setAuth, setSession, clearAuth, user } = useAuthStore.getState();
+
+  clearAuthenticatedEntryDraft(user?.id);
+  queryClient.cancelQueries();
+  queryClient.removeQueries({ queryKey: emotionEntriesQueryKey });
+  queryClient.removeQueries({ queryKey: ['emotion-entry-summary'] });
+  clearPendingAuthEmotionSelection();
+  clearLegacyGuestEmotionSelectionStorage();
+  window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
 
   setSession(session);
 
   try {
     const user = await getCurrentUserApi(session.accessToken);
+    if (requestGeneration !== getAuthGeneration()) return session;
     setAuth(user, session);
   } catch (error) {
+    if (requestGeneration !== getAuthGeneration()) return session;
     clearAuth();
     throw error;
   }
@@ -55,6 +71,7 @@ export function useAuth() {
       return completeAuth(await loginApi(data));
     },
     onSuccess: () => {
+      broadcastAuthChange();
       navigate('/');
     },
   });
@@ -90,6 +107,7 @@ export function useAuth() {
         setIsLoggingOut(false);
         clearAuthenticatedEntryDraft(user?.id);
         clearAuth();
+        invalidateAuthGeneration();
         useAuthStore.persist.clearStorage();
         queryClient.removeQueries({ queryKey: emotionEntriesQueryKey });
         queryClient.removeQueries({ queryKey: ['emotion-entry-summary'] });
@@ -98,6 +116,7 @@ export function useAuth() {
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
         }
+        broadcastAuthChange();
 
         const logoutToast =
           options?.reason === 'account-deletion'

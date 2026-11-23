@@ -5,9 +5,48 @@ import { AUTH_UNAUTHORIZED_EVENT } from '@/lib/api-client.ts';
 import { isUnauthorizedError } from '@/features/auth/utils/auth-errors.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
+import {
+  getAuthGeneration,
+  invalidateAuthGeneration,
+  subscribeToAuthChanges,
+} from '@/features/auth/authSessionCoordinator.ts';
+import { queryClient } from '@/lib/queryClient.ts';
+import { emotionEntriesQueryKey } from '@/features/emotion-wheel/hooks/useEmotionEntries.ts';
+import { clearPendingAuthEmotionSelection } from '@/features/emotion-wheel/stores/pendingAuthEmotionSelectionStorage.ts';
+import { clearAuthenticatedEntryDraft } from '@/features/emotion-wheel/stores/authenticatedEntryDraftStorage.ts';
+import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 
 export function AuthBootstrap() {
   const { authStatus, clearAuth, setAuthChecking, session } = useAuthStore();
+
+  useEffect(() => {
+    return subscribeToAuthChanges(() => {
+      invalidateAuthGeneration();
+      clearAuthenticatedEntryDraft(useAuthStore.getState().user?.id);
+      useAuthStore.getState().clearAuth();
+      queryClient.cancelQueries();
+      queryClient.removeQueries({ queryKey: emotionEntriesQueryKey });
+      queryClient.removeQueries({ queryKey: ['emotion-entry-summary'] });
+      clearPendingAuthEmotionSelection();
+      window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT));
+      useAuthStore.setState({ authStatus: 'checking' });
+      const requestGeneration = getAuthGeneration();
+      getCurrentUserApi()
+        .then((user) => {
+          if (requestGeneration === getAuthGeneration()) {
+            useAuthStore.getState().confirmAuth(user);
+          }
+        })
+        .catch((error: unknown) => {
+          if (requestGeneration !== getAuthGeneration()) return;
+          const apiError = normalizeApiError(error);
+          useAuthStore.getState().clearAuth();
+          if (!isUnauthorizedError(apiError)) {
+            useAuthStore.getState().setAuthChecking();
+          }
+        });
+    });
+  }, []);
 
   useEffect(() => {
     const handleUnauthorized = () => {
@@ -35,13 +74,16 @@ export function AuthBootstrap() {
 
     setAuthChecking();
 
+    const requestGeneration = getAuthGeneration();
     getCurrentUserApi()
       .then((user) => {
+        if (requestGeneration !== getAuthGeneration()) return;
         useAuthStore.getState().confirmAuth(user);
       })
       .catch((error: unknown) => {
         const apiError = normalizeApiError(error);
 
+        if (requestGeneration !== getAuthGeneration()) return;
         if (isUnauthorizedError(apiError)) {
           useAuthStore.getState().clearAuth();
           return;
