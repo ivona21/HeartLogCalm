@@ -1,16 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import privacyPolicy from '@/content/legal/en/privacy-policy.md?raw';
+import { LegalDocumentPage } from '@/components/legal/LegalDocumentPage.tsx';
 
 export default function PrivacyPolicyPage() {
-  return (
-    <div className="mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-4xl items-center">
-      <Card className="w-full overflow-hidden">
-        <CardHeader className="border-b border-border bg-muted/20">
-          <CardTitle className="text-3xl">Privacy Policy</CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          {/* Privacy policy content will be added here. */}
-        </CardContent>
-      </Card>
-    </div>
-  );
+  return <LegalDocumentPage source={privacyPolicy} />;
 }
