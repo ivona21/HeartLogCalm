@@ -28,6 +28,17 @@ describe('RegisterForm', () => {
     await user.type(screen.getByLabelText(/^password$/i), 'Aa1!aaaa');
     await user.type(screen.getByLabelText(/confirm password/i), 'Aa1!aaaa');
     await user.click(screen.getByRole('button', { name: /sign up/i }));
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /agree to the terms of service/i,
+      }),
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /explicitly consent to heartlog processing/i,
+      }),
+    );
+    await user.click(screen.getByRole('button', { name: /agree and create account/i }));
 
     expect(await screen.findByRole('heading', { name: /check your inbox/i })).toBeInTheDocument();
     expect(screen.getByText(/new-user@example.com/i)).toBeInTheDocument();
@@ -62,6 +73,17 @@ describe('RegisterForm', () => {
     await user.type(screen.getByLabelText(/^password$/i), 'Aa1!aaaa');
     await user.type(screen.getByLabelText(/confirm password/i), 'Aa1!aaaa');
     await user.click(screen.getByRole('button', { name: /sign up/i }));
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /agree to the terms of service/i,
+      }),
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /explicitly consent to heartlog processing/i,
+      }),
+    );
+    await user.click(screen.getByRole('button', { name: /agree and create account/i }));
 
     expect(
       await screen.findByText('An account with this email already exists.'),

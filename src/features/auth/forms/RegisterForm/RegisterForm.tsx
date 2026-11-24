@@ -16,10 +16,23 @@ import { ApiErrorCode } from '@/shared/api/heartlog.generated.ts';
 import { normalizeApiError } from '@/shared/api/api-errors.ts';
 import { applyApiValidationErrors } from '@/shared/forms/apply-api-validation-errors.ts';
 import { useDelayedPendingMessage } from '@/shared/hooks/use-delayed-pending-message.ts';
+import { Checkbox } from '@/components/ui/checkbox.tsx';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog.tsx';
+import { AppLink } from '@/components/ui/app-link.tsx';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
+  const [pendingRegistration, setPendingRegistration] = useState<RegisterInput | null>(null);
+  const [agreesToTerms, setAgreesToTerms] = useState(false);
+  const [consentsToProcessing, setConsentsToProcessing] = useState(false);
   const patienceMessage = useDelayedPendingMessage(
     isRegistering,
     'This is taking a little longer than usual. Thank you for your patience.',
@@ -43,7 +56,7 @@ export function RegisterForm() {
     });
   };
 
-  const onSubmit = (data: RegisterInput) => {
+  const registerAccount = (data: RegisterInput) => {
     form.clearErrors(['email', 'password', 'confirmPassword']);
 
     register(data, {
@@ -73,6 +86,28 @@ export function RegisterForm() {
     });
   };
 
+  const onSubmit = (data: RegisterInput) => {
+    setPendingRegistration(data);
+    setAgreesToTerms(false);
+    setConsentsToProcessing(false);
+  };
+
+  const handleConsentChange = (open: boolean) => {
+    if (!open) {
+      setPendingRegistration(null);
+      setAgreesToTerms(false);
+      setConsentsToProcessing(false);
+    }
+  };
+
+  const handleConfirmRegistration = () => {
+    if (!pendingRegistration || !agreesToTerms || !consentsToProcessing) return;
+
+    const data = pendingRegistration;
+    setPendingRegistration(null);
+    registerAccount(data);
+  };
+
   const normalizedRegisterError = normalizeApiError(registerError);
   const registerErrorCode = normalizedRegisterError.code;
   const isRegisterFieldError =
@@ -81,6 +116,63 @@ export function RegisterForm() {
 
   return (
     <>
+      <Dialog open={pendingRegistration !== null} onOpenChange={handleConsentChange}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Please review and confirm both statements.</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-5 text-sm leading-relaxed">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="register-terms-consent"
+                checked={agreesToTerms}
+                onCheckedChange={(checked) => setAgreesToTerms(checked === true)}
+                aria-label="I agree to the Terms of Service and acknowledge the Privacy Policy"
+                className="mt-1"
+              />
+              <label htmlFor="register-terms-consent">
+                I agree to the{' '}
+                <AppLink to="/terms" target="_blank" rel="noreferrer">
+                  Terms of Service
+                </AppLink>{' '}
+                and acknowledge the{' '}
+                <AppLink to="/privacy-policy" target="_blank" rel="noreferrer">
+                  Privacy Policy
+                </AppLink>
+                .
+              </label>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="register-processing-consent"
+                checked={consentsToProcessing}
+                onCheckedChange={(checked) => setConsentsToProcessing(checked === true)}
+                aria-label="I explicitly consent to HeartLog processing the emotions and journal entries I choose to save"
+                className="mt-1"
+              />
+              <label htmlFor="register-processing-consent">
+                I explicitly consent to HeartLog processing the emotions and journal entries I
+                choose to save, including information they may reveal about my health, religious
+                beliefs or sexual orientation, so that HeartLog can save and display my entries. I
+                can withdraw this consent at any time in Settings.
+              </label>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              onClick={handleConfirmRegistration}
+              disabled={!agreesToTerms || !consentsToProcessing || isRegistering}
+              className="w-full sm:w-auto"
+            >
+              {isRegistering ? 'Creating your account...' : 'Agree and create account'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className="text-center mb-6">
         <h2 className="text-2xl font-semibold text-foreground mb-2">Create Your Account</h2>
         <p className="text-sm text-muted-foreground">

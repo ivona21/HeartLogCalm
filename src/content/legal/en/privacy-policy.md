@@ -7,7 +7,7 @@ effectiveDate: 2026-11-23
 
 HeartLog is operated by Ivona Malekovic Selimovic, an individual based at Sarajevo, Bosnia and Herzegovina. We are responsible for deciding why and how personal information is processed through HeartLog; data protection law calls this the data controller.
 
-Contact us about privacy or your information at hello@heartlog.com
+Contact us about privacy or your information at hello@heartlog.me
 
 This policy covers heartlog.me and the HeartLog application.
 
