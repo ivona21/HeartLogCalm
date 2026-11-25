@@ -32,7 +32,6 @@ export function RegisterForm() {
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
   const [pendingRegistration, setPendingRegistration] = useState<RegisterInput | null>(null);
   const [agreesToTerms, setAgreesToTerms] = useState(false);
-  const [consentsToProcessing, setConsentsToProcessing] = useState(false);
   const patienceMessage = useDelayedPendingMessage(
     isRegistering,
     'This is taking a little longer than usual. Thank you for your patience.',
@@ -89,19 +88,17 @@ export function RegisterForm() {
   const onSubmit = (data: RegisterInput) => {
     setPendingRegistration(data);
     setAgreesToTerms(false);
-    setConsentsToProcessing(false);
   };
 
   const handleConsentChange = (open: boolean) => {
     if (!open) {
       setPendingRegistration(null);
       setAgreesToTerms(false);
-      setConsentsToProcessing(false);
     }
   };
 
   const handleConfirmRegistration = () => {
-    if (!pendingRegistration || !agreesToTerms || !consentsToProcessing) return;
+    if (!pendingRegistration || !agreesToTerms) return;
 
     const data = pendingRegistration;
     setPendingRegistration(null);
@@ -119,7 +116,7 @@ export function RegisterForm() {
       <Dialog open={pendingRegistration !== null} onOpenChange={handleConsentChange}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Please review and confirm both statements.</DialogTitle>
+            <DialogTitle>Before you continue</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-5 text-sm leading-relaxed">
@@ -143,29 +140,13 @@ export function RegisterForm() {
                 .
               </label>
             </div>
-
-            <div className="flex items-start gap-3">
-              <Checkbox
-                id="register-processing-consent"
-                checked={consentsToProcessing}
-                onCheckedChange={(checked) => setConsentsToProcessing(checked === true)}
-                aria-label="I explicitly consent to HeartLog processing the emotions and journal entries I choose to save"
-                className="mt-1"
-              />
-              <label htmlFor="register-processing-consent">
-                I explicitly consent to HeartLog processing the emotions and journal entries I
-                choose to save, including information they may reveal about my health, religious
-                beliefs or sexual orientation, so that HeartLog can save and display my entries. I
-                can withdraw this consent at any time in Settings.
-              </label>
-            </div>
           </div>
 
           <DialogFooter>
             <Button
               type="button"
               onClick={handleConfirmRegistration}
-              disabled={!agreesToTerms || !consentsToProcessing || isRegistering}
+              disabled={!agreesToTerms || isRegistering}
               className="w-full sm:w-auto"
             >
               {isRegistering ? 'Creating your account...' : 'Agree and create account'}
