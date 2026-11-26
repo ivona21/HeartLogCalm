@@ -11,7 +11,7 @@ describe('RegisterForm', () => {
     const submittedRequests: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/register', async ({ request }) => {
+      http.post(/\/api\/auth\/register$/, async ({ request }) => {
         submittedRequests.push(await request.json());
 
         return HttpResponse.json({
@@ -35,7 +35,12 @@ describe('RegisterForm', () => {
     );
     await user.click(
       screen.getByRole('checkbox', {
-        name: /explicitly consent to heartlog processing/i,
+        name: /acknowledge the privacy policy/i,
+      }),
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /I consent to HeartLog storing/i,
       }),
     );
     await user.click(screen.getByRole('button', { name: /agree and create account/i }));
@@ -46,6 +51,15 @@ describe('RegisterForm', () => {
       {
         email: 'new-user@example.com',
         password: 'Aa1!aaaa',
+        legalAcceptances: expect.objectContaining({
+          release: 'legal-draft-1',
+          terms: expect.objectContaining({ accepted: true }),
+          privacy: expect.objectContaining({ accepted: true }),
+          savedEntries: expect.objectContaining({
+            id: 'saved-entries-sensitive-data',
+            accepted: true,
+          }),
+        }),
       },
     ]);
   });
@@ -54,7 +68,7 @@ describe('RegisterForm', () => {
     const user = userEvent.setup();
 
     server.use(
-      http.post('http://localhost/api/auth/register', () => {
+      http.post(/\/api\/auth\/register$/, () => {
         return HttpResponse.json(
           {
             code: ApiErrorCode.emailAlreadyExists,
@@ -80,7 +94,12 @@ describe('RegisterForm', () => {
     );
     await user.click(
       screen.getByRole('checkbox', {
-        name: /explicitly consent to heartlog processing/i,
+        name: /acknowledge the privacy policy/i,
+      }),
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /I consent to HeartLog storing/i,
       }),
     );
     await user.click(screen.getByRole('button', { name: /agree and create account/i }));

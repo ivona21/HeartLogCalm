@@ -1,6 +1,6 @@
-import terms from '@/content/legal/en/terms.md?raw';
 import { LegalDocumentPage } from '@/components/legal/LegalDocumentPage.tsx';
+import { termsDocument } from '@/lib/legal.ts';
 
 export default function TermsPage() {
-  return <LegalDocumentPage source={terms} />;
+  return <LegalDocumentPage source={termsDocument} />;
 }

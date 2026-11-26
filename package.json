@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --port 5000 --host",
-    "prebuild": "npm run generate:emotions",
+    "prebuild": "npm run legal:verify && npm run generate:emotions",
+    "precheck": "node scripts/prepare-legal.mjs",
     "build": "vite build",
     "generate:emotions": "node scripts/generate-emotions.mjs",
     "preview": "vite preview",
@@ -16,6 +17,8 @@
     "api:generate": "orval --config ./orval.config.ts",
     "api:watch": "orval --config ./orval.config.ts --watch",
     "api:check": "orval --config ./orval.config.ts --fail-on-warnings",
+    "legal:verify": "node scripts/prepare-legal.mjs",
+    "legal:verify:production": "LEGAL_RELEASE_MODE=production node scripts/prepare-legal.mjs",
     "db:push": "drizzle-kit push"
   },
   "lint-staged": {

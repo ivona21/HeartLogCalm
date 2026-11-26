@@ -1,6 +1,6 @@
-import privacyPolicy from '@/content/legal/en/privacy-policy.md?raw';
 import { LegalDocumentPage } from '@/components/legal/LegalDocumentPage.tsx';
+import { privacyDocument } from '@/lib/legal.ts';
 
 export default function PrivacyPolicyPage() {
-  return <LegalDocumentPage source={privacyPolicy} />;
+  return <LegalDocumentPage source={privacyDocument} />;
 }

@@ -193,6 +193,24 @@ export interface UserRegisterDto {
   email: string;
   /** @minLength 1 */
   password: string;
+  legalAcceptances?: LegalAcceptances;
+}
+
+export interface LegalAcceptance {
+  version: string;
+  sha256: string;
+  accepted: boolean;
+}
+
+export interface SavedEntriesLegalAcceptance extends LegalAcceptance {
+  id: string;
+}
+
+export interface LegalAcceptances {
+  release: string;
+  terms: LegalAcceptance;
+  privacy: LegalAcceptance;
+  savedEntries: SavedEntriesLegalAcceptance;
 }
 
 export interface DeleteAccountRequestDto {

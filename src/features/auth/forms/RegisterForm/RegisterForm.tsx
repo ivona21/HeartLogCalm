@@ -26,12 +26,16 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog.tsx';
 import { AppLink } from '@/components/ui/app-link.tsx';
+import { legalRelease, savedEntriesConsent } from '@/lib/legal.ts';
 
 export function RegisterForm() {
   const { register, isRegistering, registerError } = useAuth();
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
   const [pendingRegistration, setPendingRegistration] = useState<RegisterInput | null>(null);
   const [agreesToTerms, setAgreesToTerms] = useState(false);
+  const [acknowledgesPrivacy, setAcknowledgesPrivacy] = useState(false);
+  const savedEntriesConsentCopy = savedEntriesConsent.entries[0];
+  const [consentsToSavedEntries, setConsentsToSavedEntries] = useState(false);
   const patienceMessage = useDelayedPendingMessage(
     isRegistering,
     'This is taking a little longer than usual. Thank you for your patience.',
@@ -58,47 +62,70 @@ export function RegisterForm() {
   const registerAccount = (data: RegisterInput) => {
     form.clearErrors(['email', 'password', 'confirmPassword']);
 
-    register(data, {
-      onSuccess: () => handleRegisterSuccess(data.email),
-      onError: (error: unknown) => {
-        if (
-          applyApiValidationErrors(error, form.setError, {
-            fieldMap: {
-              email: 'email',
-              password: 'password',
-              confirmPassword: 'confirmPassword',
-            },
-          })
-        ) {
-          return;
-        }
-
-        const apiError = normalizeApiError(error);
-
-        if (apiError.code === ApiErrorCode.emailAlreadyExists) {
-          form.setError('email', {
-            type: 'manual',
-            message: apiError.message || 'An account with this email already exists.',
-          });
-        }
+    const terms = legalRelease.items.terms;
+    const privacy = legalRelease.items.privacy;
+    register(
+      {
+        data,
+        legalAcceptances: {
+          release: legalRelease.release,
+          terms: { version: terms.version, sha256: terms.sha256, accepted: true },
+          privacy: { version: privacy.version, sha256: privacy.sha256, accepted: true },
+          savedEntries: {
+            id: savedEntriesConsentCopy.id,
+            version: legalRelease.items.savedEntriesConsent.version,
+            sha256: legalRelease.items.savedEntriesConsent.sha256,
+            accepted: true,
+          },
+        },
       },
-    });
+      {
+        onSuccess: () => handleRegisterSuccess(data.email),
+        onError: (error: unknown) => {
+          if (
+            applyApiValidationErrors(error, form.setError, {
+              fieldMap: {
+                email: 'email',
+                password: 'password',
+                confirmPassword: 'confirmPassword',
+              },
+            })
+          ) {
+            return;
+          }
+
+          const apiError = normalizeApiError(error);
+
+          if (apiError.code === ApiErrorCode.emailAlreadyExists) {
+            form.setError('email', {
+              type: 'manual',
+              message: apiError.message || 'An account with this email already exists.',
+            });
+          }
+        },
+      },
+    );
   };
 
   const onSubmit = (data: RegisterInput) => {
     setPendingRegistration(data);
     setAgreesToTerms(false);
+    setAcknowledgesPrivacy(false);
+    setConsentsToSavedEntries(false);
   };
 
   const handleConsentChange = (open: boolean) => {
     if (!open) {
       setPendingRegistration(null);
       setAgreesToTerms(false);
+      setAcknowledgesPrivacy(false);
+      setConsentsToSavedEntries(false);
     }
   };
 
   const handleConfirmRegistration = () => {
-    if (!pendingRegistration || !agreesToTerms) return;
+    if (!pendingRegistration || !agreesToTerms || !acknowledgesPrivacy || !consentsToSavedEntries)
+      return;
 
     const data = pendingRegistration;
     setPendingRegistration(null);
@@ -125,7 +152,7 @@ export function RegisterForm() {
                 id="register-terms-consent"
                 checked={agreesToTerms}
                 onCheckedChange={(checked) => setAgreesToTerms(checked === true)}
-                aria-label="I agree to the Terms of Service and acknowledge the Privacy Policy"
+                aria-label="I agree to the Terms of Service"
                 className="mt-1"
               />
               <label htmlFor="register-terms-consent">
@@ -133,11 +160,36 @@ export function RegisterForm() {
                 <AppLink to="/terms" target="_blank" rel="noreferrer">
                   Terms of Service
                 </AppLink>{' '}
-                and acknowledge the{' '}
+                .
+              </label>
+            </div>
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="register-privacy-consent"
+                checked={acknowledgesPrivacy}
+                onCheckedChange={(checked) => setAcknowledgesPrivacy(checked === true)}
+                className="mt-1"
+                aria-label="I acknowledge the Privacy Policy"
+              />
+              <label htmlFor="register-privacy-consent">
+                I acknowledge the{' '}
                 <AppLink to="/privacy-policy" target="_blank" rel="noreferrer">
                   Privacy Policy
                 </AppLink>
                 .
+              </label>
+            </div>
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="register-sensitive-consent"
+                checked={consentsToSavedEntries}
+                onCheckedChange={(checked) => setConsentsToSavedEntries(checked === true)}
+                className="mt-1"
+                aria-label={savedEntriesConsentCopy.checkboxLabel}
+              />
+              <label htmlFor="register-sensitive-consent">
+                <span className="font-medium">{savedEntriesConsentCopy.statement}</span>{' '}
+                {savedEntriesConsentCopy.explanation} {savedEntriesConsentCopy.withdrawal}
               </label>
             </div>
           </div>
@@ -146,7 +198,9 @@ export function RegisterForm() {
             <Button
               type="button"
               onClick={handleConfirmRegistration}
-              disabled={!agreesToTerms || isRegistering}
+              disabled={
+                !agreesToTerms || !acknowledgesPrivacy || !consentsToSavedEntries || isRegistering
+              }
               className="w-full sm:w-auto"
             >
               {isRegistering ? 'Creating your account...' : 'Agree and create account'}

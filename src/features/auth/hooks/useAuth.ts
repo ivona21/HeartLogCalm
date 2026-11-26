@@ -12,6 +12,7 @@ import { AUTH_LOGOUT_EVENT } from '@/lib/api-client.ts';
 import { toast } from '@/shared/hooks/use-toast.ts';
 import type { LoginInput } from '@/features/auth/forms/LoginForm/schema.ts';
 import type { RegisterInput } from '@/features/auth/forms/RegisterForm/schema.ts';
+import type { LegalAcceptances } from '@/shared/api/heartlog.generated.ts';
 import {
   clearLegacyGuestEmotionSelectionStorage,
   clearPendingAuthEmotionSelection,
@@ -77,8 +78,14 @@ export function useAuth() {
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (data: RegisterInput) => {
-      await registerApi(data);
+    mutationFn: async ({
+      data,
+      legalAcceptances,
+    }: {
+      data: RegisterInput;
+      legalAcceptances: LegalAcceptances;
+    }) => {
+      await registerApi(data, legalAcceptances);
     },
   });
 
