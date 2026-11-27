@@ -22,7 +22,7 @@ describe('LoginForm', () => {
     const submittedCredentials: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/login', async ({ request }) => {
+      http.post('*/api/auth/login', async ({ request }) => {
         submittedCredentials.push(await request.json());
 
         return HttpResponse.json(
@@ -56,7 +56,7 @@ describe('LoginForm', () => {
     const user = userEvent.setup();
 
     server.use(
-      http.post('http://localhost/api/auth/login', () => {
+      http.post('*/api/auth/login', () => {
         return HttpResponse.json(
           {
             code: ApiErrorCode.emailNotConfirmed,
@@ -86,7 +86,7 @@ describe('LoginForm', () => {
     const submittedRequests: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/forgot-password', async ({ request }) => {
+      http.post('*/api/auth/forgot-password', async ({ request }) => {
         submittedRequests.push(await request.json());
 
         return HttpResponse.json({ success: true, message: 'Reset email sent.' });

@@ -11,7 +11,7 @@ describe('ChangePasswordForm', () => {
     const submittedRequests: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/change-password', async ({ request }) => {
+      http.post('*/api/auth/change-password', async ({ request }) => {
         submittedRequests.push(await request.json());
 
         return HttpResponse.json(

@@ -10,7 +10,7 @@ describe('EmailConfirmationPage', () => {
     const submittedRequests: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/resend-confirmation', async ({ request }) => {
+      http.post('*/api/auth/resend-confirmation', async ({ request }) => {
         submittedRequests.push(await request.json());
 
         return HttpResponse.json({ success: true, message: 'Confirmation email sent.' });

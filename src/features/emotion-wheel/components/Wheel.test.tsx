@@ -61,9 +61,7 @@ function resetAuthStore() {
 function useDefaultWheelHandlers() {
   server.use(
     http.get('*/emotions.json', () => HttpResponse.json(emotionsResponse)),
-    http.get('http://localhost/api/emotion-entries/summary', () =>
-      HttpResponse.json(entrySummaryResponse),
-    ),
+    http.get('*/api/emotion-entries/summary', () => HttpResponse.json(entrySummaryResponse)),
   );
 }
 
@@ -92,7 +90,7 @@ describe('Wheel authenticated draft save behavior', () => {
     savePendingAuthEmotionSelection(['joy']);
     useDefaultWheelHandlers();
     server.use(
-      http.post('http://localhost/api/emotion-entries', async ({ request }) => {
+      http.post('*/api/emotion-entries', async ({ request }) => {
         submittedEntries.push(await request.json());
 
         return HttpResponse.json({
@@ -141,7 +139,7 @@ describe('Wheel authenticated draft save behavior', () => {
     saveAuthenticatedEntryDraft(authenticatedUser.id, draft);
     useDefaultWheelHandlers();
     server.use(
-      http.post('http://localhost/api/emotion-entries', () =>
+      http.post('*/api/emotion-entries', () =>
         HttpResponse.json(
           {
             code: ApiErrorCode.unauthorized,
@@ -152,7 +150,7 @@ describe('Wheel authenticated draft save behavior', () => {
           { status: 401 },
         ),
       ),
-      http.post('http://localhost/api/auth/refresh', () =>
+      http.post('*/api/auth/refresh', () =>
         HttpResponse.json(
           {
             code: ApiErrorCode.unauthorized,

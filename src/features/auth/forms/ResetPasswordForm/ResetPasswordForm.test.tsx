@@ -10,7 +10,7 @@ describe('ResetPasswordForm', () => {
     const submittedRequests: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/reset-password', async ({ request }) => {
+      http.post('*/api/auth/reset-password', async ({ request }) => {
         submittedRequests.push(await request.json());
 
         return HttpResponse.json({ success: true, message: 'Password updated.' });

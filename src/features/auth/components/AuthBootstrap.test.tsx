@@ -36,7 +36,7 @@ describe('AuthBootstrap', () => {
 
     seedStoredSession();
     server.use(
-      http.get('http://localhost/api/auth/me', ({ request }) => {
+      http.get('*/api/auth/me', ({ request }) => {
         seenAuthorizationHeaders.push(request.headers.get('authorization') ?? '');
 
         return HttpResponse.json({
@@ -68,7 +68,7 @@ describe('AuthBootstrap', () => {
   it('clears stale frontend auth state when the existing session is unauthorized', async () => {
     seedStoredSession();
     server.use(
-      http.get('http://localhost/api/auth/me', () =>
+      http.get('*/api/auth/me', () =>
         HttpResponse.json(
           {
             code: ApiErrorCode.unauthorized,
@@ -79,7 +79,7 @@ describe('AuthBootstrap', () => {
           { status: 401 },
         ),
       ),
-      http.post('http://localhost/api/auth/refresh', () =>
+      http.post('*/api/auth/refresh', () =>
         HttpResponse.json(
           {
             code: ApiErrorCode.unauthorized,

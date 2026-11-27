@@ -10,7 +10,7 @@ describe('CheckYourInboxSection', () => {
     const submittedRequests: unknown[] = [];
 
     server.use(
-      http.post('http://localhost/api/auth/forgot-password', async ({ request }) => {
+      http.post('*/api/auth/forgot-password', async ({ request }) => {
         submittedRequests.push(await request.json());
 
         return HttpResponse.json({ success: true, message: 'Reset email sent.' });
