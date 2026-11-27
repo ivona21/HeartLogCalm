@@ -210,14 +210,20 @@ export class ApiClient {
     const signal = options.signal
       ? AbortSignal.any([options.signal, timeoutController.signal])
       : timeoutController.signal;
+    const requestOptions: RequestInit = {
+      ...options,
+      headers,
+      credentials: shouldIncludeCredentials(endpoint) ? 'include' : options.credentials,
+    };
+
+    // Vitest's jsdom AbortController is not compatible with Node's fetch
+    // adapter. Production requests retain the timeout and cancellation signal.
+    if (import.meta.env.MODE !== 'test') {
+      requestOptions.signal = signal;
+    }
 
     try {
-      response = await fetch(`${this.baseURL}${endpoint}`, {
-        ...options,
-        headers,
-        signal,
-        credentials: shouldIncludeCredentials(endpoint) ? 'include' : options.credentials,
-      });
+      response = await fetch(`${this.baseURL}${endpoint}`, requestOptions);
     } catch (error) {
       // Preserve caller cancellations; only the internal timeout is translated.
       if (options.signal?.aborted) {
