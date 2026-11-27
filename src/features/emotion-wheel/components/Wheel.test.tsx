@@ -114,7 +114,7 @@ describe('Wheel authenticated draft save behavior', () => {
     await openSaveDialogFromRestoredDraft(user);
     await user.clear(screen.getByLabelText(/reflection/i));
     await user.type(screen.getByLabelText(/reflection/i), 'Saved reflection');
-    await user.click(screen.getByRole('button', { name: /done/i }));
+    await user.click(screen.getByRole('button', { name: /save entry/i }));
 
     await waitFor(() => {
       expect(readAuthenticatedEntryDraft(authenticatedUser.id)).toBeNull();
@@ -168,7 +168,7 @@ describe('Wheel authenticated draft save behavior', () => {
     renderWithProviders(<Wheel />, { route: '/emotion-wheel' });
 
     await openSaveDialogFromRestoredDraft(user);
-    await user.click(screen.getByRole('button', { name: /done/i }));
+    await user.click(screen.getByRole('button', { name: /save entry/i }));
 
     await screen.findByRole('heading', { name: /save your emotions/i });
     expect(readAuthenticatedEntryDraft(authenticatedUser.id)).toEqual(draft);
